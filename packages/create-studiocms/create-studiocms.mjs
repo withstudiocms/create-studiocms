@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-'use strict';
-
 const currentVersion = process.versions.node;
-const requiredMajorVersion = parseInt(currentVersion.split('.')[0], 10);
+const requiredMajorVersion = Number.parseInt(currentVersion.split('.')[0], 10);
 const minimumMajorVersion = 18;
 
 if (requiredMajorVersion < minimumMajorVersion) {

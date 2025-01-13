@@ -3,6 +3,7 @@
   "include": ["src"],
   "compilerOptions": {
     "outDir": "./dist",
+    "emitDeclarationOnly": true,
     "rootDir": "./src"
   }
 }
