@@ -3,7 +3,6 @@ import {
   default as chalkStdOut,
   chalkStderr as chalkStdErr,
   supportsColor as supportsColorStdout,
-  supportsColorStderr,
 } from 'chalk';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';

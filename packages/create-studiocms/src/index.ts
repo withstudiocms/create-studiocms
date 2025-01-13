@@ -3,8 +3,11 @@ import stripAnsi from 'strip-ansi';
 import chalk from 'chalk';
 import { MyCommand, supportsColor } from "./commander.js";
 import { logger } from "./logger.js";
+import { dt } from "./utils.js";
+import { interactive } from "./interactive.js";
     
 const StudioCMSColorway = chalk.hex('#a581f3');
+const date = dt.format(new Date());
 
 export async function main() {
 
@@ -27,6 +30,10 @@ export async function main() {
             getOutHasColors: () => supportsColor(),
             getErrHasColors: () => supportsColor(),
             stripColor: (str) => stripAnsi(str),
+            writeOut: (str) => process.stdout.write(`[${date}]: ${str}`),
+            writeErr: (str) => process.stdout.write(`ERROR [${date}]: ${str}`),
+            // Output errors in red.
+            outputError: (str, write) => write(`${chalk.red.bold(`ERROR [${date}]:`)} ${chalk.red(str)}`),
         })
         .configureHelp({
             sortSubcommands: true,
@@ -35,19 +42,16 @@ export async function main() {
         // Global Options
         .option('--color', 'force color output') // implemented by chalk
         .option('--no-color', 'disable color output') // implemented by chalk
-        // Default Action
-        .action(() => {
-            program.addHelpText('after', chalk.italic(`\nNo command provided. See above for available options and commands.`));
-            program.help();
-        });
 
     // Register commands
     program
-        .command('help')
+        .command('help', { isDefault: true })
         .description('Display the main help menu.')
         .action(() => {
             program.help();
         });
 
-    program.parse();
+    program.addCommand(await interactive());
+
+    await program.parseAsync();
 }

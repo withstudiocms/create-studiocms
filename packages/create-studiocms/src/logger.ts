@@ -1,9 +1,5 @@
 import chalk from "chalk";
-
-const dt = new Intl.DateTimeFormat('en-us', {
-	hour: '2-digit',
-	minute: '2-digit',
-});
+import { dt } from "./utils.js";
 
 const date = dt.format(new Date());
 
