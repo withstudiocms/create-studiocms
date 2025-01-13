@@ -4,3 +4,4 @@ packages:
   - "playgrounds/*"
   - "playground"
   - "www/*"
+  - "scripts"
