@@ -1,8 +1,18 @@
 import * as p from '@clack/prompts';
 import pkgJson from '../../package.json';
 import { getName } from '../messages.js';
-import type { InteractiveOptions } from '../types.js';
 import getSeasonalMessages from './data/seasonal.js';
+
+interface InteractiveOptions {
+	template?: string;
+	templateRef?: string;
+	projectName?: string;
+	git?: boolean;
+	install?: boolean;
+	dryRun?: boolean;
+	yes?: boolean;
+	skipBanners?: boolean;
+}
 
 export interface Context extends InteractiveOptions {
 	prompt: typeof p;

@@ -1,19 +1,30 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import color from 'chalk';
-import { error, info } from '../messages';
-import { shell } from '../shell';
-import type { Context } from './context';
+import { error, info } from '../messages.js';
+import { shell } from '../shell.js';
+import type { Context } from './context.js';
 
 export async function dependencies(
-	ctx: Pick<Context, 'install' | 'yes' | 'prompt' | 'packageManager' | 'cwd' | 'dryRun' | 'tasks'>
+	ctx: Pick<
+		Context,
+		'install' | 'yes' | 'prompt' | 'packageManager' | 'cwd' | 'dryRun' | 'tasks' | 'exit'
+	>
 ) {
 	let deps = ctx.install ?? ctx.yes;
 	if (deps === undefined) {
-		deps = (await ctx.prompt.confirm({
+		const _deps = await ctx.prompt.confirm({
 			message: 'Would you like to install dependencies?',
 			initialValue: true,
-		})) as boolean;
+		});
+
+		if (ctx.prompt.isCancel(_deps)) {
+			ctx.prompt.cancel('Operation cancelled.');
+			ctx.exit(0);
+		}
+
+		deps = _deps;
+
 		ctx.install = deps;
 	}
 
@@ -22,12 +33,14 @@ export async function dependencies(
 	} else if (deps) {
 		ctx.tasks.push({
 			title: 'Install dependencies',
-			task: async (message) => {
-				message('Installing dependencies...');
+			task: async () => {
+				const s = ctx.prompt.spinner();
+				s.start('Installing dependencies...');
 				try {
 					install({ packageManager: ctx.packageManager, cwd: ctx.cwd });
-					message('Dependencies installed');
+					s.stop('Dependencies installed');
 				} catch (e) {
+					s.stop();
 					error('error', e instanceof Error ? e.message : 'Unable to install dependencies');
 					error(
 						'error',

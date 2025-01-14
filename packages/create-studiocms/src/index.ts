@@ -1,17 +1,13 @@
-import { tasks } from '@clack/prompts';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 import pkgJson from '../package.json';
 import { FancyCommand, subCommandOptions } from './commander.js';
-import { getContext } from './interactive/context';
-import { dependencies } from './interactive/dependencies';
-import { git } from './interactive/git';
-import { intro } from './interactive/intro';
-import { next } from './interactive/nextSteps';
-import { projectName } from './interactive/projectName';
-import { template } from './interactive/template';
-import { verify } from './interactive/verify';
+import { interactiveCLI } from './interactive/index.js';
 import { CLITitle, date, logger, supportsColor } from './utils.js';
+
+const exit = () => process.exit(0);
+process.on('SIGINT', exit);
+process.on('SIGTERM', exit);
 
 export async function main() {
 	logger.log('Starting StudioCMS CLI Utility Toolkit...');
@@ -54,9 +50,7 @@ export async function main() {
 		.command('help', { isDefault: true, hidden: true })
 		.description('Display the main help menu.')
 		.summary('Display the main help menu.')
-		.action(() => {
-			program.help();
-		});
+		.action(() => program.help());
 
 	// Interactive
 	program
@@ -75,43 +69,7 @@ export async function main() {
 		.option('--skip-banners', 'Skip all banners and messages.')
 
 		// Action
-		.action(async function (this: FancyCommand) {
-			logger.log('Starting interactive CLI...');
-
-			const options = this.opts();
-
-			const ctx = await getContext(options);
-
-			const exit = () => process.exit(0);
-			process.on('SIGINT', exit);
-			process.on('SIGTERM', exit);
-
-			console.log('');
-
-			// Run the interactive CLI
-			const steps = [
-				verify,
-				intro,
-				projectName,
-				template,
-				dependencies,
-
-				// Steps which write files should go above this line
-				git,
-			];
-
-			for (const step of steps) {
-				await step(ctx);
-			}
-
-			console.log(''); // Add a newline after the last step
-
-			await tasks(ctx.tasks);
-
-			await next(ctx);
-
-			process.exit(0);
-		});
+		.action(interactiveCLI);
 
 	// Parse the command line arguments and run the program
 	await program.parseAsync();

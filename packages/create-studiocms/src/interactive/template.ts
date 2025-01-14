@@ -8,7 +8,7 @@ import type { Context } from './context.js';
 export async function template(
 	ctx: Pick<Context, 'template' | 'prompt' | 'yes' | 'dryRun' | 'exit' | 'tasks'>
 ) {
-	if (!ctx.template && ctx.yes) ctx.template = 'basics';
+	if (!ctx.template && ctx.yes) ctx.template = 'studiocms/basics';
 
 	if (ctx.template) {
 		await info(
@@ -24,9 +24,14 @@ export async function template(
 			],
 		});
 
+		if (ctx.prompt.isCancel(projectType)) {
+			ctx.prompt.cancel('Operation cancelled.');
+			ctx.exit(0);
+		}
+
 		switch (projectType) {
 			case 'studiocms': {
-				const _template = (await ctx.prompt.select({
+				const _template = await ctx.prompt.select({
 					message: 'How would you like to start your new StudioCMS project?',
 					options: [
 						{
@@ -39,12 +44,18 @@ export async function template(
 							label: 'StudioCMS project with the Blog Plugin',
 						},
 					],
-				})) as string;
+				});
+
+				if (ctx.prompt.isCancel(_template)) {
+					ctx.prompt.cancel('Operation cancelled.');
+					ctx.exit(0);
+				}
+
 				ctx.template = _template;
 				break;
 			}
 			case 'studiocms-ui': {
-				const _template = (await ctx.prompt.select({
+				const _template = await ctx.prompt.select({
 					message: 'How would you like to start your new StudioCMS/UI project?',
 					options: [
 						{
@@ -57,7 +68,13 @@ export async function template(
 							label: 'StudioCMS UI project with Tailwind CSS',
 						},
 					],
-				})) as string;
+				});
+
+				if (ctx.prompt.isCancel(_template)) {
+					ctx.prompt.cancel('Operation cancelled.');
+					ctx.exit(0);
+				}
+
 				ctx.template = _template;
 				break;
 			}
@@ -69,12 +86,13 @@ export async function template(
 	} else if (ctx.template) {
 		ctx.tasks.push({
 			title: 'Template',
-			task: async (message) => {
-				message('Template copying...');
+			task: async () => {
+				const s = ctx.prompt.spinner();
+				s.start('Template copying...');
 				try {
 					// biome-ignore lint/style/noNonNullAssertion: <explanation>
 					await copyTemplate(ctx.template!, ctx as Context);
-					message('Template copied');
+					s.stop('Template copied');
 				} catch (e) {
 					if (e instanceof Error) {
 						error('error', e.message);

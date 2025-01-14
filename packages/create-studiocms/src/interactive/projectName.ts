@@ -1,9 +1,9 @@
 import path from 'node:path';
 import color from 'chalk';
-import { info, log } from '../messages';
-import type { Context } from './context';
-import { generateProjectName } from './data/project';
-import { isEmpty, toValidName } from './shared';
+import { info, log } from '../messages.js';
+import type { Context } from './context.js';
+import { generateProjectName } from './data/project.js';
+import { isEmpty, toValidName } from './shared.js';
 
 export async function projectName(
 	ctx: Pick<Context, 'cwd' | 'yes' | 'dryRun' | 'prompt' | 'projectName' | 'exit'>
@@ -35,8 +35,13 @@ export async function projectName(
 			},
 		});
 
-		ctx.cwd = (name as string).trim();
-		ctx.projectName = toValidName(name as string);
+		if (ctx.prompt.isCancel(name)) {
+			ctx.prompt.cancel('Operation cancelled.');
+			ctx.exit(0);
+		}
+
+		ctx.cwd = name.trim();
+		ctx.projectName = toValidName(name);
 		if (ctx.dryRun) {
 			await info('--dry-run', 'Skipping project naming');
 			return;

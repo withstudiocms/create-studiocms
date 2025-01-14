@@ -1,7 +1,7 @@
 import color from 'chalk';
-import { banner, label, say } from '../messages';
-import { StudioCMSColorway, StudioCMSColorwayBg } from '../utils';
-import type { Context } from './context';
+import { banner, label, say } from '../messages.js';
+import { StudioCMSColorway, StudioCMSColorwayBg } from '../utils.js';
+import type { Context } from './context.js';
 
 export async function intro(
 	ctx: Pick<Context, 'welcome' | 'version' | 'username' | 'skipBanners'>
@@ -21,7 +21,7 @@ export async function intro(
 					),
 					Promise.resolve(ctx.username).then((username) => `${username}!`),
 				],
-				welcome ?? "Let's build something awesome!",
+				welcome ?? `Let's create something unforgettable!`,
 			] as string[],
 			{ clear: true }
 		);

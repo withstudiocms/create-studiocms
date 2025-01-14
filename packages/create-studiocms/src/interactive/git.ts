@@ -2,11 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import color from 'chalk';
 import { error, info } from '../messages.js';
-import { shell } from '../shell';
-import type { Context } from './context';
+import { shell } from '../shell.js';
+import type { Context } from './context.js';
 
 export async function git(
-	ctx: Pick<Context, 'cwd' | 'git' | 'yes' | 'prompt' | 'dryRun' | 'tasks'>
+	ctx: Pick<Context, 'cwd' | 'git' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit'>
 ) {
 	if (fs.existsSync(path.join(ctx.cwd, '.git'))) {
 		await info('Nice!', 'Git has already been initialized');
@@ -14,10 +14,17 @@ export async function git(
 	}
 	let _git = ctx.git ?? ctx.yes;
 	if (_git === undefined) {
-		_git = (await ctx.prompt.confirm({
+		const __git = await ctx.prompt.confirm({
 			message: 'Initialize a new git repository?',
 			initialValue: true,
-		})) as boolean;
+		});
+
+		if (ctx.prompt.isCancel(__git)) {
+			ctx.prompt.cancel('Operation cancelled.');
+			ctx.exit(0);
+		}
+
+		_git = __git;
 	}
 
 	if (ctx.dryRun) {
@@ -25,11 +32,12 @@ export async function git(
 	} else if (_git) {
 		ctx.tasks.push({
 			title: 'Git',
-			task: async (message) => {
-				message('Git initializing...');
+			task: async () => {
+				const s = ctx.prompt.spinner();
+				s.start('Git initializing...');
 				try {
 					await init({ cwd: ctx.cwd });
-					message('Git initialized');
+					s.stop('Git initialized');
 				} catch (e) {
 					error('error', e instanceof Error ? e.message : 'Unable to initialize git');
 					error('error', 'Git failed to initialize, please run git init manually after setup.');

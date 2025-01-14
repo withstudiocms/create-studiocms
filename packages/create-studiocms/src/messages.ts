@@ -4,7 +4,14 @@ import type { Key } from 'node:readline';
 import { stripVTControlCharacters } from 'node:util';
 import color from 'chalk';
 import { createLogUpdate } from 'log-update';
-import { ASCIIAbbr, ASCIIText, StudioCMSColorway, StudioCMSColorwayBg } from './utils';
+import {
+	ASCIIAbbr,
+	StudioCMSColorway,
+	StudioCMSColorwayBg,
+	StudioCMSColorwayError,
+	StudioCMSColorwayErrorBg,
+	StudioCMSColorwayInfo,
+} from './utils.js';
 
 export const action = (key: Key, isSelect: boolean) => {
 	if (key.meta && key.name !== 'escape') return;
@@ -160,24 +167,30 @@ export const banner = () => {
 };
 
 export const bannerAbort = () =>
-	log(`\n${label('studiocms', color.bgRed)} ${color.bold('Initialization sequence aborted.')}`);
+	log(
+		`\n${label('studiocms', StudioCMSColorwayErrorBg)} ${color.bold('Initialization sequence aborted.')}`
+	);
 
 export const info = async (prefix: string, text: string) => {
 	await sleep(100);
 	if (stdout.columns < 80) {
-		log(`${' '.repeat(5)} ${color.cyan('◼')}  ${color.cyan(prefix)}`);
+		log(`${' '.repeat(5)} ${StudioCMSColorwayInfo('◼')}  ${StudioCMSColorwayInfo(prefix)}`);
 		log(`${' '.repeat(9)}${color.dim(text)}`);
 	} else {
-		log(`${' '.repeat(5)} ${color.cyan('◼')}  ${color.cyan(prefix)} ${color.dim(text)}`);
+		log(
+			`${' '.repeat(5)} ${StudioCMSColorwayInfo('◼')}  ${StudioCMSColorwayInfo(prefix)} ${color.dim(text)}`
+		);
 	}
 };
 
 export const error = async (prefix: string, text: string) => {
 	if (stdout.columns < 80) {
-		log(`${' '.repeat(5)} ${color.red('▲')}  ${color.red(prefix)}`);
+		log(`${' '.repeat(5)} ${StudioCMSColorwayError('▲')}  ${StudioCMSColorwayError(prefix)}`);
 		log(`${' '.repeat(9)}${color.dim(text)}`);
 	} else {
-		log(`${' '.repeat(5)} ${color.red('▲')}  ${color.red(prefix)} ${color.dim(text)}`);
+		log(
+			`${' '.repeat(5)} ${StudioCMSColorwayError('▲')}  ${StudioCMSColorwayError(prefix)} ${color.dim(text)}`
+		);
 	}
 };
 

@@ -1,6 +1,6 @@
 import path from 'node:path';
-import { nextSteps, say } from '../messages';
-import type { Context } from './context';
+import { nextSteps, say } from '../messages.js';
+import type { Context } from './context.js';
 
 export async function next(ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners'>) {
 	const projectDir = path.relative(process.cwd(), ctx.cwd);
@@ -16,7 +16,7 @@ export async function next(ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBa
 	await nextSteps({ projectDir, devCmd });
 
 	if (!ctx.skipBanners) {
-		await say(['Good luck out there, astronaut! 🚀']);
+		await say(['Enjoy your new StudioCMS Project! 🚀']);
 	}
 	return;
 }
