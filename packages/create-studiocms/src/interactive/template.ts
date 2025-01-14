@@ -24,22 +24,27 @@ export async function template(
 			],
 		});
 
-		let _template: string;
-
 		switch (projectType) {
 			case 'studiocms': {
-				_template = (await ctx.prompt.select({
+				const _template = (await ctx.prompt.select({
 					message: 'How would you like to start your new StudioCMS project?',
 					options: [
-						{ value: 'studiocms/basics', label: 'A basic, StudioCMS Project', hint: 'recommended' },
-						{ value: 'studiocms/blog', label: 'StudioCMS project with the Blog Plugin' },
+						{
+							value: 'studiocms/basics',
+							label: 'A basic, StudioCMS Project',
+							hint: 'recommended',
+						},
+						{
+							value: 'studiocms/blog',
+							label: 'StudioCMS project with the Blog Plugin',
+						},
 					],
 				})) as string;
 				ctx.template = _template;
 				break;
 			}
 			case 'studiocms-ui': {
-				_template = (await ctx.prompt.select({
+				const _template = (await ctx.prompt.select({
 					message: 'How would you like to start your new StudioCMS/UI project?',
 					options: [
 						{
@@ -47,7 +52,10 @@ export async function template(
 							label: 'A basic, StudioCMS UI Project',
 							hint: 'recommended',
 						},
-						{ value: 'studiocms-ui/tailwind', label: 'StudioCMS UI project with Tailwind CSS' },
+						{
+							value: 'studiocms-ui/tailwind',
+							label: 'StudioCMS UI project with Tailwind CSS',
+						},
 					],
 				})) as string;
 				ctx.template = _template;
@@ -102,9 +110,11 @@ const FILES_TO_UPDATE = {
 };
 
 export function getTemplateTarget(_template: string, ref = 'main') {
-	// Handle third-party templates
-	const isThirdParty = _template.includes('/');
-	if (isThirdParty) return _template;
+	if (!_template.startsWith('studiocms')) {
+		// Handle third-party templates
+		const isThirdParty = _template.includes('/');
+		if (isThirdParty) return _template;
+	}
 
 	// Handle StudioCMS templates
 	if (ref === 'main') {
