@@ -35,7 +35,7 @@ export async function main() {
 		.configureHelp({
 			sortSubcommands: true,
 			subcommandTerm: (cmd) =>
-				cmd.name() === 'interactive' ? `${cmd.name()}${StudioCMSColorwayError('*')}` : cmd.name(),
+				cmd.name() === 'interactive' ? `${cmd.name()}${StudioCMSColorwayError(' *')}` : cmd.name(),
 			subcommandDescription: (cmd) => {
 				const desc = cmd.summary() || cmd.description();
 				return desc;
