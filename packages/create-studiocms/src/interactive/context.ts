@@ -43,7 +43,7 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 		dryRun,
 		projectName,
 		template,
-		templateRef: templateRef ?? 'latest',
+		templateRef: templateRef ?? 'main',
 		welcome: random(messages),
 		yes,
 		install: install,

@@ -66,7 +66,7 @@ export async function main() {
 		.summary('Start the interactive CLI Toolkit.')
 
 		// Options
-		.option('--template [template]', 'The template to use.', 'basics')
+		.option('--template [template]', 'The template to use.')
 		.option('--template-ref [template-ref]', 'The template reference to use.')
 		.option('--project-name [project-name]', 'The name of the project.')
 		.option('--no-git', 'Do not initializing a git repository.')
@@ -87,29 +87,29 @@ export async function main() {
 
 			logger.log(`Context: ${JSON.stringify(ctx, null, 2)}`);
 
-			// // Run the interactive CLI
-			// const steps = [
-			// 	verify,
-			// 	intro,
-			// 	projectName,
-			// 	template,
-			// 	dependencies,
+			// Run the interactive CLI
+			const steps = [
+				verify,
+				intro,
+				projectName,
+				template,
+				dependencies,
 
-			// 	// Steps which write files should go above this line
-			// 	git,
-			// ];
+				// Steps which write files should go above this line
+				git,
+			];
 
-			// for (const step of steps) {
-			// 	await step(ctx);
-			// }
+			for (const step of steps) {
+				await step(ctx);
+			}
 
-			// console.log(''); // Add a newline after the last step
+			console.log(''); // Add a newline after the last step
 
-			// await tasks(ctx.tasks);
+			await tasks(ctx.tasks);
 
-			// await next(ctx);
+			await next(ctx);
 
-			// process.exit(0);
+			process.exit(0);
 		});
 
 	// Parse the command line arguments and run the program

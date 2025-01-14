@@ -16,7 +16,7 @@ export async function template(
 		const tmpl = await ctx.prompt.select({
 			message: 'How would you like to start your new project?',
 			options: [
-				{ value: 'basics', label: 'A basic, StudioCMS Project', hint: '(recommended)' },
+				{ value: 'basics', label: 'A basic, StudioCMS Project', hint: 'recommended' },
 				{ value: 'blog', label: 'StudioCMS project with the Blog Plugin' },
 			],
 		});
@@ -69,17 +69,17 @@ const FILES_TO_UPDATE = {
 		}),
 };
 
-export function getTemplateTarget(tmpl: string, ref = 'latest') {
+export function getTemplateTarget(tmpl: string, ref = 'main') {
 	// Handle third-party templates
 	const isThirdParty = tmpl.includes('/');
 	if (isThirdParty) return tmpl;
 
 	// Handle StudioCMS templates
-	if (ref === 'latest') {
+	if (ref === 'main') {
 		// `latest` ref is specially handled to route to a branch specifically
 		// to allow faster downloads. Otherwise giget has to download the entire
 		// repo and only copy a sub directory
-		return `github:withstudiocms/templates#/${tmpl}`;
+		return `github:withstudiocms/templates/${tmpl}`;
 	}
 	return `github:withstudiocms/templates/${tmpl}#${ref}`;
 }
