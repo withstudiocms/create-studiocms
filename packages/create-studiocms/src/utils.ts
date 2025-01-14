@@ -11,8 +11,10 @@ export const date = dt.format(new Date());
 export const supportsColor = chalk.level > 0;
 
 export const StudioCMSColorway = chalk.hex('#a581f3');
+export const StudioCMSColorwayBg = chalk.bgHex('#a581f3');
 
 export const ASCIIText = figlet.textSync('StudioCMS');
+export const ASCIIAbbr = figlet.textSync('SCMS');
 
 export const CLITitle = supportsColor ? StudioCMSColorway.bold(`${ASCIIText}\n`) : `${ASCIIText}\n`;
 

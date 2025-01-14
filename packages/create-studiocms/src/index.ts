@@ -16,8 +16,6 @@ import { CLITitle, date, logger, supportsColor } from './utils.js';
 export async function main() {
 	logger.log('Starting StudioCMS CLI Utility Toolkit...');
 
-	process.stdout.write(CLITitle);
-
 	// Initialize the CLI program
 	const program = new FancyCommand();
 
@@ -40,6 +38,7 @@ export async function main() {
 			subcommandTerm: (cmd) => cmd.name(),
 			subcommandDescription: (cmd) => `${cmd.summary()}${subCommandOptions(cmd)}`,
 		})
+		.addHelpText('beforeAll', CLITitle)
 		.showHelpAfterError('(add --help for additional information)')
 		.enablePositionalOptions(true)
 		// Global Options
@@ -81,11 +80,13 @@ export async function main() {
 
 			const options = this.opts();
 
-			logger.log(`Options: ${JSON.stringify(options, null, 2)}`);
-
 			const ctx = await getContext(options);
 
-			logger.log(`Context: ${JSON.stringify(ctx, null, 2)}`);
+			const exit = () => process.exit(0);
+			process.on('SIGINT', exit);
+			process.on('SIGTERM', exit);
+
+			console.log('');
 
 			// Run the interactive CLI
 			const steps = [

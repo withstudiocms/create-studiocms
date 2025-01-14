@@ -11,9 +11,12 @@ export async function template(
 	if (!ctx.template && ctx.yes) ctx.template = 'basics';
 
 	if (ctx.template) {
-		await info('tmpl', `Using ${color.reset(ctx.template)}${color.dim(' as project template')}`);
+		await info(
+			'template',
+			`Using ${color.reset(ctx.template)}${color.dim(' as project template')}`
+		);
 	} else {
-		const tmpl = await ctx.prompt.select({
+		const _template = await ctx.prompt.select({
 			message: 'How would you like to start your new project?',
 			options: [
 				{ value: 'basics', label: 'A basic, StudioCMS Project', hint: 'recommended' },
@@ -21,7 +24,7 @@ export async function template(
 			],
 		});
 
-		ctx.template = tmpl as string;
+		ctx.template = _template as string;
 	}
 
 	if (ctx.dryRun) {
@@ -69,23 +72,23 @@ const FILES_TO_UPDATE = {
 		}),
 };
 
-export function getTemplateTarget(tmpl: string, ref = 'main') {
+export function getTemplateTarget(_template: string, ref = 'main') {
 	// Handle third-party templates
-	const isThirdParty = tmpl.includes('/');
-	if (isThirdParty) return tmpl;
+	const isThirdParty = _template.includes('/');
+	if (isThirdParty) return _template;
 
 	// Handle StudioCMS templates
 	if (ref === 'main') {
 		// `latest` ref is specially handled to route to a branch specifically
 		// to allow faster downloads. Otherwise giget has to download the entire
 		// repo and only copy a sub directory
-		return `github:withstudiocms/templates/${tmpl}`;
+		return `github:withstudiocms/templates/${_template}`;
 	}
-	return `github:withstudiocms/templates/${tmpl}#${ref}`;
+	return `github:withstudiocms/templates/${_template}#${ref}`;
 }
 
-export default async function copyTemplate(tmpl: string, ctx: Context) {
-	const templateTarget = getTemplateTarget(tmpl, ctx.templateRef);
+export default async function copyTemplate(_template: string, ctx: Context) {
+	const templateTarget = getTemplateTarget(_template, ctx.templateRef);
 	// Copy
 	if (!ctx.dryRun) {
 		try {
@@ -107,7 +110,7 @@ export default async function copyTemplate(tmpl: string, ctx: Context) {
 			}
 
 			if (err.message?.includes('404')) {
-				throw new Error(`Template ${color.reset(tmpl)} ${color.dim('does not exist!')}`);
+				throw new Error(`Template ${color.reset(_template)} ${color.dim('does not exist!')}`);
 			}
 
 			if (err.message) {
@@ -125,7 +128,7 @@ export default async function copyTemplate(tmpl: string, ctx: Context) {
 					}
 				}
 			} catch {}
-			throw new Error(`Unable to download template ${color.reset(tmpl)}`);
+			throw new Error(`Unable to download template ${color.reset(_template)}`);
 		}
 
 		// Post-process in parallel

@@ -1,5 +1,6 @@
 import color from 'chalk';
 import { banner, label, say } from '../messages';
+import { StudioCMSColorway, StudioCMSColorwayBg } from '../utils';
 import type { Context } from './context';
 
 export async function intro(
@@ -14,9 +15,9 @@ export async function intro(
 				[
 					'Welcome',
 					'to',
-					label('StudioCMS', color.bgGreen, color.black),
+					label('StudioCMS', StudioCMSColorwayBg, color.black),
 					Promise.resolve(ctx.version).then(
-						(version) => `${version ? color.green(`v${version}`) : ''},`
+						(version) => `${version ? StudioCMSColorway(`v${version}`) : ''},`
 					),
 					Promise.resolve(ctx.username).then((username) => `${username}!`),
 				],

@@ -4,7 +4,7 @@ import type { Key } from 'node:readline';
 import { stripVTControlCharacters } from 'node:util';
 import color from 'chalk';
 import { createLogUpdate } from 'log-update';
-import { ASCIIText, StudioCMSColorway } from './utils';
+import { ASCIIAbbr, ASCIIText, StudioCMSColorway, StudioCMSColorwayBg } from './utils';
 
 export const action = (key: Key, isSelect: boolean) => {
 	if (key.meta && key.name !== 'escape') return;
@@ -91,7 +91,7 @@ export const say = async (
 	});
 
 	const face = (msg: string) => {
-		return [StudioCMSColorway.bold(`${ASCIIText}`), msg].join('\n');
+		return [StudioCMSColorway.bold(`${ASCIIAbbr}`), msg].join(' ');
 	};
 
 	for (let message of messages) {
@@ -122,7 +122,7 @@ export const random = (...arr: any[]) => {
 
 export const log = (message: string) => stdout.write(`${message}\n`);
 
-export const label = (text: string, c = color.bgHex('#883AE2'), t = color.whiteBright) =>
+export const label = (text: string, c = StudioCMSColorwayBg, t = color.whiteBright) =>
 	c(` ${t(text)} `);
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -156,7 +156,7 @@ export const title = (text: string) => `${align(label(text), 'end', 7)} `;
 export const banner = () => {
 	const prefix = 'studiocms';
 	const suffix = 'Initialization sequence initiated.';
-	log(`${label(prefix, color.bgGreen, color.black)}  ${suffix}`);
+	log(`${label(prefix, StudioCMSColorwayBg, color.black)}  ${suffix}`);
 };
 
 export const bannerAbort = () =>
@@ -201,7 +201,7 @@ export const nextSteps = async ({ projectDir, devCmd }: { projectDir: string; de
 	const prefix = max < 80 ? ' ' : ' '.repeat(9);
 	await sleep(200);
 	log(
-		`\n ${color.bgCyan(` ${color.black('next')} `)}  ${color.bold(
+		`\n ${StudioCMSColorwayBg(` ${color.black('next')} `)}  ${color.bold(
 			'Liftoff confirmed. Explore your project!'
 		)}`
 	);
@@ -211,15 +211,15 @@ export const nextSteps = async ({ projectDir, devCmd }: { projectDir: string; de
 		projectDir = projectDir.includes(' ') ? `"./${projectDir}"` : `./${projectDir}`;
 		const enter = [
 			`\n${prefix}Enter your project directory using`,
-			color.cyan(`cd ${projectDir}`, ''),
+			StudioCMSColorway(`cd ${projectDir}`, ''),
 		];
 		const len = enter[0].length + stripVTControlCharacters(enter[1]).length;
 		log(enter.join(len > max ? `\n${prefix}` : ' '));
 	}
 	log(
-		`${prefix}Run ${color.cyan(devCmd)} to start the dev server. ${color.cyan('CTRL+C')} to stop.`
+		`${prefix}Run ${StudioCMSColorway(devCmd)} to start the dev server. ${StudioCMSColorway('CTRL+C')} to stop.`
 	);
 	await sleep(100);
-	log(`\n${prefix}Stuck? Join us at ${color.cyan('https://chat.studiocms.dev')}`);
+	log(`\n${prefix}Stuck? Join us at ${StudioCMSColorway('https://chat.studiocms.dev')}`);
 	await sleep(200);
 };
