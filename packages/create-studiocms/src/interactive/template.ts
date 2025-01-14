@@ -16,6 +16,8 @@ export async function template(
 			`Using ${color.reset(ctx.template)}${color.dim(' as project template')}`
 		);
 	} else {
+		// These options correspond to the `withstudiocms/templates` repo on GitHub
+		// the value is the directory in the root of the repo
 		const projectType = await ctx.prompt.select({
 			message: 'What StudioCMS package would you like to use?',
 			options: [
@@ -29,6 +31,9 @@ export async function template(
 			ctx.exit(0);
 		}
 
+		// Each project type has different templates to choose from
+		// said templates are directories in the `withstudiocms/templates` repo
+		// under the projectType directory (e.g. `studiocms/basics` or `studiocms-ui/tailwind`)
 		switch (projectType) {
 			case 'studiocms': {
 				const _template = await ctx.prompt.select({
@@ -127,8 +132,14 @@ const FILES_TO_UPDATE = {
 		}),
 };
 
+function templateTargetFilter(template: string) {
+	const filterRules = ['studiocms/', 'studiocms-ui/'];
+
+	return filterRules.some((rule) => template.startsWith(rule));
+}
+
 export function getTemplateTarget(_template: string, ref = 'main') {
-	if (!_template.startsWith('studiocms')) {
+	if (!templateTargetFilter(_template)) {
 		// Handle third-party templates
 		const isThirdParty = _template.includes('/');
 		if (isThirdParty) return _template;
