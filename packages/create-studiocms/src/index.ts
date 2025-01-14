@@ -12,6 +12,8 @@ export async function main() {
 
 	// Initialize the CLI program
 	const program = new FancyCommand();
+
+	// Setup the program
 	program
 		// Metadata
 		.name('create-studiocms')
@@ -36,15 +38,20 @@ export async function main() {
 		.option('--color', 'force color output') // implemented by chalk
 		.option('--no-color', 'disable color output'); // implemented by chalk
 
+	//
 	// Register commands
+	//
+
+	// Help
 	program
-		.command('help', { isDefault: true })
+		.command('help', { isDefault: true, hidden: true })
 		.description('Display the main help menu.')
 		.summary('Display the main help menu.')
 		.action(() => {
 			program.help();
 		});
 
+	// Interactive
 	program
 		.command('interactive')
 		.description('Start the interactive CLI Toolkit. Powered by Clack.cc')
@@ -76,5 +83,6 @@ export async function main() {
 			console.log(options);
 		});
 
+	// Parse the command line arguments and run the program
 	await program.parseAsync();
 }

@@ -64,16 +64,14 @@ export class FancyCommand extends Command {
 	}
 }
 
-export function subCommandOptions(cmd: Command) {
-	if (!cmd.options.length) {
+export function subCommandOptions({ options }: Command) {
+	if (!options.length) {
 		return '';
 	}
-
-	const options = cmd.options
-		.map(({ flags, description }) => {
-			return `\t${chalkStdOut.reset.green(flags)} ― ${chalkStdOut.italic(description)}`;
-		})
-		.join('\n');
-
-	return `\n${options}`;
+	return `\n${options
+		.map(
+			({ flags, description }) =>
+				`${chalkStdOut.hidden('..')}${chalkStdOut.reset.green(flags)} ― ${chalkStdOut.italic(description)}`
+		)
+		.join('\n')}`;
 }
