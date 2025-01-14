@@ -20,7 +20,6 @@ export const StudioCMSColorwayError = chalk.hex('#bd0249');
 export const StudioCMSColorwayErrorBg = chalk.bgHex('#bd0249');
 
 export const ASCIIText = figlet.textSync('StudioCMS');
-export const ASCIIAbbr = figlet.textSync('SCMS');
 
 export const CLITitle = supportsColor ? StudioCMSColorway.bold(`${ASCIIText}\n`) : `${ASCIIText}\n`;
 

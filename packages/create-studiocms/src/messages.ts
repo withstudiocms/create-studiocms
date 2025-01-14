@@ -5,7 +5,6 @@ import { stripVTControlCharacters } from 'node:util';
 import color from 'chalk';
 import { createLogUpdate } from 'log-update';
 import {
-	ASCIIAbbr,
 	StudioCMSColorway,
 	StudioCMSColorwayBg,
 	StudioCMSColorwayError,
@@ -98,7 +97,12 @@ export const say = async (
 	});
 
 	const face = (msg: string) => {
-		return [StudioCMSColorway.bold(`${ASCIIAbbr}`), msg].join(' ');
+		return [
+			`${StudioCMSColorway.bold('    ████')}`,
+			`${StudioCMSColorway.bold('  █ ████')}`,
+			`${StudioCMSColorway.bold('█ █▄▄▄  ')}\t${msg}`,
+			`${StudioCMSColorway.bold('█▄▄▄    ')}`,
+		].join('\n');
 	};
 
 	for (let message of messages) {
