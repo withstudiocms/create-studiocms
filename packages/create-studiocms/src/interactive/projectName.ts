@@ -1,6 +1,6 @@
 import path from 'node:path';
 import color from 'chalk';
-import { info, log } from '../messages.js';
+import { info, log, warn } from '../messages.js';
 import type { Context } from './context.js';
 import { generateProjectName } from './data/project.js';
 import { isEmpty, toValidName } from './shared.js';
@@ -10,9 +10,11 @@ export async function projectName(
 ) {
 	await checkCwd(ctx.cwd);
 
+	console.log('');
+
 	if (!ctx.cwd || !isEmpty(ctx.cwd)) {
 		if (!isEmpty(ctx.cwd)) {
-			await info('Hmm...', `${color.reset(`"${ctx.cwd}"`)}${color.dim(' is not empty!')}`);
+			await warn('Hmm...', `${color.reset(`"${ctx.cwd}"`)}${color.dim(' is not empty!')}`);
 		}
 
 		if (ctx.yes) {

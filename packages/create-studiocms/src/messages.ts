@@ -10,6 +10,7 @@ import {
 	StudioCMSColorwayError,
 	StudioCMSColorwayErrorBg,
 	StudioCMSColorwayInfo,
+	StudioCMSColorwayWarn,
 } from './utils.js';
 
 export const action = (key: Key, isSelect: boolean) => {
@@ -183,6 +184,18 @@ export const info = async (prefix: string, text: string) => {
 	} else {
 		log(
 			`${' '.repeat(5)} ${StudioCMSColorwayInfo('◼')}  ${StudioCMSColorwayInfo(prefix)} ${color.dim(text)}`
+		);
+	}
+};
+
+export const warn = async (prefix: string, text: string) => {
+	await sleep(100);
+	if (stdout.columns < 80) {
+		log(`${' '.repeat(5)} ${StudioCMSColorwayWarn('◼')}  ${StudioCMSColorwayWarn(prefix)}`);
+		log(`${' '.repeat(9)}${color.dim(text)}`);
+	} else {
+		log(
+			`${' '.repeat(5)} ${StudioCMSColorwayWarn('◼')}  ${StudioCMSColorwayWarn(prefix)} ${color.dim(text)}`
 		);
 	}
 };
