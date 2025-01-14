@@ -53,8 +53,8 @@ async function init({ cwd }: { cwd: string }) {
 			[
 				'commit',
 				'-m',
-				'"Initial commit from Astro"',
-				'--author="houston[bot] <astrobot-houston@users.noreply.github.com>"',
+				'"Initial commit from StudioCMS"',
+				'--author="StudioCMS[bot] <studiocms-no-reply@users.noreply.github.com>"',
 			],
 			{ cwd, stdio: 'ignore' }
 		);

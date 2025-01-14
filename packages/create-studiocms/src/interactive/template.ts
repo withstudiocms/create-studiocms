@@ -16,15 +16,44 @@ export async function template(
 			`Using ${color.reset(ctx.template)}${color.dim(' as project template')}`
 		);
 	} else {
-		const _template = await ctx.prompt.select({
-			message: 'How would you like to start your new project?',
+		const projectType = await ctx.prompt.select({
+			message: 'What StudioCMS package would you like to use?',
 			options: [
-				{ value: 'basics', label: 'A basic, StudioCMS Project', hint: 'recommended' },
-				{ value: 'blog', label: 'StudioCMS project with the Blog Plugin' },
+				{ value: 'studiocms', label: 'StudioCMS' },
+				{ value: 'studiocms-ui', label: 'StudioCMS UI (@studiocms/ui)' },
 			],
 		});
 
-		ctx.template = _template as string;
+		let _template: string;
+
+		switch (projectType) {
+			case 'studiocms': {
+				_template = (await ctx.prompt.select({
+					message: 'How would you like to start your new StudioCMS project?',
+					options: [
+						{ value: 'studiocms/basics', label: 'A basic, StudioCMS Project', hint: 'recommended' },
+						{ value: 'studiocms/blog', label: 'StudioCMS project with the Blog Plugin' },
+					],
+				})) as string;
+				ctx.template = _template;
+				break;
+			}
+			case 'studiocms-ui': {
+				_template = (await ctx.prompt.select({
+					message: 'How would you like to start your new StudioCMS/UI project?',
+					options: [
+						{
+							value: 'studiocms-ui/basics',
+							label: 'A basic, StudioCMS UI Project',
+							hint: 'recommended',
+						},
+						{ value: 'studiocms-ui/tailwind', label: 'StudioCMS UI project with Tailwind CSS' },
+					],
+				})) as string;
+				ctx.template = _template;
+				break;
+			}
+		}
 	}
 
 	if (ctx.dryRun) {
