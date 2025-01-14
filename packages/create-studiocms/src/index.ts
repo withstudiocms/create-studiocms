@@ -1,9 +1,16 @@
+import { tasks } from '@clack/prompts';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 import pkgJson from '../package.json';
 import { FancyCommand, subCommandOptions } from './commander.js';
 import { getContext } from './interactive/context';
-import type { InteractiveOptions } from './types.js';
+import { dependencies } from './interactive/dependencies';
+import { git } from './interactive/git';
+import { intro } from './interactive/intro';
+import { next } from './interactive/nextSteps';
+import { projectName } from './interactive/projectName';
+import { template } from './interactive/template';
+import { verify } from './interactive/verify';
 import { CLITitle, date, logger, supportsColor } from './utils.js';
 
 export async function main() {
@@ -59,7 +66,6 @@ export async function main() {
 		.summary('Start the interactive CLI Toolkit.')
 
 		// Options
-		.option('--create', 'Create a new project.', true)
 		.option('--template [template]', 'The template to use.', 'basics')
 		.option('--template-ref [template-ref]', 'The template reference to use.')
 		.option('--project-name [project-name]', 'The name of the project.')
@@ -73,25 +79,37 @@ export async function main() {
 		.action(async function (this: FancyCommand) {
 			logger.log('Starting interactive CLI...');
 
-			const defaultOptions: InteractiveOptions = {
-				create: true,
-				template: 'basics',
-				templateRef: undefined,
-				projectName: undefined,
-				git: false,
-				install: false,
-				dryRun: false,
-				yes: false,
-				skipBanners: false,
-			};
-
-			const options = { ...defaultOptions, ...this.opts<InteractiveOptions>() };
+			const options = this.opts();
 
 			logger.log(`Options: ${JSON.stringify(options, null, 2)}`);
 
 			const ctx = await getContext(options);
 
 			logger.log(`Context: ${JSON.stringify(ctx, null, 2)}`);
+
+			// // Run the interactive CLI
+			// const steps = [
+			// 	verify,
+			// 	intro,
+			// 	projectName,
+			// 	template,
+			// 	dependencies,
+
+			// 	// Steps which write files should go above this line
+			// 	git,
+			// ];
+
+			// for (const step of steps) {
+			// 	await step(ctx);
+			// }
+
+			// console.log(''); // Add a newline after the last step
+
+			// await tasks(ctx.tasks);
+
+			// await next(ctx);
+
+			// process.exit(0);
 		});
 
 	// Parse the command line arguments and run the program

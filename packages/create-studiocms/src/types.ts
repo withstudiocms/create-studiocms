@@ -1,11 +1,10 @@
 export type InteractiveOptions = {
-	create: boolean;
-	template: string;
+	template?: string;
 	templateRef?: string;
 	projectName?: string;
-	git: boolean;
-	install: boolean;
-	dryRun: boolean;
-	yes: boolean;
-	skipBanners: boolean;
+	git?: boolean;
+	install?: boolean;
+	dryRun?: boolean;
+	yes?: boolean;
+	skipBanners?: boolean;
 };

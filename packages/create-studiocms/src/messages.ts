@@ -1,6 +1,7 @@
 import { exec } from 'node:child_process';
 import readline from 'node:readline';
 import type { Key } from 'node:readline';
+import { stripVTControlCharacters } from 'node:util';
 import color from 'chalk';
 import { createLogUpdate } from 'log-update';
 import { ASCIIText, StudioCMSColorway } from './utils';
@@ -194,3 +195,31 @@ export const getName = () =>
 			});
 		});
 	});
+
+export const nextSteps = async ({ projectDir, devCmd }: { projectDir: string; devCmd: string }) => {
+	const max = stdout.columns;
+	const prefix = max < 80 ? ' ' : ' '.repeat(9);
+	await sleep(200);
+	log(
+		`\n ${color.bgCyan(` ${color.black('next')} `)}  ${color.bold(
+			'Liftoff confirmed. Explore your project!'
+		)}`
+	);
+
+	await sleep(100);
+	if (projectDir !== '') {
+		projectDir = projectDir.includes(' ') ? `"./${projectDir}"` : `./${projectDir}`;
+		const enter = [
+			`\n${prefix}Enter your project directory using`,
+			color.cyan(`cd ${projectDir}`, ''),
+		];
+		const len = enter[0].length + stripVTControlCharacters(enter[1]).length;
+		log(enter.join(len > max ? `\n${prefix}` : ' '));
+	}
+	log(
+		`${prefix}Run ${color.cyan(devCmd)} to start the dev server. ${color.cyan('CTRL+C')} to stop.`
+	);
+	await sleep(100);
+	log(`\n${prefix}Stuck? Join us at ${color.cyan('https://chat.studiocms.dev')}`);
+	await sleep(200);
+};

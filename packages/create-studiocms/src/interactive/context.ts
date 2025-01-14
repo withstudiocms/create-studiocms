@@ -20,7 +20,6 @@ export interface Context extends InteractiveOptions {
 export async function getContext(args: InteractiveOptions): Promise<Context> {
 	const {
 		skipBanners,
-		create,
 		dryRun,
 		git,
 		install,
@@ -42,7 +41,6 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 		username: getName(),
 		version: pkgJson.version,
 		dryRun,
-		create,
 		projectName,
 		template,
 		templateRef: templateRef ?? 'latest',
