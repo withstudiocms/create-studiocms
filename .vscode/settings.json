@@ -7,6 +7,7 @@
   "editor.defaultFormatter": "biomejs.biome",
   "editor.gotoLocation.multipleDefinitions": "goto",
   "cSpell.words": [
+    "astrodb",
     "bluwy",
     "cnpm",
     "codesandbox",
@@ -14,6 +15,7 @@
     "hgcheck",
     "hgignore",
     "kuiper",
+    "libsql",
     "mergebot",
     "mkdocs",
     "npminstall",
@@ -23,6 +25,7 @@
     "spooktacular",
     "studiocms",
     "studiocmsenv",
+    "turso",
     "withstudiocms"
   ]
 }
