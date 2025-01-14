@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 import pkgJson from '../package.json';
 import { FancyCommand, subCommandOptions } from './commander.js';
+import { getContext } from './interactive/context';
 import type { InteractiveOptions } from './types.js';
 import { CLITitle, date, logger, supportsColor } from './utils.js';
 
@@ -59,11 +60,14 @@ export async function main() {
 
 		// Options
 		.option('--create', 'Create a new project.', true)
-		.option('--template [template]', 'The template to use.', 'basic')
+		.option('--template [template]', 'The template to use.', 'basics')
+		.option('--template-ref [template-ref]', 'The template reference to use.')
 		.option('--project-name [project-name]', 'The name of the project.')
 		.option('--no-git', 'Do not initializing a git repository.')
 		.option('--no-install', 'Do not install dependencies.')
 		.option('--dry-run', 'Do not perform any actions.')
+		.option('-y, --yes', 'Skip all prompts and use default values.')
+		.option('--skip-banners', 'Skip all banners and messages.')
 
 		// Action
 		.action(async function (this: FancyCommand) {
@@ -71,16 +75,23 @@ export async function main() {
 
 			const defaultOptions: InteractiveOptions = {
 				create: true,
-				template: 'basic',
+				template: 'basics',
+				templateRef: undefined,
 				projectName: undefined,
 				git: false,
 				install: false,
 				dryRun: false,
+				yes: false,
+				skipBanners: false,
 			};
 
 			const options = { ...defaultOptions, ...this.opts<InteractiveOptions>() };
 
-			console.log(options);
+			logger.log(`Options: ${JSON.stringify(options, null, 2)}`);
+
+			const ctx = await getContext(options);
+
+			logger.log(`Context: ${JSON.stringify(ctx, null, 2)}`);
 		});
 
 	// Parse the command line arguments and run the program

@@ -28,6 +28,7 @@
         "dist"
     ],
     "dependencies": {
+        "@bluwy/giget-core": "^0.1.2",
         "@clack/core": "0.4.1",
         "@clack/prompts": "0.9.1",
         "commander": "^13.0.0",
@@ -35,7 +36,8 @@
         "picocolors": "^1.1.1",
         "chalk": "^5.4.1",
         "strip-ansi": "^7.1.0",
-        "wrap-ansi": "^9.0.0"
+        "wrap-ansi": "^9.0.0",
+        "log-update": "^6.1.0"
     },
     "devDependencies": {
         "@types/node": "^22.10.5",
