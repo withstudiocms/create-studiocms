@@ -16,6 +16,10 @@ export async function interactiveCLI(this: instanceCommand) {
 
 	const ctx = await getContext(this.opts());
 
+	const opts = this.opts();
+
+	console.log(opts);
+
 	console.log('');
 
 	// Run the interactive CLI

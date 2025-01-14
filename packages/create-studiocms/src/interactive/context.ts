@@ -1,3 +1,4 @@
+import os from 'node:os';
 import * as p from '@clack/prompts';
 import pkgJson from '../../package.json';
 import { getName } from '../messages.js';
@@ -7,10 +8,13 @@ interface InteractiveOptions {
 	template?: string;
 	templateRef?: string;
 	projectName?: string;
-	git?: boolean;
 	install?: boolean;
+	doNotInstall?: boolean;
+	git?: boolean;
+	doNotInitGit?: boolean;
 	dryRun?: boolean;
 	yes?: boolean;
+	no?: boolean;
 	skipBanners?: boolean;
 }
 
@@ -21,21 +25,22 @@ export interface Context extends InteractiveOptions {
 	username: Promise<string>;
 	welcome: string;
 	version: string;
-	stdin?: typeof process.stdin;
-	stdout?: typeof process.stdout;
 	exit(code: number): never;
 	tasks: p.Task[];
 	isStudioCMSProject: boolean;
 }
 
 export async function getContext(args: InteractiveOptions): Promise<Context> {
-	const {
+	let {
 		skipBanners,
 		dryRun,
 		git,
 		install,
+		doNotInitGit,
+		doNotInstall,
 		template,
 		yes,
+		no,
 		projectName: projectN,
 		templateRef,
 	} = args;
@@ -43,6 +48,16 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 	const packageManager = detectPackageManager() ?? 'npm';
 	const cwd = process.cwd();
 	const projectName = projectN || cwd.split('/').pop();
+
+	if (no) {
+		yes = false;
+		if (install === undefined) install = false;
+		if (git === undefined) git = false;
+	}
+
+	skipBanners =
+		(os.platform() === 'win32' || skipBanners) ??
+		[yes, no, git, install].some((v) => v !== undefined);
 
 	const { messages } = getSeasonalMessages();
 
@@ -57,8 +72,9 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 		templateRef: templateRef ?? 'main',
 		welcome: random(messages),
 		yes,
-		install: install,
-		git: git,
+		no,
+		install: install ?? (doNotInstall ? false : undefined),
+		git: git ?? (doNotInitGit ? false : undefined),
 		cwd,
 		skipBanners,
 		exit(code) {

@@ -42,8 +42,8 @@ export async function env(
 		const EnvPrompt = await ctx.prompt.select({
 			message: 'What kind of environment file would you like to create?',
 			options: [
-				{ value: 'example', label: 'Use the Example .env file' },
 				{ value: 'builder', label: 'Use Interactive .env Builder' },
+				{ value: 'example', label: 'Use the Example .env file' },
 				{ value: 'none', label: 'Skip Environment File Creation' },
 			],
 		});

@@ -1,4 +1,4 @@
-import type { EnvBuilderOptions } from '../envBuilder';
+import type { EnvBuilderOptions } from '../envBuilder.js';
 
 export const ExampleEnv: string = `# StudioCMS Environment Variables
 

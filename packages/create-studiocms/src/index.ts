@@ -62,10 +62,13 @@ export async function main() {
 		.option('-t, --template [template]', 'The template to use.')
 		.option('-r, --template-ref [template-ref]', 'The template reference to use.')
 		.option('-p, --project-name [project-name]', 'The name of the project.')
-		.option('--no-git', 'Do not initializing a git repository.')
-		.option('--no-install', 'Do not install dependencies.')
+		.option('-i, --install', 'Install dependencies.')
+		.option('--do-not-install', 'Do not install dependencies.')
+		.option('-g, --git', 'Initialize a git repository.')
+		.option('--do-not-init-git', 'Do not initializing a git repository.')
 		.option('--dry-run', 'Do not perform any actions.')
 		.option('-y, --yes', 'Skip all prompts and use default values.')
+		.option('-n, --no', 'Skip all prompts and use default values.')
 		.option('-q, --skip-banners', 'Skip all banners and messages.')
 
 		// Action

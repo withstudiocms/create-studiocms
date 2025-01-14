@@ -1,6 +1,8 @@
 import chalk from 'chalk';
 import figlet from 'figlet';
 
+export const ASCIIText = figlet.textSync('StudioCMS');
+
 export const dt = new Intl.DateTimeFormat('en-us', {
 	hour: '2-digit',
 	minute: '2-digit',
@@ -18,8 +20,6 @@ export const StudioCMSColorwayWarn = chalk.hex('#facc14');
 export const StudioCMSColorwayWarnBg = chalk.bgHex('#facc14');
 export const StudioCMSColorwayError = chalk.hex('#bd0249');
 export const StudioCMSColorwayErrorBg = chalk.bgHex('#bd0249');
-
-export const ASCIIText = figlet.textSync('StudioCMS');
 
 export const CLITitle = supportsColor ? StudioCMSColorway.bold(`${ASCIIText}\n`) : `${ASCIIText}\n`;
 
