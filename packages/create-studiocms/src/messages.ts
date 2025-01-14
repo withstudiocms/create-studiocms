@@ -98,10 +98,12 @@ export const say = async (
 	});
 
 	const face = (msg: string) => {
+		const max = stdout.columns;
+		const prefix = max < 80 ? ' ' : ' '.repeat(4);
 		return [
 			`${StudioCMSColorway.bold('    ████')}`,
 			`${StudioCMSColorway.bold('  █ ████')}`,
-			`${StudioCMSColorway.bold('█ █▄▄▄  ')}\t${msg}`,
+			`${StudioCMSColorway.bold('█ █▄▄▄  ')}${prefix}${msg}`,
 			`${StudioCMSColorway.bold('█▄▄▄    ')}`,
 		].join('\n');
 	};
@@ -109,6 +111,15 @@ export const say = async (
 	for (let message of messages) {
 		message = await message;
 		const _message = Array.isArray(message) ? message : message.split(' ');
+		const msg = [];
+		let j = 0;
+		for (let word of [''].concat(_message)) {
+			word = await word;
+			if (word) msg.push(word);
+			logUpdate(`\n${face(msg.join(' '))}`);
+			if (!cancelled) await sleep(randomBetween(75, 200));
+			j++;
+		}
 		if (!cancelled) await sleep(100);
 		const tmp = await Promise.all(_message).then((res) => res.join(' '));
 		const text = `\n${face(tmp)}`;
@@ -167,7 +178,7 @@ export const title = (text: string) => `${align(label(text), 'end', 7)} `;
 
 export const banner = () => {
 	const prefix = 'studiocms';
-	const suffix = 'Initialization sequence initiated.';
+	const suffix = 'Interactive CLI';
 	log(`${label(prefix, StudioCMSColorwayBg, color.black)}  ${suffix}`);
 };
 

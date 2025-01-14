@@ -32,41 +32,41 @@ export async function main() {
 		.configureHelp({
 			sortSubcommands: true,
 			subcommandTerm: (cmd) => cmd.name(),
-			subcommandDescription: (cmd) => `${cmd.summary()}${subCommandOptions(cmd)}`,
+			subcommandDescription: (cmd) => {
+				const desc = cmd.summary() || cmd.description();
+				const opts = subCommandOptions(cmd);
+				return `${desc}${opts}`;
+			},
 		})
 		.addHelpText('beforeAll', CLITitle)
 		.showHelpAfterError('(add --help for additional information)')
 		.enablePositionalOptions(true)
 		// Global Options
 		.option('--color', 'force color output') // implemented by chalk
-		.option('--no-color', 'disable color output'); // implemented by chalk
+		.option('--no-color', 'disable color output') // implemented by chalk
+		.helpCommand('help [cmd]', 'Show help for command'); // Enable help command
 
 	//
 	// Register commands
 	//
 
-	// Help
-	program
-		.command('help', { isDefault: true, hidden: true })
-		.description('Display the main help menu.')
-		.summary('Display the main help menu.')
-		.action(() => program.help());
-
 	// Interactive
 	program
-		.command('interactive')
-		.description('Start the interactive CLI Toolkit. Powered by Clack.cc')
-		.summary('Start the interactive CLI Toolkit.')
+		.command('interactive', { isDefault: true })
+		.description(
+			'Start the interactive CLI. Powered by Clack.cc.\n\nThis command will open an interactive CLI prompt to guide you through\nthe process of creating a new StudioCMS(or StudioCMS Ecosystem package)\nproject using one of the available templates.'
+		)
+		.summary('Start the interactive CLI.')
 
 		// Options
-		.option('--template [template]', 'The template to use.')
-		.option('--template-ref [template-ref]', 'The template reference to use.')
-		.option('--project-name [project-name]', 'The name of the project.')
+		.option('-t, --template [template]', 'The template to use.')
+		.option('-r, --template-ref [template-ref]', 'The template reference to use.')
+		.option('-p, --project-name [project-name]', 'The name of the project.')
 		.option('--no-git', 'Do not initializing a git repository.')
 		.option('--no-install', 'Do not install dependencies.')
 		.option('--dry-run', 'Do not perform any actions.')
 		.option('-y, --yes', 'Skip all prompts and use default values.')
-		.option('--skip-banners', 'Skip all banners and messages.')
+		.option('-q, --skip-banners', 'Skip all banners and messages.')
 
 		// Action
 		.action(interactiveCLI);
