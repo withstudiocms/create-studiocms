@@ -5,6 +5,27 @@ import { error, info } from '../messages.js';
 import type { Context } from './context.js';
 import ExampleEnv from './data/studiocmsenv.js';
 
+interface GenericOAuth {
+	clientId: string;
+	clientSecret: string;
+	redirectUri: string;
+}
+
+interface Auth0OAuth extends GenericOAuth {
+	domain: string;
+}
+
+interface EnvBuilderOptions {
+	astroDbRemoteUrl?: string;
+	astroDbToken?: string;
+	encryptionKey?: string;
+	oAuthOptions?: ('github' | 'discord' | 'google' | 'auth0')[];
+	githubOAuth?: GenericOAuth;
+	discordOAuth?: GenericOAuth;
+	googleOAuth?: GenericOAuth;
+	auth0OAuth?: Auth0OAuth;
+}
+
 export async function env(
 	ctx: Pick<Context, 'cwd' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit' | 'isStudioCMSProject'>
 ) {
@@ -37,33 +58,7 @@ export async function env(
 		if (EnvPrompt === 'empty') {
 			envFileContent = ExampleEnv;
 		} else if (EnvPrompt === 'builder') {
-			let envBuilderOpts: {
-				astroDbRemoteUrl?: string;
-				astroDbToken?: string;
-				encryptionKey?: string;
-				oAuthOptions?: ('github' | 'discord' | 'google' | 'auth0')[];
-				githubOAuth?: {
-					clientId: string;
-					clientSecret: string;
-					redirectUri: string;
-				};
-				discordOAuth?: {
-					clientId: string;
-					clientSecret: string;
-					redirectUri: string;
-				};
-				googleOAuth?: {
-					clientId: string;
-					clientSecret: string;
-					redirectUri: string;
-				};
-				auth0OAuth?: {
-					clientId: string;
-					clientSecret: string;
-					domain: string;
-					redirectUri: string;
-				};
-			} = {};
+			let envBuilderOpts: EnvBuilderOptions = {};
 
 			const envBuilderStep1 = await ctx.prompt.group(
 				{
@@ -96,7 +91,7 @@ export async function env(
 				{
 					// On Cancel callback that wraps the group
 					// So if the user cancels one of the prompts in the group this function will be called
-					onCancel: ({ results }) => {
+					onCancel: () => {
 						ctx.prompt.cancel('Operation cancelled.');
 						process.exit(0);
 					},
@@ -125,7 +120,7 @@ export async function env(
 							}),
 					},
 					{
-						onCancel: ({ results }) => {
+						onCancel: () => {
 							ctx.prompt.cancel('Operation cancelled.');
 							process.exit(0);
 						},
@@ -155,7 +150,7 @@ export async function env(
 							}),
 					},
 					{
-						onCancel: ({ results }) => {
+						onCancel: () => {
 							ctx.prompt.cancel('Operation cancelled.');
 							process.exit(0);
 						},
@@ -185,7 +180,7 @@ export async function env(
 							}),
 					},
 					{
-						onCancel: ({ results }) => {
+						onCancel: () => {
 							ctx.prompt.cancel('Operation cancelled.');
 							process.exit(0);
 						},
@@ -220,7 +215,7 @@ export async function env(
 							}),
 					},
 					{
-						onCancel: ({ results }) => {
+						onCancel: () => {
 							ctx.prompt.cancel('Operation cancelled.');
 							process.exit(0);
 						},
