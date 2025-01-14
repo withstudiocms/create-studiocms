@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { error, info } from '../messages.js';
 import type { Context } from './context.js';
-import ExampleEnv from './data/studiocmsenv.js';
+import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 
 interface GenericOAuth {
 	clientId: string;
@@ -15,7 +15,7 @@ interface Auth0OAuth extends GenericOAuth {
 	domain: string;
 }
 
-interface EnvBuilderOptions {
+export interface EnvBuilderOptions {
 	astroDbRemoteUrl?: string;
 	astroDbToken?: string;
 	encryptionKey?: string;
@@ -42,7 +42,7 @@ export async function env(
 		const EnvPrompt = await ctx.prompt.select({
 			message: 'What kind of environment file would you like to create?',
 			options: [
-				{ value: 'empty', label: 'Create a Empty (key only) file' },
+				{ value: 'example', label: 'Use the Example .env file' },
 				{ value: 'builder', label: 'Use Interactive .env Builder' },
 				{ value: 'none', label: 'Skip Environment File Creation' },
 			],
@@ -55,7 +55,7 @@ export async function env(
 
 		_env = EnvPrompt !== 'none';
 
-		if (EnvPrompt === 'empty') {
+		if (EnvPrompt === 'example') {
 			envFileContent = ExampleEnv;
 		} else if (EnvPrompt === 'builder') {
 			let envBuilderOpts: EnvBuilderOptions = {};
@@ -115,8 +115,8 @@ export async function env(
 							}),
 						redirectUri: () =>
 							ctx.prompt.text({
-								message: 'GitHub Redirect URI',
-								initialValue: 'http://localhost:4321/studiocms_api/auth/github/callback',
+								message: 'GitHub Redirect URI Domain',
+								initialValue: 'http://localhost:4321',
 							}),
 					},
 					{
@@ -145,8 +145,8 @@ export async function env(
 							}),
 						redirectUri: () =>
 							ctx.prompt.text({
-								message: 'Discord Redirect URI',
-								initialValue: 'http://localhost:4321/studiocms_api/auth/discord/callback',
+								message: 'Discord Redirect URI Domain',
+								initialValue: 'http://localhost:4321',
 							}),
 					},
 					{
@@ -175,8 +175,8 @@ export async function env(
 							}),
 						redirectUri: () =>
 							ctx.prompt.text({
-								message: 'Google Redirect URI',
-								initialValue: 'http://localhost:4321/studiocms_api/auth/google/callback',
+								message: 'Google Redirect URI Domain',
+								initialValue: 'http://localhost:4321',
 							}),
 					},
 					{
@@ -210,8 +210,8 @@ export async function env(
 							}),
 						redirectUri: () =>
 							ctx.prompt.text({
-								message: 'Auth0 Redirect URI',
-								initialValue: 'http://localhost:4321/studiocms_api/auth/auth0/callback',
+								message: 'Auth0 Redirect URI Domain',
+								initialValue: 'http://localhost:4321',
 							}),
 					},
 					{
@@ -225,36 +225,7 @@ export async function env(
 				envBuilderOpts.auth0OAuth = auth0OAuth;
 			}
 
-			envFileContent = `# StudioCMS Environment Variables
-
-# libSQL URL and Token for AstroDB
-ASTRO_DB_REMOTE_URL=${envBuilderOpts.astroDbRemoteUrl}
-ASTRO_DB_APP_TOKEN=${envBuilderOpts.astroDbToken}
-
-# Auth encryption key
-CMS_ENCRYPTION_KEY="${envBuilderOpts.encryptionKey}" # openssl rand --base64 16
-
-# credentials for GitHub OAuth
-CMS_GITHUB_CLIENT_ID=${envBuilderOpts.githubOAuth?.clientId}
-CMS_GITHUB_CLIENT_SECRET=${envBuilderOpts.githubOAuth?.clientSecret}
-CMS_GITHUB_REDIRECT_URI=${envBuilderOpts.githubOAuth?.redirectUri}
-
-# credentials for Discord OAuth
-CMS_DISCORD_CLIENT_ID=${envBuilderOpts.discordOAuth?.clientId}
-CMS_DISCORD_CLIENT_SECRET=${envBuilderOpts.discordOAuth?.clientSecret}
-CMS_DISCORD_REDIRECT_URI=${envBuilderOpts.discordOAuth?.redirectUri}
-
-# credentials for Google OAuth
-CMS_GOOGLE_CLIENT_ID=${envBuilderOpts.googleOAuth?.clientId}
-CMS_GOOGLE_CLIENT_SECRET=${envBuilderOpts.googleOAuth?.clientSecret}
-CMS_GOOGLE_REDIRECT_URI=${envBuilderOpts.googleOAuth?.redirectUri}
-
-# credentials for auth0 OAuth
-CMS_AUTH0_CLIENT_ID=${envBuilderOpts.auth0OAuth?.clientId}
-CMS_AUTH0_CLIENT_SECRET=${envBuilderOpts.auth0OAuth?.clientSecret}
-CMS_AUTH0_DOMAIN=${envBuilderOpts.auth0OAuth?.domain}
-CMS_AUTH0_REDIRECT_URI=${envBuilderOpts.auth0OAuth?.redirectUri}
-`;
+			envFileContent = buildEnvFile(envBuilderOpts);
 		}
 	}
 
