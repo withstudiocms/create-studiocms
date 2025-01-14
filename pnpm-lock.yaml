@@ -20,6 +20,9 @@ importers:
       '@changesets/config':
         specifier: ^3.0.4
         version: 3.0.4
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.10.5
       pkg-pr-new:
         specifier: ^0.0.39
         version: 0.0.39
@@ -41,6 +44,9 @@ importers:
       '@clack/prompts':
         specifier: 0.9.1
         version: 0.9.1
+      '@commander-js/extra-typings':
+        specifier: ^13.0.0
+        version: 13.0.0(commander@13.0.0)
       chalk:
         specifier: ^5.4.1
         version: 5.4.1
@@ -53,9 +59,6 @@ importers:
       log-update:
         specifier: ^6.1.0
         version: 6.1.0
-      picocolors:
-        specifier: ^1.1.1
-        version: 1.1.1
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
@@ -66,9 +69,6 @@ importers:
       '@types/figlet':
         specifier: ^1.7.0
         version: 1.7.0
-      '@types/node':
-        specifier: ^22.10.5
-        version: 22.10.5
 
   scripts:
     dependencies:
@@ -223,6 +223,11 @@ packages:
 
   '@clack/prompts@0.9.1':
     resolution: {integrity: sha512-JIpyaboYZeWYlyP0H+OoPPxd6nqueG/CmN6ixBiNFsIDHREevjIf0n0Ohh5gr5C8pEDknzgvz+pIJ8dMhzWIeg==}
+
+  '@commander-js/extra-typings@13.0.0':
+    resolution: {integrity: sha512-4or44L3saI49QRBvdSzfCtzqONlFg0/qy0Cfl+LRynDaxlGs7r2KRTLCELaAoKh4oQguICxRwQfm77/Up+0wTw==}
+    peerDependencies:
+      commander: ~13.0.0
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -1306,6 +1311,10 @@ snapshots:
       '@clack/core': 0.4.1
       picocolors: 1.1.1
       sisteransi: 1.0.5
+
+  '@commander-js/extra-typings@13.0.0(commander@13.0.0)':
+    dependencies:
+      commander: 13.0.0
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true

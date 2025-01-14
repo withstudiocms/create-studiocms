@@ -1,5 +1,5 @@
 import { tasks } from '@clack/prompts';
-import type { FancyCommand } from '../commander.js';
+import type { instanceCommand } from '../commander.js';
 import { logger } from '../utils.js';
 import { getContext } from './context.js';
 import { dependencies } from './dependencies.js';
@@ -11,7 +11,7 @@ import { projectName } from './projectName.js';
 import { template } from './template.js';
 import { verify } from './verify.js';
 
-export async function interactiveCLI(this: FancyCommand) {
+export async function interactiveCLI(this: instanceCommand) {
 	logger.log('Starting interactive CLI...');
 
 	const ctx = await getContext(this.opts());

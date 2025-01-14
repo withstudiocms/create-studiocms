@@ -1,9 +1,9 @@
+import { Command as _Command, Help as _Help } from '@commander-js/extra-typings';
 import { type ChalkInstance, chalkStderr as chalkStdErr, default as chalkStdOut } from 'chalk';
-import { Command, Help } from 'commander';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
 
-export class FancyHelp extends Help {
+export class Help extends _Help {
 	chalk: ChalkInstance;
 	colorway: ChalkInstance;
 
@@ -55,16 +55,20 @@ export class FancyHelp extends Help {
 	}
 }
 
-export class FancyCommand extends Command {
+export class Command extends _Command {
 	createCommand(name: string | undefined) {
-		return new FancyCommand(name);
+		return new Command(name);
 	}
 	createHelp() {
-		return Object.assign(new FancyHelp(), this.configureHelp());
+		return Object.assign(new Help(), this.configureHelp());
 	}
 }
 
-export function subCommandOptions({ options }: Command) {
+export type newInstanceCommand = InstanceType<typeof Command>;
+
+export type instanceCommand = InstanceType<typeof _Command>;
+
+export function subCommandOptions({ options }: instanceCommand) {
 	if (!options.length) {
 		return '';
 	}

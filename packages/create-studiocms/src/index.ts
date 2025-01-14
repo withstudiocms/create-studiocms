@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 import pkgJson from '../package.json';
-import { FancyCommand, subCommandOptions } from './commander.js';
+import { Command, subCommandOptions } from './commander.js';
 import { interactiveCLI } from './interactive/index.js';
 import { CLITitle, date, logger, supportsColor } from './utils.js';
 
@@ -13,7 +13,7 @@ export async function main() {
 	logger.log('Starting StudioCMS CLI Utility Toolkit...');
 
 	// Initialize the CLI program
-	const program = new FancyCommand();
+	const program = new Command();
 
 	// Setup the program
 	program
