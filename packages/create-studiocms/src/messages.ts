@@ -215,7 +215,7 @@ export const nextSteps = async ({ projectDir, devCmd }: { projectDir: string; de
 	await sleep(200);
 	log(
 		`\n ${StudioCMSColorwayBg(` ${color.black('next')} `)}  ${color.bold(
-			'Liftoff confirmed. Explore your project!'
+			'Setup Complete. Explore your project!'
 		)}`
 	);
 
