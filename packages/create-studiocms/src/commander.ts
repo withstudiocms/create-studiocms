@@ -63,3 +63,17 @@ export class FancyCommand extends Command {
 		return Object.assign(new FancyHelp(), this.configureHelp());
 	}
 }
+
+export function subCommandOptions(cmd: Command) {
+	if (!cmd.options.length) {
+		return '';
+	}
+
+	const options = cmd.options
+		.map(({ flags, description }) => {
+			return `\t${chalkStdOut.reset.green(flags)} ― ${chalkStdOut.italic(description)}`;
+		})
+		.join('\n');
+
+	return `\n${options}`;
+}
