@@ -25,6 +25,7 @@ export interface Context extends InteractiveOptions {
 	stdout?: typeof process.stdout;
 	exit(code: number): never;
 	tasks: p.Task[];
+	isStudioCMSProject: boolean;
 }
 
 export async function getContext(args: InteractiveOptions): Promise<Context> {
@@ -64,6 +65,7 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 			process.exit(code);
 		},
 		tasks: [],
+		isStudioCMSProject: false,
 	};
 	return context;
 }

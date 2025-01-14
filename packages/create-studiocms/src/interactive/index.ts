@@ -3,6 +3,7 @@ import type { FancyCommand } from '../commander.js';
 import { logger } from '../utils.js';
 import { getContext } from './context.js';
 import { dependencies } from './dependencies.js';
+import { env } from './envBuilder.js';
 import { git } from './git.js';
 import { intro } from './intro.js';
 import { next } from './nextSteps.js';
@@ -24,6 +25,7 @@ export async function interactiveCLI(this: FancyCommand) {
 		projectName,
 		template,
 		dependencies,
+		env,
 
 		// Steps which write files should go above this line
 		git,

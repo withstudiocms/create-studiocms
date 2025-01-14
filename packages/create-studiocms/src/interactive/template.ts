@@ -5,8 +5,22 @@ import color from 'chalk';
 import { error, info } from '../messages.js';
 import type { Context } from './context.js';
 
+function templateTargetFilter(template: string, explicitStudioCMS = false) {
+	const filterStudioCMS = 'studiocms/';
+	const filterRules = [filterStudioCMS, 'studiocms-ui/'];
+
+	if (explicitStudioCMS) {
+		return template.startsWith(filterStudioCMS);
+	}
+
+	return filterRules.some((rule) => template.startsWith(rule));
+}
+
 export async function template(
-	ctx: Pick<Context, 'template' | 'prompt' | 'yes' | 'dryRun' | 'exit' | 'tasks'>
+	ctx: Pick<
+		Context,
+		'template' | 'prompt' | 'yes' | 'dryRun' | 'exit' | 'tasks' | 'isStudioCMSProject'
+	>
 ) {
 	if (!ctx.template && ctx.yes) ctx.template = 'studiocms/basics';
 
@@ -15,6 +29,7 @@ export async function template(
 			'template',
 			`Using ${color.reset(ctx.template)}${color.dim(' as project template')}`
 		);
+		ctx.isStudioCMSProject = templateTargetFilter(ctx.template, true);
 	} else {
 		// These options correspond to the `withstudiocms/templates` repo on GitHub
 		// the value is the directory in the root of the repo
@@ -57,6 +72,7 @@ export async function template(
 				}
 
 				ctx.template = _template;
+				ctx.isStudioCMSProject = true;
 				break;
 			}
 			case 'studiocms-ui': {
@@ -81,6 +97,7 @@ export async function template(
 				}
 
 				ctx.template = _template;
+				ctx.isStudioCMSProject = false;
 				break;
 			}
 		}
@@ -131,12 +148,6 @@ const FILES_TO_UPDATE = {
 			);
 		}),
 };
-
-function templateTargetFilter(template: string) {
-	const filterRules = ['studiocms/', 'studiocms-ui/'];
-
-	return filterRules.some((rule) => template.startsWith(rule));
-}
 
 export function getTemplateTarget(_template: string, ref = 'main') {
 	if (!templateTargetFilter(_template)) {
