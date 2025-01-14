@@ -67,15 +67,3 @@ export class Command extends _Command {
 export type newInstanceCommand = InstanceType<typeof Command>;
 
 export type instanceCommand = InstanceType<typeof _Command>;
-
-export function subCommandOptions({ options }: instanceCommand) {
-	if (!options.length) {
-		return '';
-	}
-	return `\n${options
-		.map(
-			({ flags, description }) =>
-				`${chalkStdOut.hidden('..')}${chalkStdOut.reset.green(flags)} ― ${chalkStdOut.italic(description)}`
-		)
-		.join('\n')}`;
-}

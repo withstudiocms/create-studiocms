@@ -1,13 +1,16 @@
+import { Option } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 import pkgJson from '../package.json';
-import { Command, subCommandOptions } from './commander.js';
+import { Command } from './commander.js';
 import { interactiveCLI } from './interactive/index.js';
-import { CLITitle, date, logger, supportsColor } from './utils.js';
+import { CLITitle, StudioCMSColorwayError, date, logger, supportsColor } from './utils.js';
 
 const exit = () => process.exit(0);
 process.on('SIGINT', exit);
 process.on('SIGTERM', exit);
+const max = process.stdout.columns;
+const prefix = max < 80 ? ' ' : ' '.repeat(2);
 
 export async function main() {
 	logger.log('Starting StudioCMS CLI Utility Toolkit...');
@@ -31,19 +34,23 @@ export async function main() {
 		})
 		.configureHelp({
 			sortSubcommands: true,
-			subcommandTerm: (cmd) => cmd.name(),
+			subcommandTerm: (cmd) =>
+				cmd.name() === 'interactive' ? `${cmd.name()}${StudioCMSColorwayError('*')}` : cmd.name(),
 			subcommandDescription: (cmd) => {
 				const desc = cmd.summary() || cmd.description();
-				const opts = subCommandOptions(cmd);
-				return `${desc}${opts}`;
+				return desc;
 			},
 		})
 		.addHelpText('beforeAll', CLITitle)
+		.addHelpText(
+			'afterAll',
+			`\n${prefix}${chalk.dim.italic(`${chalk.reset(StudioCMSColorwayError('*'))} Indicates the default command that is run when calling this CLI.`)}`
+		)
 		.showHelpAfterError('(add --help for additional information)')
 		.enablePositionalOptions(true)
 		// Global Options
-		.option('--color', 'force color output') // implemented by chalk
-		.option('--no-color', 'disable color output') // implemented by chalk
+		.addOption(new Option('--color', 'force color output')) // implemented by chalk
+		.addOption(new Option('--no-color', 'disable color output')) // implemented by chalk
 		.helpCommand('help [cmd]', 'Show help for command'); // Enable help command
 
 	//
@@ -59,17 +66,18 @@ export async function main() {
 		.summary('Start the interactive CLI.')
 
 		// Options
-		.option('-t, --template [template]', 'The template to use.')
-		.option('-r, --template-ref [template-ref]', 'The template reference to use.')
-		.option('-p, --project-name [project-name]', 'The name of the project.')
-		.option('-i, --install', 'Install dependencies.')
-		.option('--do-not-install', 'Do not install dependencies.')
-		.option('-g, --git', 'Initialize a git repository.')
-		.option('--do-not-init-git', 'Do not initializing a git repository.')
-		.option('--dry-run', 'Do not perform any actions.')
-		.option('-y, --yes', 'Skip all prompts and use default values.')
-		.option('-n, --no', 'Skip all prompts and use default values.')
-		.option('-q, --skip-banners', 'Skip all banners and messages.')
+		.addOption(new Option('-t, --template [template]', 'The template to use.'))
+		.addOption(new Option('-r, --template-ref [template-ref]', 'The template reference to use.'))
+		.addOption(new Option('-p, --project-name [project-name]', 'The name of the project.'))
+		.addOption(new Option('-i, --install', 'Install dependencies.'))
+		.addOption(new Option('-g, --git', 'Initialize a git repository.'))
+		.addOption(new Option('-y, --yes', 'Skip all prompts and use default values.'))
+		.addOption(new Option('-n, --no', 'Skip all prompts and use default values.'))
+		.addOption(new Option('-q, --skip-banners', 'Skip all banners and messages.'))
+		.addOption(new Option('--do-not-install', 'Do not install dependencies.'))
+		.addOption(new Option('--do-not-init-git', 'Do not initializing a git repository.'))
+		.addOption(new Option('--dry-run', 'Do not perform any actions.'))
+		.addOption(new Option('--debug', 'Enable debug mode.').hideHelp(true))
 
 		// Action
 		.action(interactiveCLI);

@@ -3,11 +3,13 @@ import path from 'node:path';
 import color from 'chalk';
 import { error, info } from '../messages.js';
 import { shell } from '../shell.js';
+import { logger } from '../utils.js';
 import type { Context } from './context.js';
 
 export async function git(
-	ctx: Pick<Context, 'cwd' | 'git' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit'>
+	ctx: Pick<Context, 'cwd' | 'git' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit' | 'debug'>
 ) {
+	ctx.debug && logger.log('Running git...');
 	if (fs.existsSync(path.join(ctx.cwd, '.git'))) {
 		await info('Nice!', 'Git has already been initialized');
 		return;
@@ -23,6 +25,8 @@ export async function git(
 			ctx.prompt.cancel('Operation cancelled.');
 			ctx.exit(0);
 		}
+
+		ctx.debug && logger.log(`Git: ${__git}`);
 
 		_git = __git;
 	}
@@ -49,6 +53,8 @@ export async function git(
 			`You can always run ${color.reset('git init')}${color.dim(' manually.')}`
 		);
 	}
+
+	ctx.debug && logger.log('Git complete');
 }
 
 async function init({ cwd }: { cwd: string }) {

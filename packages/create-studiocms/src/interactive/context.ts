@@ -16,6 +16,7 @@ interface InteractiveOptions {
 	yes?: boolean;
 	no?: boolean;
 	skipBanners?: boolean;
+	debug?: boolean;
 }
 
 export interface Context extends InteractiveOptions {
@@ -38,6 +39,7 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 		install,
 		doNotInitGit,
 		doNotInstall,
+		debug,
 		template,
 		yes,
 		no,
@@ -69,6 +71,7 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 		dryRun,
 		projectName,
 		template,
+		debug,
 		templateRef: templateRef ?? 'main',
 		welcome: random(messages),
 		yes,

@@ -1,13 +1,17 @@
 import path from 'node:path';
 import color from 'chalk';
 import { info, log, warn } from '../messages.js';
+import { logger } from '../utils.js';
 import type { Context } from './context.js';
 import { generateProjectName } from './data/project.js';
 import { isEmpty, toValidName } from './shared.js';
 
 export async function projectName(
-	ctx: Pick<Context, 'cwd' | 'yes' | 'dryRun' | 'prompt' | 'projectName' | 'exit'>
+	ctx: Pick<Context, 'cwd' | 'yes' | 'dryRun' | 'prompt' | 'projectName' | 'exit' | 'debug'>
 ) {
+	ctx.debug && logger.log('Running projectName...');
+
+	ctx.debug && logger.log('Checking cwd...');
 	await checkCwd(ctx.cwd);
 
 	console.log('');
@@ -63,6 +67,8 @@ export async function projectName(
 	if (!ctx.cwd) {
 		ctx.exit(1);
 	}
+
+	ctx.debug && logger.log(`Project name: ${ctx.projectName}`);
 }
 
 async function checkCwd(cwd: string | undefined) {

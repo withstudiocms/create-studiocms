@@ -6,9 +6,12 @@ import type { Context } from './context.js';
 import { getTemplateTarget } from './template.js';
 
 export async function verify(
-	ctx: Pick<Context, 'version' | 'dryRun' | 'template' | 'templateRef' | 'exit'>
+	ctx: Pick<Context, 'version' | 'dryRun' | 'template' | 'templateRef' | 'exit' | 'debug'>
 ) {
+	const { debug } = ctx;
+
 	if (!ctx.dryRun) {
+		if (debug) log('Checking internet connection...');
 		const online = await isOnline();
 		if (!online) {
 			bannerAbort();
@@ -16,9 +19,11 @@ export async function verify(
 			error('error', 'Unable to connect to the internet.');
 			ctx.exit(1);
 		}
+		if (debug) info('check', 'Internet connection verified');
 	}
 
 	if (ctx.template) {
+		if (debug) log('Verifying template...');
 		const target = getTemplateTarget(ctx.template, ctx.templateRef);
 		const ok = await verifyTemplate(target);
 		if (!ok) {
@@ -28,6 +33,7 @@ export async function verify(
 			await info('check', 'https://github.com/withstudiocms/templates');
 			ctx.exit(1);
 		}
+		if (debug) info('check', 'Template verified');
 	}
 }
 

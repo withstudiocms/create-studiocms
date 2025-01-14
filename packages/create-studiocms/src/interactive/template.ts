@@ -3,6 +3,7 @@ import path from 'node:path';
 import { downloadTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
 import { error, info } from '../messages.js';
+import { logger } from '../utils.js';
 import type { Context } from './context.js';
 
 function templateTargetFilter(template: string, explicitStudioCMS = false) {
@@ -19,9 +20,10 @@ function templateTargetFilter(template: string, explicitStudioCMS = false) {
 export async function template(
 	ctx: Pick<
 		Context,
-		'template' | 'prompt' | 'yes' | 'dryRun' | 'exit' | 'tasks' | 'isStudioCMSProject'
+		'template' | 'prompt' | 'yes' | 'dryRun' | 'exit' | 'tasks' | 'isStudioCMSProject' | 'debug'
 	>
 ) {
+	ctx.debug && logger.log('Running template...');
 	if (!ctx.template && ctx.yes) ctx.template = 'studiocms/basics';
 
 	if (ctx.template) {
@@ -45,6 +47,8 @@ export async function template(
 			ctx.prompt.cancel('Operation cancelled.');
 			ctx.exit(0);
 		}
+
+		ctx.debug && logger.log(`Project type selected: ${projectType}`);
 
 		// Each project type has different templates to choose from
 		// said templates are directories in the `withstudiocms/templates` repo
@@ -71,6 +75,8 @@ export async function template(
 					ctx.exit(0);
 				}
 
+				ctx.debug && logger.log(`Template selected: ${_template}`);
+
 				ctx.template = _template;
 				ctx.isStudioCMSProject = true;
 				break;
@@ -95,6 +101,8 @@ export async function template(
 					ctx.prompt.cancel('Operation cancelled.');
 					ctx.exit(0);
 				}
+
+				ctx.debug && logger.log(`Template selected: ${_template}`);
 
 				ctx.template = _template;
 				ctx.isStudioCMSProject = false;
@@ -128,6 +136,8 @@ export async function template(
 	} else {
 		ctx.exit(1);
 	}
+
+	ctx.debug && logger.log('Template complete');
 }
 
 const FILES_TO_REMOVE = ['CHANGELOG.md', '.codesandbox'];

@@ -14,13 +14,17 @@ import { verify } from './verify.js';
 export async function interactiveCLI(this: instanceCommand) {
 	logger.log('Starting interactive CLI...');
 
-	const ctx = await getContext(this.opts());
-
 	const opts = this.opts();
 
-	console.log(opts);
+	opts.debug && logger.log(`Options: ${JSON.stringify(opts, null, 2)}`);
+
+	const ctx = await getContext(this.opts());
+
+	opts.debug && logger.log(`Context: ${JSON.stringify(ctx, null, 2)}`);
 
 	console.log('');
+
+	opts.debug && logger.log('Running interactive CLI Steps...');
 
 	// Run the interactive CLI
 	const steps = [
@@ -41,9 +45,15 @@ export async function interactiveCLI(this: instanceCommand) {
 
 	console.log(''); // Add a newline after the last step
 
+	opts.debug && logger.log('Running tasks...');
+
 	await tasks(ctx.tasks);
 
+	opts.debug && logger.log('Running next steps...');
+
 	await next(ctx);
+
+	opts.debug && logger.log('Interactive CLI completed, exiting...');
 
 	process.exit(0);
 }

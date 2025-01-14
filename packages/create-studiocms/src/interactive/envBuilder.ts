@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { error, info } from '../messages.js';
+import { logger } from '../utils.js';
 import type { Context } from './context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 
@@ -27,9 +28,14 @@ export interface EnvBuilderOptions {
 }
 
 export async function env(
-	ctx: Pick<Context, 'cwd' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit' | 'isStudioCMSProject'>
+	ctx: Pick<
+		Context,
+		'cwd' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit' | 'isStudioCMSProject' | 'debug'
+	>
 ) {
+	ctx.debug && logger.log('Running env...');
 	if (!ctx.isStudioCMSProject) {
+		ctx.debug && logger.log('Not a StudioCMS project, skipping environment file creation');
 		return;
 	}
 
@@ -52,6 +58,8 @@ export async function env(
 			ctx.prompt.cancel('Operation cancelled.');
 			ctx.exit(0);
 		}
+
+		ctx.debug && logger.log(`Environment file type selected: ${EnvPrompt}`);
 
 		_env = EnvPrompt !== 'none';
 
@@ -98,6 +106,8 @@ export async function env(
 				}
 			);
 
+			ctx.debug && logger.log(`Environment Builder Step 1: ${envBuilderStep1}`);
+
 			envBuilderOpts = { ...envBuilderStep1 };
 
 			if (envBuilderStep1.oAuthOptions.includes('github')) {
@@ -126,6 +136,8 @@ export async function env(
 						},
 					}
 				);
+
+				ctx.debug && logger.log(`GitHub OAuth: ${githubOAuth}`);
 
 				envBuilderOpts.githubOAuth = githubOAuth;
 			}
@@ -157,6 +169,8 @@ export async function env(
 					}
 				);
 
+				ctx.debug && logger.log(`Discord OAuth: ${discordOAuth}`);
+
 				envBuilderOpts.discordOAuth = discordOAuth;
 			}
 
@@ -186,6 +200,8 @@ export async function env(
 						},
 					}
 				);
+
+				ctx.debug && logger.log(`Google OAuth: ${googleOAuth}`);
 
 				envBuilderOpts.googleOAuth = googleOAuth;
 			}
@@ -222,6 +238,8 @@ export async function env(
 					}
 				);
 
+				ctx.debug && logger.log(`Auth0 OAuth: ${auth0OAuth}`);
+
 				envBuilderOpts.auth0OAuth = auth0OAuth;
 			}
 
@@ -253,4 +271,6 @@ export async function env(
 			},
 		});
 	}
+
+	ctx.debug && logger.log('Environment complete');
 }
