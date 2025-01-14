@@ -1,7 +1,3 @@
 packages:
-  - "packages/*"
   - "package"
-  - "playgrounds/*"
-  - "playground"
-  - "www/*"
   - "scripts"

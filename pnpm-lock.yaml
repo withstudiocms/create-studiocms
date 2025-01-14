@@ -33,7 +33,7 @@ importers:
         specifier: ^5.7.2
         version: 5.7.2
 
-  packages/create-studiocms:
+  package:
     dependencies:
       '@bluwy/giget-core':
         specifier: ^0.1.2

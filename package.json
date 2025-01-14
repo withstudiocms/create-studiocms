@@ -6,9 +6,9 @@
       "node": "20.14.0"
     },
     "scripts": {
-      "dev": "pnpm --filter ./packages/* run dev",
-      "build": "pnpm --filter ./packages/* run build",
-      "test-run": "node ./packages/create-studiocms/create-studiocms.mjs",
+      "dev": "pnpm --filter create-studiocms run dev",
+      "build": "pnpm --filter create-studiocms run build",
+      "test-run": "node ./package/create-studiocms.mjs",
 
       "lint": "biome check .",
       "lint:fix": "biome check --write .",
@@ -16,7 +16,7 @@
       "ci:install": "pnpm install --frozen-lockfile",
       "ci:version": "pnpm changeset version",
       "ci:publish": "pnpm changeset publish",
-      "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'"
+      "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './package'"
     },
     "dependencies": {
         "@biomejs/biome": "^1.9.4",
