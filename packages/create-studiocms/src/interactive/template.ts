@@ -108,13 +108,12 @@ export async function template(
 	} else if (ctx.template) {
 		ctx.tasks.push({
 			title: 'Template',
-			task: async () => {
-				const s = ctx.prompt.spinner();
-				s.start('Template copying...');
+			task: async (message) => {
+				message('Template copying...');
 				try {
 					// biome-ignore lint/style/noNonNullAssertion: <explanation>
 					await copyTemplate(ctx.template!, ctx as Context);
-					s.stop('Template copied');
+					message('Template copied');
 				} catch (e) {
 					if (e instanceof Error) {
 						error('error', e.message);

@@ -33,14 +33,12 @@ export async function dependencies(
 	} else if (deps) {
 		ctx.tasks.push({
 			title: 'Install dependencies',
-			task: async () => {
-				const s = ctx.prompt.spinner();
-				s.start('Installing dependencies...');
+			task: async (message) => {
+				message('Installing dependencies...');
 				try {
 					install({ packageManager: ctx.packageManager, cwd: ctx.cwd });
-					s.stop('Dependencies installed');
+					message('Dependencies installed');
 				} catch (e) {
-					s.stop();
 					error('error', e instanceof Error ? e.message : 'Unable to install dependencies');
 					error(
 						'error',

@@ -32,12 +32,11 @@ export async function git(
 	} else if (_git) {
 		ctx.tasks.push({
 			title: 'Git',
-			task: async () => {
-				const s = ctx.prompt.spinner();
-				s.start('Git initializing...');
+			task: async (message) => {
+				message('Git initializing...');
 				try {
 					await init({ cwd: ctx.cwd });
-					s.stop('Git initialized');
+					message('Git initialized');
 				} catch (e) {
 					error('error', e instanceof Error ? e.message : 'Unable to initialize git');
 					error('error', 'Git failed to initialize, please run git init manually after setup.');
