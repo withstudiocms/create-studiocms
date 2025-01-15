@@ -2,7 +2,6 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { error, info } from '../messages.js';
-import { logger } from '../utils.js';
 import type { Context } from './context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 
@@ -30,12 +29,20 @@ export interface EnvBuilderOptions {
 export async function env(
 	ctx: Pick<
 		Context,
-		'cwd' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit' | 'isStudioCMSProject' | 'debug'
+		| 'cwd'
+		| 'yes'
+		| 'prompt'
+		| 'dryRun'
+		| 'tasks'
+		| 'exit'
+		| 'isStudioCMSProject'
+		| 'debug'
+		| 'logger'
 	>
 ) {
-	ctx.debug && logger.debug('Running env...');
+	ctx.debug && ctx.logger.debug('Running env...');
 	if (!ctx.isStudioCMSProject) {
-		ctx.debug && logger.debug('Not a StudioCMS project, skipping environment file creation');
+		ctx.debug && ctx.logger.debug('Not a StudioCMS project, skipping environment file creation');
 		return;
 	}
 
@@ -59,7 +66,7 @@ export async function env(
 			ctx.exit(0);
 		}
 
-		ctx.debug && logger.debug(`Environment file type selected: ${EnvPrompt}`);
+		ctx.debug && ctx.logger.debug(`Environment file type selected: ${EnvPrompt}`);
 
 		_env = EnvPrompt !== 'none';
 
@@ -107,7 +114,7 @@ export async function env(
 				}
 			);
 
-			ctx.debug && logger.debug(`Environment Builder Step 1: ${envBuilderStep1}`);
+			ctx.debug && ctx.logger.debug(`Environment Builder Step 1: ${envBuilderStep1}`);
 
 			envBuilderOpts = { ...envBuilderStep1 };
 
@@ -138,7 +145,7 @@ export async function env(
 					}
 				);
 
-				ctx.debug && logger.debug(`GitHub OAuth: ${githubOAuth}`);
+				ctx.debug && ctx.logger.debug(`GitHub OAuth: ${githubOAuth}`);
 
 				envBuilderOpts.githubOAuth = githubOAuth;
 			}
@@ -170,7 +177,7 @@ export async function env(
 					}
 				);
 
-				ctx.debug && logger.debug(`Discord OAuth: ${discordOAuth}`);
+				ctx.debug && ctx.logger.debug(`Discord OAuth: ${discordOAuth}`);
 
 				envBuilderOpts.discordOAuth = discordOAuth;
 			}
@@ -202,7 +209,7 @@ export async function env(
 					}
 				);
 
-				ctx.debug && logger.debug(`Google OAuth: ${googleOAuth}`);
+				ctx.debug && ctx.logger.debug(`Google OAuth: ${googleOAuth}`);
 
 				envBuilderOpts.googleOAuth = googleOAuth;
 			}
@@ -239,7 +246,7 @@ export async function env(
 					}
 				);
 
-				ctx.debug && logger.debug(`Auth0 OAuth: ${auth0OAuth}`);
+				ctx.debug && ctx.logger.debug(`Auth0 OAuth: ${auth0OAuth}`);
 
 				envBuilderOpts.auth0OAuth = auth0OAuth;
 			}
@@ -273,5 +280,5 @@ export async function env(
 		});
 	}
 
-	ctx.debug && logger.debug('Environment complete');
+	ctx.debug && ctx.logger.debug('Environment complete');
 }

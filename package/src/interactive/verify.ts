@@ -2,20 +2,24 @@ import dns from 'node:dns/promises';
 import { verifyTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
 import { bannerAbort, error, info, log } from '../messages.js';
-import { logger } from '../utils.js';
 import type { Context } from './context.js';
 import { getTemplateTarget } from './template.js';
 
 export async function verify(
 	ctx: Pick<
 		Context,
-		'version' | 'dryRun' | 'template' | 'templateRef' | 'exit' | 'debug' | 'templateRegistry'
+		| 'version'
+		| 'dryRun'
+		| 'template'
+		| 'templateRef'
+		| 'exit'
+		| 'debug'
+		| 'templateRegistry'
+		| 'logger'
 	>
 ) {
-	const { debug } = ctx;
-
 	if (!ctx.dryRun) {
-		if (debug) logger.debug('Checking internet connection...');
+		if (ctx.debug) ctx.logger.debug('Checking internet connection...');
 		const online = await isOnline();
 		if (!online) {
 			bannerAbort();
@@ -23,11 +27,11 @@ export async function verify(
 			error('error', 'Unable to connect to the internet.');
 			ctx.exit(1);
 		}
-		if (debug) logger.debug('Internet connection verified');
+		if (ctx.debug) ctx.logger.debug('Internet connection verified');
 	}
 
 	if (ctx.template) {
-		if (debug) logger.debug('Verifying template...');
+		if (ctx.debug) ctx.logger.debug('Verifying template...');
 		const target = getTemplateTarget(ctx.template, ctx.templateRegistry, ctx.templateRef);
 		const ok = await verifyTemplate(target);
 		if (!ok) {
@@ -37,7 +41,7 @@ export async function verify(
 			await info('check', ctx.templateRegistry.currentRepositoryUrl);
 			ctx.exit(1);
 		}
-		if (debug) logger.debug('Template verified');
+		if (ctx.debug) ctx.logger.debug('Template verified');
 	}
 }
 

@@ -3,16 +3,24 @@ import path from 'node:path';
 import color from 'chalk';
 import { error, info } from '../messages.js';
 import { shell } from '../shell.js';
-import { logger } from '../utils.js';
 import type { Context } from './context.js';
 
 export async function dependencies(
 	ctx: Pick<
 		Context,
-		'install' | 'yes' | 'prompt' | 'packageManager' | 'cwd' | 'dryRun' | 'tasks' | 'exit' | 'debug'
+		| 'install'
+		| 'yes'
+		| 'prompt'
+		| 'packageManager'
+		| 'cwd'
+		| 'dryRun'
+		| 'tasks'
+		| 'exit'
+		| 'debug'
+		| 'logger'
 	>
 ) {
-	ctx.debug && logger.debug('Running dependencies...');
+	ctx.debug && ctx.logger.debug('Running dependencies...');
 	let deps = ctx.install ?? ctx.yes;
 	if (deps === undefined) {
 		const _deps = await ctx.prompt.confirm({
@@ -25,7 +33,7 @@ export async function dependencies(
 			ctx.exit(0);
 		}
 
-		ctx.debug && logger.debug(`Dependencies: ${_deps}`);
+		ctx.debug && ctx.logger.debug(`Dependencies: ${_deps}`);
 
 		deps = _deps;
 
@@ -60,7 +68,7 @@ export async function dependencies(
 		);
 	}
 
-	ctx.debug && logger.debug('Dependencies complete');
+	ctx.debug && ctx.logger.debug('Dependencies complete');
 }
 
 async function install({ packageManager, cwd }: { packageManager: string; cwd: string }) {

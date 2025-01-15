@@ -3,7 +3,6 @@ import path from 'node:path';
 import { downloadTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
 import { error, info } from '../messages.js';
-import { logger } from '../utils.js';
 import type { Context } from './context.js';
 
 function templateTargetFilter(
@@ -30,9 +29,10 @@ export async function template(
 		| 'isStudioCMSProject'
 		| 'debug'
 		| 'templateRegistry'
+		| 'logger'
 	>
 ) {
-	ctx.debug && logger.debug('Running template...');
+	ctx.debug && ctx.logger.debug('Running template...');
 	if (!ctx.template && ctx.yes) ctx.template = ctx.templateRegistry.defaultTemplate;
 
 	if (ctx.template) {
@@ -54,7 +54,7 @@ export async function template(
 			ctx.exit(0);
 		}
 
-		ctx.debug && logger.debug(`Project type selected: ${projectType}`);
+		ctx.debug && ctx.logger.debug(`Project type selected: ${projectType}`);
 
 		const _template = await ctx.prompt.select({
 			message: `How would you like to start your new ${ctx.templateRegistry.currentProjects.find((p) => p.value === projectType)?.label} project?`,
@@ -66,7 +66,7 @@ export async function template(
 			ctx.exit(0);
 		}
 
-		ctx.debug && logger.debug(`Template selected: ${_template}`);
+		ctx.debug && ctx.logger.debug(`Template selected: ${_template}`);
 
 		ctx.template = _template;
 		ctx.isStudioCMSProject = true;
@@ -98,7 +98,7 @@ export async function template(
 		ctx.exit(1);
 	}
 
-	ctx.debug && logger.debug('Template complete');
+	ctx.debug && ctx.logger.debug('Template complete');
 }
 
 const FILES_TO_REMOVE = ['CHANGELOG.md', '.codesandbox'];

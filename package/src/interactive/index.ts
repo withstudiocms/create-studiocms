@@ -1,6 +1,5 @@
 import { tasks } from '@clack/prompts';
 import type { instanceCommand } from '../commander.js';
-import { logger } from '../utils.js';
 import { getContext } from './context.js';
 import { dependencies } from './dependencies.js';
 import { env } from './envBuilder.js';
@@ -12,19 +11,19 @@ import { template } from './template.js';
 import { verify } from './verify.js';
 
 export async function interactiveCLI(this: instanceCommand) {
-	logger.log('Starting interactive CLI...');
-
 	const opts = this.opts();
-
-	opts.debug && logger.debug(`Options: ${JSON.stringify(opts, null, 2)}`);
 
 	const ctx = await getContext(this.opts());
 
-	opts.debug && logger.debug(`Context: ${JSON.stringify(ctx, null, 2)}`);
+	ctx.logger.log('Starting interactive CLI...');
+
+	opts.debug && ctx.logger.debug(`Options: ${JSON.stringify(opts, null, 2)}`);
+
+	opts.debug && ctx.logger.debug(`Context: ${JSON.stringify(ctx, null, 2)}`);
 
 	console.log('');
 
-	opts.debug && logger.debug('Running interactive CLI Steps...');
+	opts.debug && ctx.logger.debug('Running interactive CLI Steps...');
 
 	// Run the interactive CLI
 	const steps = [
@@ -45,15 +44,15 @@ export async function interactiveCLI(this: instanceCommand) {
 
 	console.log(''); // Add a newline after the last step
 
-	opts.debug && logger.debug('Running tasks...');
+	opts.debug && ctx.logger.debug('Running tasks...');
 
 	await tasks(ctx.tasks);
 
-	opts.debug && logger.debug('Running next steps...');
+	opts.debug && ctx.logger.debug('Running next steps...');
 
 	await next(ctx);
 
-	opts.debug && logger.debug('Interactive CLI completed, exiting...');
+	opts.debug && ctx.logger.debug('Interactive CLI completed, exiting...');
 
 	process.exit(0);
 }

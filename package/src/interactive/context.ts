@@ -3,6 +3,7 @@ import * as p from '@clack/prompts';
 import pkgJson from '../../package.json';
 import { getName } from '../messages.js';
 import { type TemplateRegistry, templateRegistry } from '../templates.config.js';
+import { logger } from '../utils.js';
 import getSeasonalMessages from './data/seasonal.js';
 
 interface InteractiveOptions {
@@ -31,6 +32,7 @@ export interface Context extends InteractiveOptions {
 	tasks: p.Task[];
 	isStudioCMSProject: boolean;
 	templateRegistry: TemplateRegistry;
+	logger: typeof logger;
 }
 
 export async function getContext(args: InteractiveOptions): Promise<Context> {
@@ -88,6 +90,7 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 		tasks: [],
 		isStudioCMSProject: false,
 		templateRegistry,
+		logger,
 	};
 	return context;
 }

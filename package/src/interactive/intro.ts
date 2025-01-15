@@ -1,16 +1,16 @@
 import color from 'chalk';
 import { banner, label, say } from '../messages.js';
-import { StudioCMSColorway, StudioCMSColorwayBg, logger } from '../utils.js';
+import { StudioCMSColorway, StudioCMSColorwayBg } from '../utils.js';
 import type { Context } from './context.js';
 
 export async function intro(
-	ctx: Pick<Context, 'welcome' | 'version' | 'username' | 'skipBanners' | 'debug'>
+	ctx: Pick<Context, 'welcome' | 'version' | 'username' | 'skipBanners' | 'debug' | 'logger'>
 ) {
-	ctx.debug && logger.debug('Running intro...');
+	ctx.debug && ctx.logger.debug('Running intro...');
 	banner();
 
 	if (!ctx.skipBanners) {
-		ctx.debug && logger.debug('Printing welcome message...');
+		ctx.debug && ctx.logger.debug('Printing welcome message...');
 		const { welcome } = ctx;
 		await say(
 			[
@@ -27,6 +27,6 @@ export async function intro(
 			] as string[],
 			{ clear: true }
 		);
-		ctx.debug && logger.debug('Welcome message printed');
+		ctx.debug && ctx.logger.debug('Welcome message printed');
 	}
 }

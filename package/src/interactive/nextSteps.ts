@@ -1,13 +1,14 @@
 import path from 'node:path';
 import { nextSteps, say } from '../messages.js';
-import { logger } from '../utils.js';
 import type { Context } from './context.js';
 
-export async function next(ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners' | 'debug'>) {
-	ctx.debug && logger.debug('Running next steps...');
+export async function next(
+	ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners' | 'debug' | 'logger'>
+) {
+	ctx.debug && ctx.logger.debug('Running next steps...');
 	const projectDir = path.relative(process.cwd(), ctx.cwd);
 
-	ctx.debug && logger.debug(`Project directory: ${projectDir}`);
+	ctx.debug && ctx.logger.debug(`Project directory: ${projectDir}`);
 
 	const commandMap: { [key: string]: string } = {
 		npm: 'npm run dev',
@@ -18,15 +19,16 @@ export async function next(ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBa
 
 	const devCmd = commandMap[ctx.packageManager as keyof typeof commandMap] || 'npm run dev';
 
-	ctx.debug && logger.debug(`Dev command: ${devCmd}`);
+	ctx.debug && ctx.logger.debug(`Dev command: ${devCmd}`);
 
-	ctx.debug && logger.debug('Running next steps fn...');
+	ctx.debug && ctx.logger.debug('Running next steps fn...');
+
 	await nextSteps({ projectDir, devCmd });
 
 	if (!ctx.skipBanners) {
 		await say(['Enjoy your new StudioCMS Project! 🚀']);
 	}
 
-	ctx.debug && logger.debug('Next steps complete');
+	ctx.debug && ctx.logger.debug('Next steps complete');
 	return;
 }
