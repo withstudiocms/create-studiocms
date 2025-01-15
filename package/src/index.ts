@@ -4,6 +4,7 @@ import stripAnsi from 'strip-ansi';
 import pkgJson from '../package.json';
 import { Command } from './commander.js';
 import { interactiveCLI } from './interactive/index.js';
+import { templateRegistry } from './templates.config';
 import { CLITitle, StudioCMSColorwayError, date, logger, supportsColor } from './utils.js';
 
 const exit = () => process.exit(0);

@@ -2,6 +2,7 @@ import dns from 'node:dns/promises';
 import { verifyTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
 import { bannerAbort, error, info, log } from '../messages.js';
+import { templateRegistry } from '../templates.config.js';
 import type { Context } from './context.js';
 import { getTemplateTarget } from './template.js';
 
@@ -30,7 +31,7 @@ export async function verify(
 			bannerAbort();
 			log('');
 			error('error', `Template ${color.reset(ctx.template)} ${color.dim('could not be found!')}`);
-			await info('check', 'https://github.com/withstudiocms/templates');
+			await info('check', templateRegistry.currentRepositoryUrl);
 			ctx.exit(1);
 		}
 		if (debug) info('check', 'Template verified');

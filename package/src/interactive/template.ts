@@ -3,18 +3,16 @@ import path from 'node:path';
 import { downloadTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
 import { error, info } from '../messages.js';
+import { templateRegistry } from '../templates.config.js';
 import { logger } from '../utils.js';
 import type { Context } from './context.js';
 
 function templateTargetFilter(template: string, explicitStudioCMS = false) {
-	const filterStudioCMS = 'studiocms/';
-	const filterRules = [filterStudioCMS, 'studiocms-ui/'];
-
 	if (explicitStudioCMS) {
-		return template.startsWith(filterStudioCMS);
+		return template.startsWith(templateRegistry.filterRules.isStudioCMSProject);
 	}
 
-	return filterRules.some((rule) => template.startsWith(rule));
+	return templateRegistry.filterRules.isWithStudioCMSRepo.some((rule) => template.startsWith(rule));
 }
 
 export async function template(
@@ -24,7 +22,7 @@ export async function template(
 	>
 ) {
 	ctx.debug && logger.log('Running template...');
-	if (!ctx.template && ctx.yes) ctx.template = 'studiocms/basics';
+	if (!ctx.template && ctx.yes) ctx.template = templateRegistry.defaultTemplate;
 
 	if (ctx.template) {
 		await info(
@@ -37,10 +35,7 @@ export async function template(
 		// the value is the directory in the root of the repo
 		const projectType = await ctx.prompt.select({
 			message: 'What StudioCMS package would you like to use?',
-			options: [
-				{ value: 'studiocms', label: 'StudioCMS' },
-				{ value: 'studiocms-ui', label: 'StudioCMS UI (@studiocms/ui)' },
-			],
+			options: templateRegistry.currentProjects,
 		});
 
 		if (ctx.prompt.isCancel(projectType)) {
@@ -50,65 +45,20 @@ export async function template(
 
 		ctx.debug && logger.log(`Project type selected: ${projectType}`);
 
-		// Each project type has different templates to choose from
-		// said templates are directories in the `withstudiocms/templates` repo
-		// under the projectType directory (e.g. `studiocms/basics` or `studiocms-ui/tailwind`)
-		switch (projectType) {
-			case 'studiocms': {
-				const _template = await ctx.prompt.select({
-					message: 'How would you like to start your new StudioCMS project?',
-					options: [
-						{
-							value: 'studiocms/basics',
-							label: 'A basic, StudioCMS Project',
-							hint: 'recommended',
-						},
-						{
-							value: 'studiocms/blog',
-							label: 'StudioCMS project with the Blog Plugin',
-						},
-					],
-				});
+		const _template = await ctx.prompt.select({
+			message: `How would you like to start your new ${templateRegistry.currentProjects.find((p) => p.value === projectType)?.label} project?`,
+			options: templateRegistry.currentTemplates[projectType],
+		});
 
-				if (ctx.prompt.isCancel(_template)) {
-					ctx.prompt.cancel('Operation cancelled.');
-					ctx.exit(0);
-				}
-
-				ctx.debug && logger.log(`Template selected: ${_template}`);
-
-				ctx.template = _template;
-				ctx.isStudioCMSProject = true;
-				break;
-			}
-			case 'studiocms-ui': {
-				const _template = await ctx.prompt.select({
-					message: 'How would you like to start your new StudioCMS/UI project?',
-					options: [
-						{
-							value: 'studiocms-ui/basics',
-							label: 'A basic, StudioCMS UI Project',
-							hint: 'recommended',
-						},
-						{
-							value: 'studiocms-ui/tailwind',
-							label: 'StudioCMS UI project with Tailwind CSS',
-						},
-					],
-				});
-
-				if (ctx.prompt.isCancel(_template)) {
-					ctx.prompt.cancel('Operation cancelled.');
-					ctx.exit(0);
-				}
-
-				ctx.debug && logger.log(`Template selected: ${_template}`);
-
-				ctx.template = _template;
-				ctx.isStudioCMSProject = false;
-				break;
-			}
+		if (ctx.prompt.isCancel(_template)) {
+			ctx.prompt.cancel('Operation cancelled.');
+			ctx.exit(0);
 		}
+
+		ctx.debug && logger.log(`Template selected: ${_template}`);
+
+		ctx.template = _template;
+		ctx.isStudioCMSProject = true;
 	}
 
 	if (ctx.dryRun) {
@@ -170,9 +120,9 @@ export function getTemplateTarget(_template: string, ref = 'main') {
 		// `latest` ref is specially handled to route to a branch specifically
 		// to allow faster downloads. Otherwise giget has to download the entire
 		// repo and only copy a sub directory
-		return `github:withstudiocms/templates/${_template}`;
+		return `${templateRegistry.gigetRepoUrl}/${_template}`;
 	}
-	return `github:withstudiocms/templates/${_template}#${ref}`;
+	return `${templateRegistry.gigetRepoUrl}/${_template}#${ref}`;
 }
 
 export default async function copyTemplate(_template: string, ctx: Context) {
