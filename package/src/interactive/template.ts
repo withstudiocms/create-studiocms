@@ -3,11 +3,14 @@ import path from 'node:path';
 import { downloadTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
 import { error, info } from '../messages.js';
-import { templateRegistry } from '../templates.config.js';
 import { logger } from '../utils.js';
 import type { Context } from './context.js';
 
-function templateTargetFilter(template: string, explicitStudioCMS = false) {
+function templateTargetFilter(
+	template: string,
+	templateRegistry: Context['templateRegistry'],
+	explicitStudioCMS = false
+) {
 	if (explicitStudioCMS) {
 		return template.startsWith(templateRegistry.filterRules.isStudioCMSProject);
 	}
@@ -18,24 +21,32 @@ function templateTargetFilter(template: string, explicitStudioCMS = false) {
 export async function template(
 	ctx: Pick<
 		Context,
-		'template' | 'prompt' | 'yes' | 'dryRun' | 'exit' | 'tasks' | 'isStudioCMSProject' | 'debug'
+		| 'template'
+		| 'prompt'
+		| 'yes'
+		| 'dryRun'
+		| 'exit'
+		| 'tasks'
+		| 'isStudioCMSProject'
+		| 'debug'
+		| 'templateRegistry'
 	>
 ) {
-	ctx.debug && logger.log('Running template...');
-	if (!ctx.template && ctx.yes) ctx.template = templateRegistry.defaultTemplate;
+	ctx.debug && logger.debug('Running template...');
+	if (!ctx.template && ctx.yes) ctx.template = ctx.templateRegistry.defaultTemplate;
 
 	if (ctx.template) {
 		await info(
 			'template',
 			`Using ${color.reset(ctx.template)}${color.dim(' as project template')}`
 		);
-		ctx.isStudioCMSProject = templateTargetFilter(ctx.template, true);
+		ctx.isStudioCMSProject = templateTargetFilter(ctx.template, ctx.templateRegistry, true);
 	} else {
 		// These options correspond to the `withstudiocms/templates` repo on GitHub
 		// the value is the directory in the root of the repo
 		const projectType = await ctx.prompt.select({
 			message: 'What StudioCMS package would you like to use?',
-			options: templateRegistry.currentProjects,
+			options: ctx.templateRegistry.currentProjects,
 		});
 
 		if (ctx.prompt.isCancel(projectType)) {
@@ -43,11 +54,11 @@ export async function template(
 			ctx.exit(0);
 		}
 
-		ctx.debug && logger.log(`Project type selected: ${projectType}`);
+		ctx.debug && logger.debug(`Project type selected: ${projectType}`);
 
 		const _template = await ctx.prompt.select({
-			message: `How would you like to start your new ${templateRegistry.currentProjects.find((p) => p.value === projectType)?.label} project?`,
-			options: templateRegistry.currentTemplates[projectType],
+			message: `How would you like to start your new ${ctx.templateRegistry.currentProjects.find((p) => p.value === projectType)?.label} project?`,
+			options: ctx.templateRegistry.currentTemplates[projectType],
 		});
 
 		if (ctx.prompt.isCancel(_template)) {
@@ -55,7 +66,7 @@ export async function template(
 			ctx.exit(0);
 		}
 
-		ctx.debug && logger.log(`Template selected: ${_template}`);
+		ctx.debug && logger.debug(`Template selected: ${_template}`);
 
 		ctx.template = _template;
 		ctx.isStudioCMSProject = true;
@@ -87,7 +98,7 @@ export async function template(
 		ctx.exit(1);
 	}
 
-	ctx.debug && logger.log('Template complete');
+	ctx.debug && logger.debug('Template complete');
 }
 
 const FILES_TO_REMOVE = ['CHANGELOG.md', '.codesandbox'];
@@ -108,8 +119,12 @@ const FILES_TO_UPDATE = {
 		}),
 };
 
-export function getTemplateTarget(_template: string, ref = 'main') {
-	if (!templateTargetFilter(_template)) {
+export function getTemplateTarget(
+	_template: string,
+	templateRegistry: Context['templateRegistry'],
+	ref = 'main'
+) {
+	if (!templateTargetFilter(_template, templateRegistry)) {
 		// Handle third-party templates
 		const isThirdParty = _template.includes('/');
 		if (isThirdParty) return _template;
@@ -126,7 +141,7 @@ export function getTemplateTarget(_template: string, ref = 'main') {
 }
 
 export default async function copyTemplate(_template: string, ctx: Context) {
-	const templateTarget = getTemplateTarget(_template, ctx.templateRef);
+	const templateTarget = getTemplateTarget(_template, ctx.templateRegistry, ctx.templateRef);
 	// Copy
 	if (!ctx.dryRun) {
 		try {

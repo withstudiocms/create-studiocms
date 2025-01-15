@@ -9,9 +9,9 @@ import { isEmpty, toValidName } from './shared.js';
 export async function projectName(
 	ctx: Pick<Context, 'cwd' | 'yes' | 'dryRun' | 'prompt' | 'projectName' | 'exit' | 'debug'>
 ) {
-	ctx.debug && logger.log('Running projectName...');
+	ctx.debug && logger.debug('Running projectName...');
 
-	ctx.debug && logger.log('Checking cwd...');
+	ctx.debug && logger.debug('Checking cwd...');
 	await checkCwd(ctx.cwd);
 
 	console.log('');
@@ -68,7 +68,7 @@ export async function projectName(
 		ctx.exit(1);
 	}
 
-	ctx.debug && logger.log(`Project name: ${ctx.projectName}`);
+	ctx.debug && logger.debug(`Project name: ${ctx.projectName}`);
 }
 
 async function checkCwd(cwd: string | undefined) {

@@ -31,6 +31,13 @@ export const logger = {
 		}
 		console.log(`${chalk.blue.bold(`[${date}]:`)} ${message}`);
 	},
+	debug: (message: string) => {
+		if (!supportsColor) {
+			console.log(`DEBUG [${date}]: ${message}`);
+			return;
+		}
+		console.log(`${chalk.blue.bold(`DEBUG [${date}]:`)} ${message}`);
+	},
 	error: (message: string) => {
 		if (!supportsColor) {
 			console.error(`ERROR [${date}]: ${message}`);

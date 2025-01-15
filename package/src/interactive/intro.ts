@@ -6,11 +6,11 @@ import type { Context } from './context.js';
 export async function intro(
 	ctx: Pick<Context, 'welcome' | 'version' | 'username' | 'skipBanners' | 'debug'>
 ) {
-	ctx.debug && logger.log('Running intro...');
+	ctx.debug && logger.debug('Running intro...');
 	banner();
 
 	if (!ctx.skipBanners) {
-		ctx.debug && logger.log('Printing welcome message...');
+		ctx.debug && logger.debug('Printing welcome message...');
 		const { welcome } = ctx;
 		await say(
 			[
@@ -27,6 +27,6 @@ export async function intro(
 			] as string[],
 			{ clear: true }
 		);
-		ctx.debug && logger.log('Welcome message printed');
+		ctx.debug && logger.debug('Welcome message printed');
 	}
 }

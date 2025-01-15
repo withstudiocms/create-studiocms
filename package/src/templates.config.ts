@@ -13,7 +13,7 @@ interface FilterRules {
 	isWithStudioCMSRepo: string[];
 }
 
-interface TemplateRegistry {
+export interface TemplateRegistry {
 	defaultTemplate: string;
 	gigetRepoUrl: GigetRepoUrl;
 	currentRepositoryUrl: string;

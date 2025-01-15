@@ -2,17 +2,20 @@ import dns from 'node:dns/promises';
 import { verifyTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
 import { bannerAbort, error, info, log } from '../messages.js';
-import { templateRegistry } from '../templates.config.js';
+import { logger } from '../utils.js';
 import type { Context } from './context.js';
 import { getTemplateTarget } from './template.js';
 
 export async function verify(
-	ctx: Pick<Context, 'version' | 'dryRun' | 'template' | 'templateRef' | 'exit' | 'debug'>
+	ctx: Pick<
+		Context,
+		'version' | 'dryRun' | 'template' | 'templateRef' | 'exit' | 'debug' | 'templateRegistry'
+	>
 ) {
 	const { debug } = ctx;
 
 	if (!ctx.dryRun) {
-		if (debug) log('Checking internet connection...');
+		if (debug) logger.debug('Checking internet connection...');
 		const online = await isOnline();
 		if (!online) {
 			bannerAbort();
@@ -20,21 +23,21 @@ export async function verify(
 			error('error', 'Unable to connect to the internet.');
 			ctx.exit(1);
 		}
-		if (debug) info('check', 'Internet connection verified');
+		if (debug) logger.debug('Internet connection verified');
 	}
 
 	if (ctx.template) {
-		if (debug) log('Verifying template...');
-		const target = getTemplateTarget(ctx.template, ctx.templateRef);
+		if (debug) logger.debug('Verifying template...');
+		const target = getTemplateTarget(ctx.template, ctx.templateRegistry, ctx.templateRef);
 		const ok = await verifyTemplate(target);
 		if (!ok) {
 			bannerAbort();
 			log('');
 			error('error', `Template ${color.reset(ctx.template)} ${color.dim('could not be found!')}`);
-			await info('check', templateRegistry.currentRepositoryUrl);
+			await info('check', ctx.templateRegistry.currentRepositoryUrl);
 			ctx.exit(1);
 		}
-		if (debug) info('check', 'Template verified');
+		if (debug) logger.debug('Template verified');
 	}
 }
 

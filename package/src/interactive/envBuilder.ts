@@ -33,9 +33,9 @@ export async function env(
 		'cwd' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit' | 'isStudioCMSProject' | 'debug'
 	>
 ) {
-	ctx.debug && logger.log('Running env...');
+	ctx.debug && logger.debug('Running env...');
 	if (!ctx.isStudioCMSProject) {
-		ctx.debug && logger.log('Not a StudioCMS project, skipping environment file creation');
+		ctx.debug && logger.debug('Not a StudioCMS project, skipping environment file creation');
 		return;
 	}
 
@@ -59,7 +59,7 @@ export async function env(
 			ctx.exit(0);
 		}
 
-		ctx.debug && logger.log(`Environment file type selected: ${EnvPrompt}`);
+		ctx.debug && logger.debug(`Environment file type selected: ${EnvPrompt}`);
 
 		_env = EnvPrompt !== 'none';
 
@@ -94,6 +94,7 @@ export async function env(
 								{ value: 'google', label: 'Google' },
 								{ value: 'auth0', label: 'Auth0' },
 							],
+							required: false,
 						}),
 				},
 				{
@@ -106,7 +107,7 @@ export async function env(
 				}
 			);
 
-			ctx.debug && logger.log(`Environment Builder Step 1: ${envBuilderStep1}`);
+			ctx.debug && logger.debug(`Environment Builder Step 1: ${envBuilderStep1}`);
 
 			envBuilderOpts = { ...envBuilderStep1 };
 
@@ -137,7 +138,7 @@ export async function env(
 					}
 				);
 
-				ctx.debug && logger.log(`GitHub OAuth: ${githubOAuth}`);
+				ctx.debug && logger.debug(`GitHub OAuth: ${githubOAuth}`);
 
 				envBuilderOpts.githubOAuth = githubOAuth;
 			}
@@ -169,7 +170,7 @@ export async function env(
 					}
 				);
 
-				ctx.debug && logger.log(`Discord OAuth: ${discordOAuth}`);
+				ctx.debug && logger.debug(`Discord OAuth: ${discordOAuth}`);
 
 				envBuilderOpts.discordOAuth = discordOAuth;
 			}
@@ -201,7 +202,7 @@ export async function env(
 					}
 				);
 
-				ctx.debug && logger.log(`Google OAuth: ${googleOAuth}`);
+				ctx.debug && logger.debug(`Google OAuth: ${googleOAuth}`);
 
 				envBuilderOpts.googleOAuth = googleOAuth;
 			}
@@ -238,7 +239,7 @@ export async function env(
 					}
 				);
 
-				ctx.debug && logger.log(`Auth0 OAuth: ${auth0OAuth}`);
+				ctx.debug && logger.debug(`Auth0 OAuth: ${auth0OAuth}`);
 
 				envBuilderOpts.auth0OAuth = auth0OAuth;
 			}
@@ -272,5 +273,5 @@ export async function env(
 		});
 	}
 
-	ctx.debug && logger.log('Environment complete');
+	ctx.debug && logger.debug('Environment complete');
 }

@@ -12,7 +12,7 @@ export async function dependencies(
 		'install' | 'yes' | 'prompt' | 'packageManager' | 'cwd' | 'dryRun' | 'tasks' | 'exit' | 'debug'
 	>
 ) {
-	ctx.debug && logger.log('Running dependencies...');
+	ctx.debug && logger.debug('Running dependencies...');
 	let deps = ctx.install ?? ctx.yes;
 	if (deps === undefined) {
 		const _deps = await ctx.prompt.confirm({
@@ -25,7 +25,7 @@ export async function dependencies(
 			ctx.exit(0);
 		}
 
-		ctx.debug && logger.log(`Dependencies: ${_deps}`);
+		ctx.debug && logger.debug(`Dependencies: ${_deps}`);
 
 		deps = _deps;
 
@@ -60,7 +60,7 @@ export async function dependencies(
 		);
 	}
 
-	ctx.debug && logger.log('Dependencies complete');
+	ctx.debug && logger.debug('Dependencies complete');
 }
 
 async function install({ packageManager, cwd }: { packageManager: string; cwd: string }) {

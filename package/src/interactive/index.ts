@@ -16,15 +16,15 @@ export async function interactiveCLI(this: instanceCommand) {
 
 	const opts = this.opts();
 
-	opts.debug && logger.log(`Options: ${JSON.stringify(opts, null, 2)}`);
+	opts.debug && logger.debug(`Options: ${JSON.stringify(opts, null, 2)}`);
 
 	const ctx = await getContext(this.opts());
 
-	opts.debug && logger.log(`Context: ${JSON.stringify(ctx, null, 2)}`);
+	opts.debug && logger.debug(`Context: ${JSON.stringify(ctx, null, 2)}`);
 
 	console.log('');
 
-	opts.debug && logger.log('Running interactive CLI Steps...');
+	opts.debug && logger.debug('Running interactive CLI Steps...');
 
 	// Run the interactive CLI
 	const steps = [
@@ -45,15 +45,15 @@ export async function interactiveCLI(this: instanceCommand) {
 
 	console.log(''); // Add a newline after the last step
 
-	opts.debug && logger.log('Running tasks...');
+	opts.debug && logger.debug('Running tasks...');
 
 	await tasks(ctx.tasks);
 
-	opts.debug && logger.log('Running next steps...');
+	opts.debug && logger.debug('Running next steps...');
 
 	await next(ctx);
 
-	opts.debug && logger.log('Interactive CLI completed, exiting...');
+	opts.debug && logger.debug('Interactive CLI completed, exiting...');
 
 	process.exit(0);
 }
