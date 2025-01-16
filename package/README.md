@@ -13,7 +13,7 @@ npm create studiocms@latest
 ### Use with PNPM
 
 ```bash
-pnpm create studiocms@latest
+pnpm create studiocms
 ```
 
 ### Use with Yarn
