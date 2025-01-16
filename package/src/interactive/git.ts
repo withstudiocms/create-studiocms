@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import color from 'chalk';
-import { error, info } from '../messages.js';
+import { cancelMessage, error, info } from '../messages.js';
 import { shell } from '../shell.js';
 import type { Context } from './context.js';
 
@@ -24,7 +24,7 @@ export async function git(
 		});
 
 		if (ctx.prompt.isCancel(__git)) {
-			ctx.prompt.cancel('Operation cancelled.');
+			ctx.prompt.cancel(cancelMessage);
 			ctx.exit(0);
 		}
 

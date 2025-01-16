@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { error, info } from '../messages.js';
+import { cancelMessage, error, info } from '../messages.js';
 import type { Context } from './context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 
@@ -62,7 +62,7 @@ export async function env(
 		});
 
 		if (ctx.prompt.isCancel(EnvPrompt)) {
-			ctx.prompt.cancel('Operation cancelled.');
+			ctx.prompt.cancel(cancelMessage);
 			ctx.exit(0);
 		}
 
@@ -108,7 +108,7 @@ export async function env(
 					// On Cancel callback that wraps the group
 					// So if the user cancels one of the prompts in the group this function will be called
 					onCancel: () => {
-						ctx.prompt.cancel('Operation cancelled.');
+						ctx.prompt.cancel(cancelMessage);
 						process.exit(0);
 					},
 				}
@@ -139,7 +139,7 @@ export async function env(
 					},
 					{
 						onCancel: () => {
-							ctx.prompt.cancel('Operation cancelled.');
+							ctx.prompt.cancel(cancelMessage);
 							process.exit(0);
 						},
 					}
@@ -171,7 +171,7 @@ export async function env(
 					},
 					{
 						onCancel: () => {
-							ctx.prompt.cancel('Operation cancelled.');
+							ctx.prompt.cancel(cancelMessage);
 							process.exit(0);
 						},
 					}
@@ -203,7 +203,7 @@ export async function env(
 					},
 					{
 						onCancel: () => {
-							ctx.prompt.cancel('Operation cancelled.');
+							ctx.prompt.cancel(cancelMessage);
 							process.exit(0);
 						},
 					}
@@ -240,7 +240,7 @@ export async function env(
 					},
 					{
 						onCancel: () => {
-							ctx.prompt.cancel('Operation cancelled.');
+							ctx.prompt.cancel(cancelMessage);
 							process.exit(0);
 						},
 					}

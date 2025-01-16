@@ -237,7 +237,7 @@ export const getName = () =>
 				if (whoami.trim()) {
 					return resolve(whoami.split(' ')[0].trim());
 				}
-				return resolve('astronaut');
+				return resolve('StudioCMS User');
 			});
 		});
 	});
@@ -269,3 +269,6 @@ export const nextSteps = async ({ projectDir, devCmd }: { projectDir: string; de
 	log(`\n${prefix}Stuck? Join us at ${StudioCMSColorway('https://chat.studiocms.dev')}`);
 	await sleep(200);
 };
+
+export const cancelMessage =
+	"Operation cancelled, exiting... If you're stuck, join us at https://chat.studiocms.dev";

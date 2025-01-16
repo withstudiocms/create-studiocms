@@ -1,6 +1,6 @@
 import path from 'node:path';
 import color from 'chalk';
-import { info, log, warn } from '../messages.js';
+import { cancelMessage, info, log, warn } from '../messages.js';
 import type { Context } from './context.js';
 import { generateProjectName } from './data/project.js';
 import { isEmpty, toValidName } from './shared.js';
@@ -44,7 +44,7 @@ export async function projectName(
 		});
 
 		if (ctx.prompt.isCancel(name)) {
-			ctx.prompt.cancel('Operation cancelled.');
+			ctx.prompt.cancel(cancelMessage);
 			ctx.exit(0);
 		}
 

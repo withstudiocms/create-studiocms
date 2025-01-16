@@ -18,10 +18,8 @@ export async function intro(
 					'Welcome',
 					'to',
 					label('StudioCMS', StudioCMSColorwayBg, color.black),
-					Promise.resolve(ctx.version).then(
-						(version) => `${version ? StudioCMSColorway(`v${version}`) : ''},`
-					),
-					Promise.resolve(ctx.username).then((username) => `${username}!`),
+					StudioCMSColorway(`v${ctx.version}`),
+					ctx.username,
 				],
 				welcome || `Let's create something unforgettable!`,
 			] as string[],

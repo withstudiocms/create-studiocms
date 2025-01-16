@@ -1,11 +1,29 @@
-import { Command as _Command, Help as _Help } from '@commander-js/extra-typings';
+import {
+	type CommandUnknownOpts,
+	type OutputConfiguration,
+	Command as _Command,
+	Help as _Help,
+} from '@commander-js/extra-typings';
 import { type ChalkInstance, chalkStderr as chalkStdErr, default as chalkStdOut } from 'chalk';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
+import { StudioCMSColorwayError, date, supportsColor } from './utils';
 
 export class Help extends _Help {
 	chalk: ChalkInstance;
 	colorway: ChalkInstance;
+	colorwayError: ChalkInstance = StudioCMSColorwayError;
+	sortOptions = true;
+	sortSubcommands = true;
+	showGlobalOptions = true;
+	subcommandTerm = (cmd: CommandUnknownOpts) =>
+		cmd.name() === 'interactive'
+			? `${this.colorway(cmd.name())}${this.colorwayError('*')}`
+			: this.colorway(cmd.name());
+	subcommandDescription = (cmd: CommandUnknownOpts) => {
+		const desc = cmd.summary() || cmd.description();
+		return desc;
+	};
 
 	constructor() {
 		super();
@@ -51,14 +69,34 @@ export class Help extends _Help {
 		return this.chalk.yellow(str);
 	}
 	styleSubcommandText(str: string) {
-		return this.colorway(str);
+		return str;
 	}
 }
 
 export class Command extends _Command {
+	chalk: ChalkInstance = chalkStdOut;
+	colorwayError = StudioCMSColorwayError;
+	supportsColor = supportsColor;
+	max = process.stdout.columns;
+	prefix = this.max < 80 ? ' ' : ' '.repeat(2);
+
+	_outputConfiguration: OutputConfiguration | undefined = {
+		writeOut: (str) => process.stdout.write(str),
+		writeErr: (str) => process.stdout.write(`ERROR [${date}]: ${str}`),
+		// Output errors in red.
+		outputError: (str, write) =>
+			write(`${this.chalk.red.bold(`ERROR [${date}]:`)} ${this.chalk.red(str)}`),
+		getOutHelpWidth: () => (process.stdout.isTTY ? (process.stdout.columns ?? 80) : 80),
+		getErrHelpWidth: () => (process.stderr.isTTY ? (process.stderr.columns ?? 80) : 80),
+		getOutHasColors: () => this.supportsColor,
+		getErrHasColors: () => this.supportsColor,
+		stripColor: (str) => stripAnsi(str),
+	};
+
 	createCommand(name: string | undefined) {
 		return new Command(name);
 	}
+
 	createHelp() {
 		return Object.assign(new Help(), this.configureHelp());
 	}

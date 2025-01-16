@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { downloadTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
-import { error, info } from '../messages.js';
+import { cancelMessage, error, info } from '../messages.js';
 import type { Context } from './context.js';
 
 function templateTargetFilter(
@@ -50,7 +50,7 @@ export async function template(
 		});
 
 		if (ctx.prompt.isCancel(projectType)) {
-			ctx.prompt.cancel('Operation cancelled.');
+			ctx.prompt.cancel(cancelMessage);
 			ctx.exit(0);
 		}
 
@@ -62,7 +62,7 @@ export async function template(
 		});
 
 		if (ctx.prompt.isCancel(_template)) {
-			ctx.prompt.cancel('Operation cancelled.');
+			ctx.prompt.cancel(cancelMessage);
 			ctx.exit(0);
 		}
 

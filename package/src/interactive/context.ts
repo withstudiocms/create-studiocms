@@ -25,7 +25,7 @@ export interface Context extends InteractiveOptions {
 	prompt: typeof p;
 	cwd: string;
 	packageManager: string;
-	username: Promise<string>;
+	username: string;
 	welcome: string;
 	version: string;
 	exit(code: number): never;
@@ -69,7 +69,7 @@ export async function getContext(args: InteractiveOptions & { cwd?: string }): P
 	const context: Context = {
 		prompt: p,
 		packageManager,
-		username: getName(),
+		username: await getName(),
 		version: pkgJson.version,
 		dryRun,
 		projectName,
