@@ -23,9 +23,9 @@ export async function intro(
 					),
 					Promise.resolve(ctx.username).then((username) => `${username}!`),
 				],
-				welcome ?? `Let's create something unforgettable!`,
+				welcome || `Let's create something unforgettable!`,
 			] as string[],
-			{ clear: true }
+			{ clear: false }
 		);
 		ctx.debug && ctx.logger.debug('Welcome message printed');
 	}

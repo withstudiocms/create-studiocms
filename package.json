@@ -26,6 +26,7 @@
         "@types/node": "^22.10.5",
         "pkg-pr-new": "^0.0.39",
         "run-scripts": "workspace:*",
-        "typescript": "^5.7.2"
+        "typescript": "^5.7.2",
+        "vitest": "^2.1.8"
     }
   }

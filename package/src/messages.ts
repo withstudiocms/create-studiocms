@@ -58,11 +58,15 @@ let stdout = process.stdout;
 export function setStdout(writable: typeof process.stdout) {
 	stdout = writable;
 }
+
 type Message = string | Promise<string>;
+
+// biome-ignore lint/style/useConst: <explanation>
+let _stdout = stdout;
 
 export const say = async (
 	msg: Message | Message[] = [],
-	{ clear = false, stdin = process.stdin, stdout = process.stdout } = {}
+	{ clear = false, stdin = process.stdin, stdout = _stdout } = {}
 ) => {
 	const messages = Array.isArray(msg) ? msg : [msg];
 	const rl = readline.createInterface({ input: stdin, escapeCodeTimeout: 50 });
@@ -114,7 +118,8 @@ export const say = async (
 		const msg = [];
 		let j = 0;
 		for (let word of [''].concat(_message)) {
-			word = await word;
+			// biome-ignore lint/correctness/noSelfAssign: <explanation>
+			word = word;
 			if (word) msg.push(word);
 			logUpdate(`\n${face(msg.join(' '))}`);
 			if (!cancelled) await sleep(randomBetween(75, 200));

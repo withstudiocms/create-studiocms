@@ -4,7 +4,11 @@ import stripAnsi from 'strip-ansi';
 import pkgJson from '../package.json';
 import { Command } from './commander.js';
 import { interactiveCLI } from './interactive/index.js';
+import { setStdout } from './messages.js';
 import { CLITitle, StudioCMSColorwayError, date, logger, supportsColor } from './utils.js';
+
+export { setStdout };
+export * from './interactive/index.js';
 
 const exit = () => process.exit(0);
 process.on('SIGINT', exit);

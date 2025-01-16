@@ -35,7 +35,7 @@ export interface Context extends InteractiveOptions {
 	logger: typeof logger;
 }
 
-export async function getContext(args: InteractiveOptions): Promise<Context> {
+export async function getContext(args: InteractiveOptions & { cwd?: string }): Promise<Context> {
 	let {
 		skipBanners,
 		dryRun,
@@ -47,13 +47,12 @@ export async function getContext(args: InteractiveOptions): Promise<Context> {
 		template,
 		yes,
 		no,
-		projectName: projectN,
+		projectName,
 		templateRef,
 	} = args;
 
 	const packageManager = detectPackageManager() ?? 'npm';
-	const cwd = process.cwd();
-	const projectName = projectN || cwd.split('/').pop();
+	const cwd = args.cwd ?? process.cwd();
 
 	if (no) {
 		yes = false;

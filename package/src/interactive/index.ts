@@ -10,6 +10,8 @@ import { projectName } from './projectName.js';
 import { template } from './template.js';
 import { verify } from './verify.js';
 
+export { getContext, dependencies, env, git, intro, next, projectName, template, verify };
+
 export async function interactiveCLI(this: instanceCommand) {
 	const opts = this.opts();
 
