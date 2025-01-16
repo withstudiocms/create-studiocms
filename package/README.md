@@ -6,25 +6,25 @@ CLI Utility Toolkit used for setting up a new project using a StudioCMS Ecosyste
 
 ### Use with NPM
 
-```bash
+```sh
 npm create studiocms@latest
 ```
 
 ### Use with PNPM
 
-```bash
+```sh
 pnpm create studiocms
 ```
 
 ### Use with Yarn
 
-```bash
+```sh
 yarn create studiocms
 ```
 
 `create-studiocms` automatically runs in _interactive_ mode, but you can also specify your project name and template with command line arguments.
 
-```bash
+```sh
 # npm
 npm create studiocms@latest --template studiocms/basics --project-name my-studiocms-project
 
