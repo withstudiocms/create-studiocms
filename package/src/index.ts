@@ -38,6 +38,8 @@ export async function main() {
 		})
 		.configureHelp({
 			sortSubcommands: true,
+			sortOptions: true,
+			showGlobalOptions: true,
 			subcommandTerm: (cmd) =>
 				cmd.name() === 'interactive' ? `${cmd.name()}${StudioCMSColorwayError(' *')}` : cmd.name(),
 			subcommandDescription: (cmd) => {
@@ -52,9 +54,10 @@ export async function main() {
 		)
 		.showHelpAfterError('(add --help for additional information)')
 		.enablePositionalOptions(true)
+		.helpOption('-h, --help', 'Display help for command.')
 		// Global Options
-		.addOption(new Option('--color', 'force color output')) // implemented by chalk
-		.addOption(new Option('--no-color', 'disable color output')) // implemented by chalk
+		.addOption(new Option('--color', 'Force color output')) // implemented by chalk
+		.addOption(new Option('--no-color', 'Disable color output')) // implemented by chalk
 		.helpCommand('help [cmd]', 'Show help for command'); // Enable help command
 
 	//

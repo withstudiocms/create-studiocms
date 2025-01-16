@@ -48,9 +48,9 @@ Usage: create-studiocms [options] [command]
 
 Options:
   -V, --version  Output the current version of the CLI Toolkit.
+  -h, --help     display help for command
   --color        force color output
   --no-color     disable color output
-  -h, --help     display help for command
 
 Commands:
   help           Show help for command
