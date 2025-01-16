@@ -9,9 +9,11 @@
       "dev": "pnpm --filter create-studiocms run dev",
       "build": "pnpm --filter create-studiocms run build",
       "test-run": "node ./package/create-studiocms.mjs",
+      "test": "vitest run",
 
       "lint": "biome check .",
       "lint:fix": "biome check --write .",
+      "ci:test": "vitest",
       "ci:lint": "biome ci --formatter-enabled=true --organize-imports-enabled=true  --reporter=github",
       "ci:install": "pnpm install --frozen-lockfile",
       "ci:version": "pnpm changeset version",
