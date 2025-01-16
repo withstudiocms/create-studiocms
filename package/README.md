@@ -37,7 +37,7 @@ pnpm create studiocms --template studiocms/basics --project-name my-studiocms-pr
 
 [Check out the full list][templates] of templates, available on GitHub.
 
-When using --template the default behavior is to search the Templates repo and is declared as folders. for example the `studiocms/basics` templates points to the `basics` project within the `studiocms` folder at the root of the repo.
+When using `--template` the default behavior is to search the Templates repo and is declared as folders. for example the `studiocms/basics` templates points to the `basics` project within the `studiocms` folder at the root of the repo.
 
 ## Full CLI Options and commands
 
