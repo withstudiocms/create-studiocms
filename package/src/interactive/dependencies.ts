@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import color from 'chalk';
-import { cancelMessage, error, info } from '../messages.js';
+import { error, info } from '../messages.js';
 import { shell } from '../shell.js';
 import type { Context } from './context.js';
 
@@ -11,6 +11,7 @@ export async function dependencies(
 		| 'install'
 		| 'yes'
 		| 'prompt'
+		| 'promptCancel'
 		| 'packageManager'
 		| 'cwd'
 		| 'dryRun'
@@ -28,14 +29,13 @@ export async function dependencies(
 			initialValue: true,
 		});
 
-		if (ctx.prompt.isCancel(_deps)) {
-			ctx.prompt.cancel(cancelMessage);
-			ctx.exit(0);
+		if (typeof _deps === 'symbol') {
+			ctx.promptCancel(_deps);
+		} else {
+			ctx.debug && ctx.logger.debug(`Dependencies: ${_deps}`);
+
+			deps = _deps;
 		}
-
-		ctx.debug && ctx.logger.debug(`Dependencies: ${_deps}`);
-
-		deps = _deps;
 
 		ctx.install = deps;
 	}

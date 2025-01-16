@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { downloadTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
-import { cancelMessage, error, info } from '../messages.js';
+import { error, info } from '../messages.js';
 import type { Context } from './context.js';
 
 function templateTargetFilter(
@@ -30,6 +30,8 @@ export async function template(
 		| 'debug'
 		| 'templateRegistry'
 		| 'logger'
+		| 'promptCancel'
+		| 'promptOnCancel'
 	>
 ) {
 	ctx.debug && ctx.logger.debug('Running template...');
@@ -49,27 +51,25 @@ export async function template(
 			options: ctx.templateRegistry.currentProjects,
 		});
 
-		if (ctx.prompt.isCancel(projectType)) {
-			ctx.prompt.cancel(cancelMessage);
-			ctx.exit(0);
+		if (typeof projectType === 'symbol') {
+			ctx.promptCancel(projectType);
+		} else {
+			ctx.debug && ctx.logger.debug(`Project type selected: ${projectType}`);
+
+			const _template = await ctx.prompt.select({
+				message: `How would you like to start your new ${ctx.templateRegistry.currentProjects.find((p) => p.value === projectType)?.label} project?`,
+				options: ctx.templateRegistry.currentTemplates[projectType],
+			});
+
+			if (typeof _template === 'symbol') {
+				ctx.promptCancel(_template);
+			} else {
+				ctx.debug && ctx.logger.debug(`Template selected: ${_template}`);
+
+				ctx.template = _template;
+				ctx.isStudioCMSProject = projectType === 'studiocms';
+			}
 		}
-
-		ctx.debug && ctx.logger.debug(`Project type selected: ${projectType}`);
-
-		const _template = await ctx.prompt.select({
-			message: `How would you like to start your new ${ctx.templateRegistry.currentProjects.find((p) => p.value === projectType)?.label} project?`,
-			options: ctx.templateRegistry.currentTemplates[projectType],
-		});
-
-		if (ctx.prompt.isCancel(_template)) {
-			ctx.prompt.cancel(cancelMessage);
-			ctx.exit(0);
-		}
-
-		ctx.debug && ctx.logger.debug(`Template selected: ${_template}`);
-
-		ctx.template = _template;
-		ctx.isStudioCMSProject = true;
 	}
 
 	if (ctx.dryRun) {

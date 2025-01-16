@@ -1,14 +1,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import color from 'chalk';
-import { cancelMessage, error, info } from '../messages.js';
+import { error, info } from '../messages.js';
 import { shell } from '../shell.js';
 import type { Context } from './context.js';
 
 export async function git(
 	ctx: Pick<
 		Context,
-		'cwd' | 'git' | 'yes' | 'prompt' | 'dryRun' | 'tasks' | 'exit' | 'debug' | 'logger'
+		| 'cwd'
+		| 'git'
+		| 'yes'
+		| 'prompt'
+		| 'dryRun'
+		| 'tasks'
+		| 'exit'
+		| 'debug'
+		| 'logger'
+		| 'promptCancel'
 	>
 ) {
 	ctx.debug && ctx.logger.debug('Running git...');
@@ -23,14 +32,12 @@ export async function git(
 			initialValue: true,
 		});
 
-		if (ctx.prompt.isCancel(__git)) {
-			ctx.prompt.cancel(cancelMessage);
-			ctx.exit(0);
+		if (typeof __git === 'symbol') {
+			ctx.promptCancel(__git);
+		} else {
+			ctx.debug && ctx.logger.debug(`Git: ${__git}`);
+			_git = __git;
 		}
-
-		ctx.debug && ctx.logger.debug(`Git: ${__git}`);
-
-		_git = __git;
 	}
 
 	if (ctx.dryRun) {

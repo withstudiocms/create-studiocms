@@ -1,6 +1,6 @@
 import path from 'node:path';
 import color from 'chalk';
-import { cancelMessage, info, log, warn } from '../messages.js';
+import { info, log, warn } from '../messages.js';
 import type { Context } from './context.js';
 import { generateProjectName } from './data/project.js';
 import { isEmpty, toValidName } from './shared.js';
@@ -8,7 +8,15 @@ import { isEmpty, toValidName } from './shared.js';
 export async function projectName(
 	ctx: Pick<
 		Context,
-		'cwd' | 'yes' | 'dryRun' | 'prompt' | 'projectName' | 'exit' | 'debug' | 'logger'
+		| 'cwd'
+		| 'yes'
+		| 'dryRun'
+		| 'prompt'
+		| 'projectName'
+		| 'exit'
+		| 'debug'
+		| 'logger'
+		| 'promptCancel'
 	>
 ) {
 	ctx.debug && ctx.logger.debug('Running projectName...');
@@ -43,16 +51,15 @@ export async function projectName(
 			},
 		});
 
-		if (ctx.prompt.isCancel(name)) {
-			ctx.prompt.cancel(cancelMessage);
-			ctx.exit(0);
-		}
-
-		ctx.cwd = name.trim();
-		ctx.projectName = toValidName(name);
-		if (ctx.dryRun) {
-			await info('--dry-run', 'Skipping project naming');
-			return;
+		if (typeof name === 'symbol') {
+			ctx.promptCancel(name);
+		} else {
+			ctx.cwd = name.trim();
+			ctx.projectName = toValidName(name);
+			if (ctx.dryRun) {
+				await info('--dry-run', 'Skipping project naming');
+				return;
+			}
 		}
 	} else {
 		let name = ctx.cwd;

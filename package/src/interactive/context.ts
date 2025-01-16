@@ -1,7 +1,7 @@
 import os from 'node:os';
 import * as p from '@clack/prompts';
 import pkgJson from '../../package.json';
-import { getName } from '../messages.js';
+import { cancelMessage, getName } from '../messages.js';
 import { type TemplateRegistry, templateRegistry } from '../templates.config.js';
 import { logger } from '../utils.js';
 import getSeasonalMessages from './data/seasonal.js';
@@ -23,6 +23,8 @@ interface InteractiveOptions {
 
 export interface Context extends InteractiveOptions {
 	prompt: typeof p;
+	promptCancel: (val: symbol) => void;
+	promptOnCancel: () => void;
 	cwd: string;
 	packageManager: string;
 	username: string;
@@ -68,6 +70,15 @@ export async function getContext(args: InteractiveOptions & { cwd?: string }): P
 
 	const context: Context = {
 		prompt: p,
+		promptCancel(val: symbol) {
+			p.isCancel(val);
+			p.cancel(cancelMessage);
+			process.exit(0);
+		},
+		promptOnCancel() {
+			p.cancel(cancelMessage);
+			process.exit(0);
+		},
 		packageManager,
 		username: await getName(),
 		version: pkgJson.version,

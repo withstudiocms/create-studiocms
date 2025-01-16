@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { cancelMessage, error, info } from '../messages.js';
+import { error, info } from '../messages.js';
 import type { Context } from './context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 
@@ -32,6 +32,8 @@ export async function env(
 		| 'cwd'
 		| 'yes'
 		| 'prompt'
+		| 'promptCancel'
+		| 'promptOnCancel'
 		| 'dryRun'
 		| 'tasks'
 		| 'exit'
@@ -61,14 +63,13 @@ export async function env(
 			],
 		});
 
-		if (ctx.prompt.isCancel(EnvPrompt)) {
-			ctx.prompt.cancel(cancelMessage);
-			ctx.exit(0);
+		if (typeof EnvPrompt === 'symbol') {
+			ctx.promptCancel(EnvPrompt);
+		} else {
+			ctx.debug && ctx.logger.debug(`Environment file type selected: ${EnvPrompt}`);
+
+			_env = EnvPrompt !== 'none';
 		}
-
-		ctx.debug && ctx.logger.debug(`Environment file type selected: ${EnvPrompt}`);
-
-		_env = EnvPrompt !== 'none';
 
 		if (EnvPrompt === 'example') {
 			envFileContent = ExampleEnv;
@@ -107,10 +108,7 @@ export async function env(
 				{
 					// On Cancel callback that wraps the group
 					// So if the user cancels one of the prompts in the group this function will be called
-					onCancel: () => {
-						ctx.prompt.cancel(cancelMessage);
-						process.exit(0);
-					},
+					onCancel: () => ctx.promptOnCancel(),
 				}
 			);
 
@@ -138,10 +136,7 @@ export async function env(
 							}),
 					},
 					{
-						onCancel: () => {
-							ctx.prompt.cancel(cancelMessage);
-							process.exit(0);
-						},
+						onCancel: () => ctx.promptOnCancel(),
 					}
 				);
 
@@ -170,10 +165,7 @@ export async function env(
 							}),
 					},
 					{
-						onCancel: () => {
-							ctx.prompt.cancel(cancelMessage);
-							process.exit(0);
-						},
+						onCancel: () => ctx.promptOnCancel(),
 					}
 				);
 
@@ -202,10 +194,7 @@ export async function env(
 							}),
 					},
 					{
-						onCancel: () => {
-							ctx.prompt.cancel(cancelMessage);
-							process.exit(0);
-						},
+						onCancel: () => ctx.promptOnCancel(),
 					}
 				);
 
@@ -239,10 +228,7 @@ export async function env(
 							}),
 					},
 					{
-						onCancel: () => {
-							ctx.prompt.cancel(cancelMessage);
-							process.exit(0);
-						},
+						onCancel: () => ctx.promptOnCancel(),
 					}
 				);
 
