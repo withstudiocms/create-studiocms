@@ -8,6 +8,7 @@
   "editor.gotoLocation.multipleDefinitions": "goto",
   "cSpell.words": [
     "astrodb",
+    "automations",
     "bluwy",
     "cnpm",
     "codesandbox",
@@ -23,9 +24,11 @@
     "pegasi",
     "SCMS",
     "spooktacular",
+    "stefanzweifel",
     "studiocms",
     "studiocmsenv",
     "turso",
+    "vitest",
     "withstudiocms"
   ]
 }
