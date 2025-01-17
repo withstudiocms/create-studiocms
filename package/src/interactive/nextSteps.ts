@@ -1,9 +1,9 @@
 import path from 'node:path';
-import { nextSteps, say } from '../messages.js';
+import { nextSteps } from '../messages.js';
 import type { Context } from './context.js';
 
 export async function next(
-	ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners' | 'debug' | 'logger'>
+	ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners' | 'debug' | 'logger' | 'prompt'>
 ) {
 	ctx.debug && ctx.logger.debug('Running next steps...');
 	const projectDir = path.relative(process.cwd(), ctx.cwd);
@@ -21,14 +21,11 @@ export async function next(
 
 	ctx.debug && ctx.logger.debug(`Dev command: ${devCmd}`);
 
+	ctx.prompt.outro('Setup Complete! 🚀');
+
 	ctx.debug && ctx.logger.debug('Running next steps fn...');
 
 	await nextSteps({ projectDir, devCmd });
 
-	if (!ctx.skipBanners) {
-		await say(['Enjoy your new StudioCMS Project! 🚀']);
-	}
-
 	ctx.debug && ctx.logger.debug('Next steps complete');
-	return;
 }

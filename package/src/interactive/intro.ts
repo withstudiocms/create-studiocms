@@ -1,17 +1,16 @@
 import color from 'chalk';
-import { banner, label, say } from '../messages.js';
+import { label, say } from '../messages.js';
 import { StudioCMSColorway, StudioCMSColorwayBg } from '../utils.js';
 import type { Context } from './context.js';
 
 export async function intro(
-	ctx: Pick<Context, 'welcome' | 'version' | 'username' | 'skipBanners' | 'debug' | 'logger'>
+	ctx: Pick<
+		Context,
+		'welcome' | 'version' | 'username' | 'skipBanners' | 'debug' | 'logger' | 'prompt'
+	>
 ) {
-	ctx.debug && ctx.logger.debug('Running intro...');
-	banner();
-
 	if (!ctx.skipBanners) {
 		ctx.debug && ctx.logger.debug('Printing welcome message...');
-		const { welcome } = ctx;
 		await say(
 			[
 				[
@@ -21,9 +20,9 @@ export async function intro(
 					StudioCMSColorway(`v${ctx.version}`),
 					ctx.username,
 				],
-				welcome || `Let's create something unforgettable!`,
+				ctx.welcome || `Let's create something unforgettable!`,
 			] as string[],
-			{ clear: false }
+			{ clear: true }
 		);
 		ctx.debug && ctx.logger.debug('Welcome message printed');
 	}

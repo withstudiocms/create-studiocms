@@ -1,17 +1,10 @@
 import { exec } from 'node:child_process';
 import readline from 'node:readline';
 import type { Key } from 'node:readline';
-import { stripVTControlCharacters } from 'node:util';
+import boxen from 'boxen';
 import color from 'chalk';
 import { createLogUpdate } from 'log-update';
-import {
-	StudioCMSColorway,
-	StudioCMSColorwayBg,
-	StudioCMSColorwayError,
-	StudioCMSColorwayErrorBg,
-	StudioCMSColorwayInfo,
-	StudioCMSColorwayWarn,
-} from './utils.js';
+import { StudioCMSColorway, StudioCMSColorwayBg, StudioCMSColorwayInfo } from './utils.js';
 
 export const action = (key: Key, isSelect: boolean) => {
 	if (key.meta && key.name !== 'escape') return;
@@ -54,20 +47,27 @@ export const action = (key: Key, isSelect: boolean) => {
 };
 
 let stdout = process.stdout;
+
+const stdin = process.stdin;
+
 /** @internal Used to mock `process.stdout.write` for testing purposes */
 export function setStdout(writable: typeof process.stdout) {
 	stdout = writable;
 }
 
-type Message = string | Promise<string>;
+const StudioCMSLogo = (
+	prefix: string,
+	msg: string,
+	messages?: { ln1?: string; ln2?: string; ln4?: string }
+) =>
+	[
+		`${color.white.bold('    ████')}${prefix}${messages?.ln1 || ''}`,
+		`${color.white.bold('  █ ████')}${prefix}${messages?.ln2 || ''}`,
+		`${color.white.bold('█ █▄▄▄  ')}${prefix}${msg}`,
+		`${color.white.bold('█▄▄▄    ')}${prefix}${messages?.ln4 || ''}`,
+	].join('\n');
 
-// biome-ignore lint/style/useConst: <explanation>
-let _stdout = stdout;
-
-export const say = async (
-	msg: Message | Message[] = [],
-	{ clear = false, stdin = process.stdin, stdout = _stdout } = {}
-) => {
+export const say = async (msg: string | string[] = [], { clear = false } = {}) => {
 	const messages = Array.isArray(msg) ? msg : [msg];
 	const rl = readline.createInterface({ input: stdin, escapeCodeTimeout: 50 });
 	const logUpdate = createLogUpdate(stdout, { showCursor: false });
@@ -104,16 +104,22 @@ export const say = async (
 	const face = (msg: string) => {
 		const max = stdout.columns;
 		const prefix = max < 80 ? ' ' : ' '.repeat(4);
-		return [
-			`${StudioCMSColorway.bold('    ████')}`,
-			`${StudioCMSColorway.bold('  █ ████')}`,
-			`${StudioCMSColorway.bold('█ █▄▄▄  ')}${prefix}${msg}`,
-			`${StudioCMSColorway.bold('█▄▄▄    ')}`,
-		].join('\n');
+
+		const box = boxen(StudioCMSLogo(prefix, msg), {
+			width: max < 80 ? max : max / 2,
+			textAlignment: 'left',
+			padding: 1,
+			borderColor: '#a581f3',
+			borderStyle: 'double',
+			backgroundColor: 'black',
+		});
+
+		return box;
 	};
 
 	for (let message of messages) {
-		message = await message;
+		// biome-ignore lint/correctness/noSelfAssign: <explanation>
+		message = message;
 		const _message = Array.isArray(message) ? message : message.split(' ');
 		const msg = [];
 		let j = 0;
@@ -148,84 +154,10 @@ export const random = (...arr: any[]) => {
 	return flattenedArray[Math.floor(flattenedArray.length * Math.random())];
 };
 
-export const log = (message: string) => stdout.write(`${message}\n`);
-
 export const label = (text: string, c = StudioCMSColorwayBg, t = color.whiteBright) =>
 	c(` ${t(text)} `);
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-export const strip = (str: string) => {
-	const pattern = [
-		'[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
-		'(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))',
-	].join('|');
-
-	const RGX = new RegExp(pattern, 'g');
-	return typeof str === 'string' ? str.replace(RGX, '') : str;
-};
-
-export const align = (text: string, dir: 'start' | 'end' | 'center', len: number) => {
-	const pad = Math.max(len - strip(text).length, 0);
-	switch (dir) {
-		case 'start':
-			return text + ' '.repeat(pad);
-		case 'end':
-			return ' '.repeat(pad) + text;
-		case 'center':
-			return ' '.repeat(Math.floor(pad / 2)) + text + ' '.repeat(Math.floor(pad / 2));
-		default:
-			return text;
-	}
-};
-
-export const title = (text: string) => `${align(label(text), 'end', 7)} `;
-
-export const banner = () => {
-	const prefix = 'studiocms';
-	const suffix = 'Interactive CLI';
-	log(`${label(prefix, StudioCMSColorwayBg, color.black)}  ${suffix}`);
-};
-
-export const bannerAbort = () =>
-	log(
-		`\n${label('studiocms', StudioCMSColorwayErrorBg)} ${color.bold('Initialization sequence aborted.')}`
-	);
-
-export const info = async (prefix: string, text: string) => {
-	await sleep(100);
-	if (stdout.columns < 80) {
-		log(`${' '.repeat(5)} ${StudioCMSColorwayInfo('◼')}  ${StudioCMSColorwayInfo(prefix)}`);
-		log(`${' '.repeat(9)}${color.dim(text)}`);
-	} else {
-		log(
-			`${' '.repeat(5)} ${StudioCMSColorwayInfo('◼')}  ${StudioCMSColorwayInfo(prefix)} ${color.dim(text)}`
-		);
-	}
-};
-
-export const warn = async (prefix: string, text: string) => {
-	await sleep(100);
-	if (stdout.columns < 80) {
-		log(`${' '.repeat(5)} ${StudioCMSColorwayWarn('◼')}  ${StudioCMSColorwayWarn(prefix)}`);
-		log(`${' '.repeat(9)}${color.dim(text)}`);
-	} else {
-		log(
-			`${' '.repeat(5)} ${StudioCMSColorwayWarn('◼')}  ${StudioCMSColorwayWarn(prefix)} ${color.dim(text)}`
-		);
-	}
-};
-
-export const error = async (prefix: string, text: string) => {
-	if (stdout.columns < 80) {
-		log(`${' '.repeat(5)} ${StudioCMSColorwayError('▲')}  ${StudioCMSColorwayError(prefix)}`);
-		log(`${' '.repeat(9)}${color.dim(text)}`);
-	} else {
-		log(
-			`${' '.repeat(5)} ${StudioCMSColorwayError('▲')}  ${StudioCMSColorwayError(prefix)} ${color.dim(text)}`
-		);
-	}
-};
 
 export const getName = () =>
 	new Promise<string>((resolve) => {
@@ -244,30 +176,29 @@ export const getName = () =>
 
 export const nextSteps = async ({ projectDir, devCmd }: { projectDir: string; devCmd: string }) => {
 	const max = stdout.columns;
-	const prefix = max < 80 ? ' ' : ' '.repeat(9);
-	await sleep(200);
-	log(
-		`\n ${StudioCMSColorwayBg(` ${color.black('next')} `)}  ${color.bold(
-			'Setup Complete. Explore your project!'
-		)}`
-	);
+	const prefix = max < 80 ? ' ' : ' '.repeat(4);
+	const logUpdate = createLogUpdate(stdout, { showCursor: false });
 
-	await sleep(100);
-	if (projectDir !== '') {
-		projectDir = projectDir.includes(' ') ? `"./${projectDir}"` : `./${projectDir}`;
-		const enter = [
-			`\n${prefix}Enter your project directory using`,
-			StudioCMSColorway(`cd ${projectDir}`, ''),
-		];
-		const len = enter[0].length + stripVTControlCharacters(enter[1]).length;
-		log(enter.join(len > max ? `\n${prefix}` : ' '));
-	}
-	log(
-		`${prefix}Run ${StudioCMSColorway(devCmd)} to start the dev server. ${StudioCMSColorway('CTRL+C')} to stop.`
+	logUpdate(
+		boxen(
+			[
+				color.bold('Setup Complete. Explore your new project!'),
+				'',
+				StudioCMSLogo(prefix, '', {
+					ln1: `Enter your project directory using ${StudioCMSColorwayInfo(`cd ${projectDir}`)}`,
+					ln2: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
+					ln4: `Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`,
+				}),
+			].join('\n'),
+			{
+				width: max < 80 ? max : max / 2,
+				borderColor: '#a581f3',
+				borderStyle: 'double',
+				padding: 1,
+				backgroundColor: 'black',
+			}
+		)
 	);
-	await sleep(100);
-	log(`\n${prefix}Stuck? Join us at ${StudioCMSColorway('https://chat.studiocms.dev')}`);
-	await sleep(200);
 };
 
 export const cancelMessage =

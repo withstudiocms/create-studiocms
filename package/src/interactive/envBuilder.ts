@@ -1,7 +1,8 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { error, info } from '../messages.js';
+import color from 'chalk';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../utils.js';
 import type { Context } from './context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 
@@ -44,7 +45,10 @@ export async function env(
 ) {
 	ctx.debug && ctx.logger.debug('Running env...');
 	if (!ctx.isStudioCMSProject) {
-		ctx.debug && ctx.logger.debug('Not a StudioCMS project, skipping environment file creation');
+		ctx.debug &&
+			ctx.logger.debug(
+				StudioCMSColorwayInfo('Not a StudioCMS project, skipping environment file creation')
+			);
 		return;
 	}
 
@@ -52,7 +56,7 @@ export async function env(
 	let envFileContent: string;
 
 	if (_env) {
-		await info('env', 'Setting up basic environment file');
+		ctx.prompt.log.info(StudioCMSColorwayInfo('Setting up basic environment file'));
 	} else {
 		const EnvPrompt = await ctx.prompt.select({
 			message: 'What kind of environment file would you like to create?',
@@ -242,7 +246,9 @@ export async function env(
 	}
 
 	if (ctx.dryRun) {
-		await info('--dry-run', 'Skipping environment file creation');
+		ctx.prompt.log.info(
+			`${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping environment file creation')}`
+		);
 	} else if (_env) {
 		ctx.tasks.push({
 			title: 'Environment Variable File',
@@ -255,10 +261,12 @@ export async function env(
 					message('Environment file created');
 				} catch (e) {
 					if (e instanceof Error) {
-						error('error', e.message);
+						ctx.prompt.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
 						process.exit(1);
 					} else {
-						error('error', 'Unable to create environment file.');
+						ctx.prompt.log.error(
+							StudioCMSColorwayError('Unknown Error: Unable to create environment file.')
+						);
 						process.exit(1);
 					}
 				}

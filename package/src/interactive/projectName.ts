@@ -1,6 +1,6 @@
 import path from 'node:path';
 import color from 'chalk';
-import { info, log, warn } from '../messages.js';
+import { StudioCMSColorwayInfo, StudioCMSColorwayWarn } from '../utils.js';
 import type { Context } from './context.js';
 import { generateProjectName } from './data/project.js';
 import { isEmpty, toValidName } from './shared.js';
@@ -22,19 +22,19 @@ export async function projectName(
 	ctx.debug && ctx.logger.debug('Running projectName...');
 
 	ctx.debug && ctx.logger.debug('Checking cwd...');
-	await checkCwd(ctx.cwd);
-
-	console.log('');
+	await checkCwd(ctx.cwd, ctx.prompt);
 
 	if (!ctx.cwd || !isEmpty(ctx.cwd)) {
 		if (!isEmpty(ctx.cwd)) {
-			await warn('Hmm...', `${color.reset(`"${ctx.cwd}"`)}${color.dim(' is not empty!')}`);
+			ctx.prompt.log.warn(
+				`${StudioCMSColorwayWarn('Hmm...')} ${color.reset(`"${ctx.cwd}"`)}${color.dim(' is not empty!')}`
+			);
 		}
 
 		if (ctx.yes) {
 			ctx.projectName = generateProjectName();
 			ctx.cwd = `./${ctx.projectName}`;
-			await info('dir', `Project created at ./${ctx.projectName}`);
+			ctx.prompt.log.info(StudioCMSColorwayInfo(`Project created at ./${ctx.projectName}`));
 			return;
 		}
 
@@ -57,7 +57,9 @@ export async function projectName(
 			ctx.cwd = name.trim();
 			ctx.projectName = toValidName(name);
 			if (ctx.dryRun) {
-				await info('--dry-run', 'Skipping project naming');
+				ctx.prompt.log.info(
+					`${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping project naming')}`
+				);
 				return;
 			}
 		}
@@ -80,11 +82,12 @@ export async function projectName(
 	ctx.debug && ctx.logger.debug(`Project name: ${ctx.projectName}`);
 }
 
-async function checkCwd(cwd: string | undefined) {
+async function checkCwd(cwd: string | undefined, prompt: Context['prompt']) {
 	const empty = cwd && isEmpty(cwd);
 	if (empty) {
-		log('');
-		await info('dir', `Using ${color.reset(cwd)}${color.dim(' as project directory')}`);
+		prompt.log.info(
+			StudioCMSColorwayInfo(`Using ${color.reset(cwd)}${color.dim(' as project directory')}`)
+		);
 	}
 
 	return empty;

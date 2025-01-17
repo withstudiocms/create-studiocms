@@ -1,5 +1,8 @@
 import { tasks } from '@clack/prompts';
+import color from 'chalk';
 import type { instanceCommand } from '../commander.js';
+import { label } from '../messages.js';
+import { StudioCMSColorwayBg } from '../utils.js';
 import { getContext } from './context.js';
 import { dependencies } from './dependencies.js';
 import { env } from './envBuilder.js';
@@ -27,6 +30,10 @@ export async function interactiveCLI(this: instanceCommand) {
 
 	opts.debug && ctx.logger.debug('Running interactive CLI Steps...');
 
+	ctx.prompt.intro(
+		`${label('StudioCMS', StudioCMSColorwayBg, color.black)} Interactive CLI - Project Setup`
+	);
+
 	// Run the interactive CLI
 	const steps = [
 		verify,
@@ -43,8 +50,6 @@ export async function interactiveCLI(this: instanceCommand) {
 	for (const step of steps) {
 		await step(ctx);
 	}
-
-	console.log(''); // Add a newline after the last step
 
 	opts.debug && ctx.logger.debug('Running tasks...');
 

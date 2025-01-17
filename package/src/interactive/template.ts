@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { downloadTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
-import { error, info } from '../messages.js';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../utils.js';
 import type { Context } from './context.js';
 
 function templateTargetFilter(
@@ -38,10 +38,7 @@ export async function template(
 	if (!ctx.template && ctx.yes) ctx.template = ctx.templateRegistry.defaultTemplate;
 
 	if (ctx.template) {
-		await info(
-			'template',
-			`Using ${color.reset(ctx.template)}${color.dim(' as project template')}`
-		);
+		ctx.prompt.log.info(`Using ${color.reset(ctx.template)}${color.dim(' as project template')}`);
 		ctx.isStudioCMSProject = templateTargetFilter(ctx.template, ctx.templateRegistry, true);
 	} else {
 		// These options correspond to the `withstudiocms/templates` repo on GitHub
@@ -73,7 +70,9 @@ export async function template(
 	}
 
 	if (ctx.dryRun) {
-		await info('--dry-run', 'Skipping template copying');
+		ctx.prompt.log.info(
+			`${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping template copying')}`
+		);
 	} else if (ctx.template) {
 		ctx.tasks.push({
 			title: 'Template',
@@ -85,10 +84,12 @@ export async function template(
 					message('Template copied');
 				} catch (e) {
 					if (e instanceof Error) {
-						error('error', e.message);
+						ctx.prompt.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
 						process.exit(1);
 					} else {
-						error('error', 'Unable to clone template.');
+						ctx.prompt.log.error(
+							StudioCMSColorwayError('Unknown Error: Unable to clone template.')
+						);
 						process.exit(1);
 					}
 				}
@@ -167,17 +168,17 @@ export default async function copyTemplate(_template: string, ctx: Context) {
 			}
 
 			if (err.message) {
-				error('error', err.message);
+				ctx.prompt.log.error(StudioCMSColorwayError(`Error: ${err.message}`));
 			}
 			try {
 				// The underlying error is often buried deep in the `cause` property
 				// This is in a try/catch block in case of weirdness's in accessing the `cause` property
 				if ('cause' in err) {
 					// This is probably included in err.message, but we can log it just in case it has extra info
-					error('error', err.cause);
+					ctx.prompt.log.error(StudioCMSColorwayError(`Error: ${err.cause}`));
 					if ('cause' in err.cause) {
 						// Hopefully the actual fetch error message
-						error('error', err.cause?.cause);
+						ctx.prompt.log.error(StudioCMSColorwayError(`Error ${err.cause?.cause}`));
 					}
 				}
 			} catch {}

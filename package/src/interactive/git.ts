@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import color from 'chalk';
-import { error, info } from '../messages.js';
 import { shell } from '../shell.js';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../utils.js';
 import type { Context } from './context.js';
 
 export async function git(
@@ -22,7 +22,7 @@ export async function git(
 ) {
 	ctx.debug && ctx.logger.debug('Running git...');
 	if (fs.existsSync(path.join(ctx.cwd, '.git'))) {
-		await info('Nice!', 'Git has already been initialized');
+		ctx.prompt.log.info(StudioCMSColorwayInfo('Nice! Git has already been initialized'));
 		return;
 	}
 	let _git = ctx.git ?? ctx.yes;
@@ -41,7 +41,9 @@ export async function git(
 	}
 
 	if (ctx.dryRun) {
-		await info('--dry-run', 'Skipping Git initialization');
+		ctx.prompt.log.info(
+			`${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping Git initialization')}`
+		);
 	} else if (_git) {
 		ctx.tasks.push({
 			title: 'Git',
@@ -51,15 +53,24 @@ export async function git(
 					await init({ cwd: ctx.cwd });
 					message('Git initialized');
 				} catch (e) {
-					error('error', e instanceof Error ? e.message : 'Unable to initialize git');
-					error('error', 'Git failed to initialize, please run git init manually after setup.');
+					ctx.prompt.log.error(
+						StudioCMSColorwayError(
+							`Error: ${e instanceof Error ? e.message : 'Unable to initialize git'}`
+						)
+					);
+					ctx.prompt.log.error(
+						StudioCMSColorwayError(
+							'Unknown Error: Git failed to initialize, please run git init manually after setup.'
+						)
+					);
 				}
 			},
 		});
 	} else {
-		await info(
-			ctx.yes === false ? 'git [skip]' : 'Sounds good!',
-			`You can always run ${color.reset('git init')}${color.dim(' manually.')}`
+		ctx.prompt.log.info(
+			StudioCMSColorwayInfo(
+				`${ctx.yes === false ? 'git [skip]' : 'Sounds good!'} You can always run ${color.reset('git init')}${color.dim(' manually.')}`
+			)
 		);
 	}
 

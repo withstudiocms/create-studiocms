@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import color from 'chalk';
-import { error, info } from '../messages.js';
 import { shell } from '../shell.js';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../utils.js';
 import type { Context } from './context.js';
 
 export async function dependencies(
@@ -41,7 +41,9 @@ export async function dependencies(
 	}
 
 	if (ctx.dryRun) {
-		await info('--dry-run', 'Skipping dependency installation');
+		ctx.prompt.log.info(
+			`${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping dependency installation')}`
+		);
 	} else if (deps) {
 		ctx.tasks.push({
 			title: 'Install dependencies',
@@ -51,20 +53,24 @@ export async function dependencies(
 					install({ packageManager: ctx.packageManager, cwd: ctx.cwd });
 					message('Dependencies installed');
 				} catch (e) {
-					error('error', e instanceof Error ? e.message : 'Unable to install dependencies');
-					error(
-						'error',
-						`Dependencies failed to install, please run ${color.bold(
-							`${ctx.packageManager} install`
-						)} to install them manually after setup.`
+					ctx.prompt.log.error(
+						`Error: ${e instanceof Error ? e.message : 'Unable to install dependencies'}`
+					);
+					ctx.prompt.log.error(
+						StudioCMSColorwayError(
+							`Error: Dependencies failed to install, please run ${color.bold(
+								`${ctx.packageManager} install`
+							)} to install them manually after setup.}`
+						)
 					);
 				}
 			},
 		});
 	} else {
-		await info(
-			ctx.yes === false ? 'deps [skip]' : 'No problem!',
-			'Remember to install dependencies after setup.'
+		ctx.prompt.log.info(
+			StudioCMSColorwayInfo(
+				`${ctx.yes === false ? 'deps [skip]' : 'No problem!'} 'Remember to install dependencies after setup.'`
+			)
 		);
 	}
 
