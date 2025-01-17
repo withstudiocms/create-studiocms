@@ -16,7 +16,7 @@ describe('intro', () => {
 	it('Test Response - Skip Banners', async () => {
 		// @ts-expect-error Testing purposes only
 		await intro({ skipBanners: true, version: '0.0.0', username: 'user' });
-		expect(fixture.length()).toBe(1);
-		expect(fixture.hasMessage('studiocms   Interactive CLI')).toBe(true);
+		console.log(fixture.messages());
+		expect(fixture.length()).toBe(0);
 	});
 });

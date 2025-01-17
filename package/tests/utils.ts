@@ -31,5 +31,15 @@ export function setup() {
 		hasMessage(content: string): boolean {
 			return !!ctx.messages.find((msg) => msg.includes(content));
 		},
+		prompt: {
+			log: {
+				info: (str: string) => ctx.messages.push(str),
+				log: (str: string) => ctx.messages.push(str),
+				warn: (str: string) => ctx.messages.push(str),
+				error: (str: string) => ctx.messages.push(str),
+			},
+			isCancel: () => false,
+			cancel: () => {},
+		},
 	};
 }

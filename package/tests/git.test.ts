@@ -11,7 +11,7 @@ describe('git', () => {
 		const context = {
 			cwd: './test/fixtures/empty',
 			dryRun: true,
-			prompt: { confirm: async () => false, isCancel: () => false, cancel: () => {} },
+			prompt: { ...fixture.prompt, confirm: async () => false },
 		};
 		// @ts-expect-error Testing purposes only
 		await git(context);
@@ -23,7 +23,7 @@ describe('git', () => {
 		const context = {
 			cwd: './test/fixtures/empty',
 			dryRun: true,
-			prompt: { confirm: async () => true, isCancel: () => false, cancel: () => {} },
+			prompt: { ...fixture.prompt, confirm: async () => true },
 		};
 		// @ts-expect-error Testing purposes only
 		await git(context);
@@ -35,7 +35,7 @@ describe('git', () => {
 		const context = {
 			cwd: './test/fixtures/empty',
 			dryRun: true,
-			prompt: { confirm: async () => false, isCancel: () => false, cancel: () => {} },
+			prompt: { ...fixture.prompt, confirm: async () => false },
 		};
 		// @ts-expect-error Testing purposes only
 		await git(context);
@@ -46,6 +46,7 @@ describe('git', () => {
 
 describe('git initialized', () => {
 	const fixture = setup();
+
 	const dir = new URL('./fixtures/not-empty/.git', import.meta.url);
 
 	beforeAll(async () => {
@@ -58,7 +59,7 @@ describe('git initialized', () => {
 			git: true,
 			cwd: './package/tests/fixtures/not-empty',
 			dryRun: false,
-			prompt: { confirm: async () => false, isCancel: () => false, cancel: () => {} },
+			prompt: { ...fixture.prompt, confirm: async () => false },
 		};
 		// @ts-expect-error Testing purposes only
 		await git(context);

@@ -11,6 +11,7 @@ describe('dependencies', () => {
 			yes: true,
 			packageManager: 'npm',
 			dryRun: true,
+			prompt: { ...fixture.prompt },
 		};
 
 		// @ts-expect-error Testing purposes only
@@ -25,7 +26,7 @@ describe('dependencies', () => {
 			packageManager: 'npm',
 			dryRun: true,
 			install: undefined,
-			prompt: { confirm: async () => true, isCancel: () => false, cancel: () => {} },
+			prompt: { ...fixture.prompt, confirm: async () => true },
 		};
 
 		// @ts-expect-error Testing purposes only
@@ -41,7 +42,7 @@ describe('dependencies', () => {
 			packageManager: 'npm',
 			dryRun: true,
 			install: undefined,
-			prompt: { confirm: async () => false, isCancel: () => false, cancel: () => {} },
+			prompt: { ...fixture.prompt, confirm: async () => false },
 		};
 
 		// @ts-expect-error Testing purposes only
@@ -57,6 +58,7 @@ describe('dependencies', () => {
 			install: true,
 			packageManager: 'npm',
 			dryRun: true,
+			prompt: { ...fixture.prompt },
 		};
 
 		// @ts-expect-error Testing purposes only
@@ -72,6 +74,7 @@ describe('dependencies', () => {
 			install: false,
 			packageManager: 'npm',
 			dryRun: true,
+			prompt: { ...fixture.prompt },
 		};
 
 		// @ts-expect-error Testing purposes only

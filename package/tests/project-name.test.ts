@@ -6,7 +6,7 @@ describe('project name', () => {
 	const fixture = setup();
 
 	it('pass in name', async () => {
-		const context = { projectName: '', cwd: './foo/bar/baz', prompt: {} };
+		const context = { projectName: '', cwd: './foo/bar/baz', prompt: { ...fixture.prompt } };
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
 		expect(context.cwd).toBe('./foo/bar/baz');
@@ -17,7 +17,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: '.',
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -29,7 +29,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: './',
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -41,7 +41,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: './package/tests/fixtures/empty',
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -53,7 +53,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: './package/tests/fixtures/not-empty',
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -65,7 +65,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: '',
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -77,7 +77,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: '',
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -89,7 +89,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: '',
-			prompt: { text: () => 'Invalid Name', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'Invalid Name' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -101,7 +101,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: '',
-			prompt: { text: () => '(invalid)', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => '(invalid)' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -112,7 +112,7 @@ describe('project name', () => {
 		const context = {
 			projectName: '',
 			cwd: '',
-			prompt: { text: () => '@astro/site', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => '@astro/site' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -125,7 +125,7 @@ describe('project name', () => {
 			projectName: '',
 			cwd: './foo/bar/baz',
 			yes: true,
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -137,7 +137,7 @@ describe('project name', () => {
 			projectName: '',
 			cwd: './foo/bar/baz',
 			dryRun: true,
-			prompt: {},
+			prompt: { ...fixture.prompt },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -149,7 +149,7 @@ describe('project name', () => {
 			projectName: '',
 			cwd: '.',
 			dryRun: true,
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
@@ -161,7 +161,7 @@ describe('project name', () => {
 			projectName: '',
 			cwd: './tests/fixtures/empty',
 			dryRun: true,
-			prompt: { text: () => 'foobar', isCancel: () => false },
+			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);

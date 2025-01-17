@@ -11,7 +11,7 @@ describe('template', () => {
 			template: '',
 			cwd: '',
 			dryRun: true,
-			prompt: { select: () => 'studiocms/basics', isCancel: () => false },
+			prompt: { ...fixture.prompt, select: () => 'studiocms/basics' },
 			templateRegistry: templateRegistry,
 		};
 		// @ts-expect-error Testing purposes only
@@ -25,7 +25,7 @@ describe('template', () => {
 			template: 'studiocms/basics',
 			cwd: '',
 			dryRun: true,
-			prompt: () => {},
+			prompt: { ...fixture.prompt },
 			templateRegistry: templateRegistry,
 		};
 		// @ts-expect-error Testing purposes only
@@ -38,7 +38,7 @@ describe('template', () => {
 			template: 'studiocms/blog',
 			cwd: '',
 			dryRun: true,
-			prompt: () => {},
+			prompt: { ...fixture.prompt },
 			templateRegistry: templateRegistry,
 		};
 		// @ts-expect-error Testing purposes only
@@ -51,7 +51,7 @@ describe('template', () => {
 			template: 'studiocms-ui/basics',
 			cwd: '',
 			dryRun: true,
-			prompt: () => {},
+			prompt: { ...fixture.prompt },
 			templateRegistry: templateRegistry,
 		};
 		// @ts-expect-error Testing purposes only
@@ -65,7 +65,7 @@ describe('template', () => {
 			cwd: '',
 			dryRun: true,
 			yes: true,
-			prompt: () => {},
+			prompt: { ...fixture.prompt },
 			templateRegistry: templateRegistry,
 		};
 		// @ts-expect-error Testing purposes only
