@@ -1,10 +1,16 @@
 import { exec } from 'node:child_process';
 import readline from 'node:readline';
 import type { Key } from 'node:readline';
-import boxen from 'boxen';
+import type { outro as _outro } from '@clack/prompts';
+import _boxen, { type Options as BoxenOptions } from 'boxen';
 import color from 'chalk';
 import { createLogUpdate } from 'log-update';
-import { StudioCMSColorway, StudioCMSColorwayBg, StudioCMSColorwayInfo } from './utils.js';
+import {
+	StudioCMSColorway,
+	StudioCMSColorwayBg,
+	StudioCMSColorwayInfo,
+	StudioCMSColorwayInfoBg,
+} from './utils.js';
 
 export const action = (key: Key, isSelect: boolean) => {
 	if (key.meta && key.name !== 'escape') return;
@@ -55,17 +61,49 @@ export function setStdout(writable: typeof process.stdout) {
 	stdout = writable;
 }
 
-const StudioCMSLogo = (
-	prefix: string,
-	msg: string,
-	messages?: { ln1?: string; ln2?: string; ln4?: string }
-) =>
-	[
-		`${color.white.bold('    ████')}${prefix}${messages?.ln1 || ''}`,
-		`${color.white.bold('  █ ████')}${prefix}${messages?.ln2 || ''}`,
-		`${color.white.bold('█ █▄▄▄  ')}${prefix}${msg}`,
-		`${color.white.bold('█▄▄▄    ')}${prefix}${messages?.ln4 || ''}`,
-	].join('\n');
+function boxen(
+	header?: string,
+	body?: { ln1?: string; ln2?: string; ln3?: string; ln4?: string },
+	footer?: string
+) {
+	const baseBoxenOpts: BoxenOptions = { padding: 1, borderStyle: 'none' };
+	const prefix = stdout.columns < 80 ? ' ' : ' '.repeat(4);
+	const boxContent: string[] = [];
+
+	const logo = _boxen(
+		[
+			`${color.white.bold('    ████')}`,
+			`${color.white.bold('  █ ████')}`,
+			`${color.white.bold('█ █▄▄▄  ')}`,
+			`${color.white.bold('█▄▄▄    ')}`,
+		].join('\n'),
+		{
+			...baseBoxenOpts,
+			backgroundColor: 'black',
+		}
+	).split('\n');
+
+	if (header) {
+		boxContent.push(`${header}\n`);
+	}
+
+	boxContent.push(
+		...[
+			logo[0],
+			`${logo[1]}${prefix}${body?.ln1 || ''}`,
+			`${logo[2]}${prefix}${body?.ln2 || ''}`,
+			`${logo[3]}${prefix}${body?.ln3 || ''}`,
+			`${logo[4]}${prefix}${body?.ln4 || ''}`,
+			logo[5],
+		]
+	);
+
+	if (footer) {
+		boxContent.push(`\n${footer}`);
+	}
+
+	return _boxen(boxContent.join('\n'), baseBoxenOpts);
+}
 
 export const say = async (msg: string | string[] = [], { clear = false } = {}) => {
 	const messages = Array.isArray(msg) ? msg : [msg];
@@ -101,22 +139,6 @@ export const say = async (msg: string | string[] = [], { clear = false } = {}) =
 		done();
 	});
 
-	const face = (msg: string) => {
-		const max = stdout.columns;
-		const prefix = max < 80 ? ' ' : ' '.repeat(4);
-
-		const box = boxen(StudioCMSLogo(prefix, msg), {
-			width: max < 80 ? max : max / 2,
-			textAlignment: 'left',
-			padding: 1,
-			borderColor: '#a581f3',
-			borderStyle: 'double',
-			backgroundColor: 'black',
-		});
-
-		return box;
-	};
-
 	for (let message of messages) {
 		// biome-ignore lint/correctness/noSelfAssign: <explanation>
 		message = message;
@@ -127,13 +149,13 @@ export const say = async (msg: string | string[] = [], { clear = false } = {}) =
 			// biome-ignore lint/correctness/noSelfAssign: <explanation>
 			word = word;
 			if (word) msg.push(word);
-			logUpdate(`\n${face(msg.join(' '))}`);
+			logUpdate(`\n${boxen(undefined, { ln3: msg.join(' ') })}`);
 			if (!cancelled) await sleep(randomBetween(75, 200));
 			j++;
 		}
 		if (!cancelled) await sleep(100);
 		const tmp = await Promise.all(_message).then((res) => res.join(' '));
-		const text = `\n${face(tmp)}`;
+		const text = `\n${boxen(undefined, { ln3: tmp })}`;
 		logUpdate(text);
 		if (!cancelled) await sleep(randomBetween(1200, 1400));
 		i++;
@@ -174,28 +196,20 @@ export const getName = () =>
 		});
 	});
 
-export const nextSteps = async ({ projectDir, devCmd }: { projectDir: string; devCmd: string }) => {
-	const max = stdout.columns;
-	const prefix = max < 80 ? ' ' : ' '.repeat(4);
-	const logUpdate = createLogUpdate(stdout, { showCursor: false });
-
-	logUpdate(
+export const nextSteps = async ({
+	projectDir,
+	devCmd,
+	outro,
+}: { projectDir: string; devCmd: string; outro: typeof _outro }) => {
+	outro(
 		boxen(
-			[
-				color.bold('Setup Complete. Explore your new project!'),
-				'',
-				StudioCMSLogo(prefix, '', {
-					ln1: `Enter your project directory using ${StudioCMSColorwayInfo(`cd ${projectDir}`)}`,
-					ln2: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
-					ln4: `Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`,
-				}),
-			].join('\n'),
+			color.bold(
+				`${label('Setup Complete!', StudioCMSColorwayInfoBg, color.bold)} Explore your new project! 🚀`
+			),
 			{
-				width: max < 80 ? max : max / 2,
-				borderColor: '#a581f3',
-				borderStyle: 'double',
-				padding: 1,
-				backgroundColor: 'black',
+				ln1: `Enter your project directory using ${StudioCMSColorwayInfo(`cd ${projectDir}`)}`,
+				ln2: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
+				ln4: `Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`,
 			}
 		)
 	);

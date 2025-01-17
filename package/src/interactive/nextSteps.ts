@@ -21,11 +21,9 @@ export async function next(
 
 	ctx.debug && ctx.logger.debug(`Dev command: ${devCmd}`);
 
-	ctx.prompt.outro('Setup Complete! 🚀');
-
 	ctx.debug && ctx.logger.debug('Running next steps fn...');
 
-	await nextSteps({ projectDir, devCmd });
+	await nextSteps({ projectDir, devCmd, outro: ctx.prompt.outro });
 
 	ctx.debug && ctx.logger.debug('Next steps complete');
 }
