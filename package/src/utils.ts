@@ -23,33 +23,35 @@ export const StudioCMSColorwayErrorBg = chalk.bgHex('#bd0249');
 
 export const CLITitle = supportsColor ? StudioCMSColorway.bold(`${ASCIIText}\n`) : `${ASCIIText}\n`;
 
+const send = (message: string) => process.stdout.write(`${message}\n`);
+
 export const logger = {
 	log: (message: string) => {
 		if (!supportsColor) {
-			console.log(`[${date}]: ${message}`);
+			send(`[${date}]: ${message}`);
 			return;
 		}
-		console.log(`${chalk.blue.bold(`[${date}]:`)} ${message}`);
+		send(`${chalk.blue.bold(`[${date}]:`)} ${message}`);
 	},
 	debug: (message: string) => {
 		if (!supportsColor) {
-			console.log(`DEBUG [${date}]: ${message}`);
+			send(`DEBUG [${date}]: ${message}`);
 			return;
 		}
-		console.log(`${chalk.blue.bold(`DEBUG [${date}]:`)} ${message}`);
+		send(`${chalk.blue.bold(`DEBUG [${date}]:`)} ${message}`);
 	},
 	error: (message: string) => {
 		if (!supportsColor) {
-			console.error(`ERROR [${date}]: ${message}`);
+			send(`ERROR [${date}]: ${message}`);
 			return;
 		}
-		console.error(`${chalk.red.bold(`ERROR [${date}]:`)} ${chalk.red(message)}`);
+		send(`${chalk.red.bold(`ERROR [${date}]:`)} ${chalk.red(message)}`);
 	},
 	warn: (message: string) => {
 		if (!supportsColor) {
-			console.warn(`WARN [${date}]: ${message}`);
+			send(`WARN [${date}]: ${message}`);
 			return;
 		}
-		console.warn(`${chalk.yellow.bold(`WARN [${date}]:`)} ${chalk.yellow(message)}`);
+		send(`${chalk.yellow.bold(`WARN [${date}]:`)} ${chalk.yellow(message)}`);
 	},
 };
