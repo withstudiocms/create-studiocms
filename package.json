@@ -12,7 +12,7 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "ci:build": "pnpm build",
-    "ci:test": "vitest --reporter=github-actions --reporter=basic",
+    "ci:test": "vitest --reporter=github-actions",
     "ci:lint": "biome ci --formatter-enabled=true --organize-imports-enabled=true  --reporter=github",
     "ci:install": "pnpm install --frozen-lockfile",
     "ci:version": "pnpm changeset version",
