@@ -6,6 +6,6 @@ process.setSourceMapsEnabled(true);
 export default defineProject({
 	test: {
 		maxConcurrency: 1,
-		name: '@studiocms/create-studiocms',
+		name: 'create-studiocms',
 	},
 });
