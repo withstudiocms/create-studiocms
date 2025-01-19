@@ -76,7 +76,7 @@ jobs:
           force: false
           clean-exclude: |
             pr-preview/
-            index.markdown
+            index.html
           branch: test-results
 
       # If the push is to a PR, deploy the test results to GitHub Pages under /pr-preview folder
