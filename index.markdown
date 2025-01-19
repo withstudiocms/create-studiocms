@@ -10,7 +10,7 @@
   <ul>
   {% for url in site.static_files %}
     {% if url.path contains '/index.html' %}
-      <li><a href="{{ site.baseurl | escape }}{{ url.path | escape }}">{{ url.path | escape }}</a> </li>
+      <li><a href="{{ site.baseurl | escape }}{{ url.path | escape }}">{{ url.path | split: "/" | first }}</a> </li>
     {% endif %}
   {% endfor %}
   </ul>
