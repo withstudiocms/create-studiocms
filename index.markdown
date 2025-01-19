@@ -25,4 +25,6 @@
     </li>
     {% endfor %}
   </ul>
+  
+  <pre>{% for file in site.static_files %}{{ file.path }}{% endfor %}</pre>
 </body>
