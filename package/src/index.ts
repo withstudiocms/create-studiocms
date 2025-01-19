@@ -9,8 +9,7 @@ import { CLITitle, StudioCMSColorwayError, logger } from './utils.js';
 export { setStdout };
 export * from './interactive/index.js';
 
-const max = process.stdout.columns;
-const prefix = max < 80 ? ' ' : ' '.repeat(2);
+const prefix = process.stdout.columns < 80 ? ' ' : ' '.repeat(2);
 
 export async function main() {
 	logger.log('Starting StudioCMS CLI Utility Toolkit...');
