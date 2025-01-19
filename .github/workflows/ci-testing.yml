@@ -5,19 +5,16 @@ on:
   push:
     paths:
       - 'package/**'
-      - 'vitest.workspace.ts'
+      - 'vitest.config.mts'
     branches: [main]
   pull_request:
     paths:
       - 'package/**'
-      - 'vitest.workspace.ts'
+      - 'vitest.config.mts'
     types:
       - opened
       - reopened
       - synchronize
-
-permissions:
-  contents: write
 
 concurrency: testing-${{ github.ref }}
 
