@@ -6,7 +6,7 @@
 </head>
 
 <body>
-  <h1>Index of /</h1>
+  <h1>Test Reports</h1>
   <ul>
   {% for url in site.static_files %}
     {% if url.path contains '/index.html' %}
