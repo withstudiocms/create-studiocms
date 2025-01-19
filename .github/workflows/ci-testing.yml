@@ -79,6 +79,7 @@ jobs:
       # If the push is to a PR, deploy the test results to GitHub Pages under /pr-preview folder
       - name: Deploy PR Test Results to GitHub Pages
         uses: rossjrw/pr-preview-action@v1
+        id: preview-step
         with:
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
           source-dir: vitest-report
@@ -89,16 +90,18 @@ jobs:
       - uses: marocchino/sticky-pull-request-comment@v2
         if: steps.preview-step.outputs.deployment-action == 'deploy' && env.deployment_status == 'success'
         with:
+          GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
           header: pr-preview
           message: |
-            PR Test Results
-            :rocket: View preview at ${{ steps.preview-step.outputs.preview-url }}
+            # PR Test Results
+            :rocket: View results at ${{ steps.preview-step.outputs.preview-url }}
 
       - uses: marocchino/sticky-pull-request-comment@v2
         if: steps.preview-step.outputs.deployment-action == 'remove' && env.deployment_status == 'success'
         with:
+          GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
           header: pr-preview
           message: |
-            PR Test Results
-            Preview removed because the pull request was closed.
+            # PR Test Results
+            Results removed because the pull request was closed.
             ${{ steps.preview-step.outputs.action-start-time }}
