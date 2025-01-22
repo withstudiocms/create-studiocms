@@ -1,7 +1,10 @@
 import { type SpawnOptions, exec, spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import { Option } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import figlet from 'figlet';
+
+export const termPrefix = process.stdout.columns < 80 ? ' ' : ' '.repeat(2);
 
 /**
  * Check if a command exists on the system.
@@ -108,6 +111,15 @@ export const StudioCMSColorwayWarn = chalk.hex('#facc14');
 export const StudioCMSColorwayWarnBg = chalk.bgHex('#facc14');
 export const StudioCMSColorwayError = chalk.hex('#bd0249');
 export const StudioCMSColorwayErrorBg = chalk.bgHex('#bd0249');
+
+export const ChalkColorOption = new Option(
+	'--color',
+	'Force color output'
+); /* implemented by chalk */
+export const ChalkColorOptionNo = new Option(
+	'--no-color',
+	'Disable color output'
+); /* implemented by chalk */
 
 export const TursoColorway = chalk.bgHex('#4ff8d2');
 

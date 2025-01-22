@@ -6,6 +6,7 @@ export const getTurso = new Command('getTurso')
 	.summary('Turso CLI Utilities')
 	.action(async () => {
 		try {
+			logger.log('Starting Turso install...');
 			await runInteractiveCommand('curl -sSfL https://get.tur.so/install.sh | bash');
 			logger.log('Command completed successfully.');
 		} catch (error) {
