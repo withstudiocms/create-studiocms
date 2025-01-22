@@ -8,7 +8,7 @@ describe('intro', () => {
 	it('Test Response', async () => {
 		// @ts-expect-error Testing purposes only
 		await intro({ skipBanners: false, version: '0.0.0', username: 'user', welcome: 'Welcome!' });
-		expect(fixture.hasMessage('      █ █▄▄▄         Welcome to  StudioCMS  v0.0.0 user   \n')).toBe(
+		expect(fixture.hasMessage('│     █ █▄▄▄         Welcome to  StudioCMS  v0.0.0 user\n')).toBe(
 			true
 		);
 	});
