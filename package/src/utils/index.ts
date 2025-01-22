@@ -1,8 +1,8 @@
 import { type SpawnOptions, exec, spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
-import { Option } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import figlet from 'figlet';
+import { Option } from './commander.js';
 
 export const termPrefix = process.stdout.columns < 80 ? ' ' : ' '.repeat(2);
 

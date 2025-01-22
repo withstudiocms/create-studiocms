@@ -1,4 +1,3 @@
-import { Option } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import { getTurso } from './cmds/getTurso.js';
 import { InteractiveCMD } from './cmds/interactive/index.js';
@@ -8,7 +7,6 @@ import {
 	ChalkColorOption,
 	ChalkColorOptionNo,
 	StudioCMSColorwayError,
-	logger,
 	termPrefix,
 } from './utils/index.js';
 import readJson from './utils/readJson.js';

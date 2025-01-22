@@ -1,6 +1,7 @@
 import os from 'node:os';
 import * as p from '@clack/prompts';
-import { type TemplateRegistry, templateRegistry } from '../../templates.config.js';
+import { templateRegistry } from '../../templates.config.js';
+import type { TemplateRegistry } from '../../templates.types.js';
 import { logger } from '../../utils/index.js';
 import { cancelMessage, getName } from '../../utils/messages.js';
 import readJson from '../../utils/readJson.js';

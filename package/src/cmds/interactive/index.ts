@@ -1,7 +1,6 @@
 import { tasks } from '@clack/prompts';
-import { Option } from '@commander-js/extra-typings';
 import color from 'chalk';
-import { Command, type instanceCommand } from '../../utils/commander.js';
+import { Command, Option } from '../../utils/commander.js';
 import { StudioCMSColorwayBg } from '../../utils/index.js';
 import { label } from '../../utils/messages.js';
 import { getContext } from './context.js';

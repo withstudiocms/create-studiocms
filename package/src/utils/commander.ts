@@ -9,6 +9,8 @@ import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
 import { StudioCMSColorwayError, date, supportsColor } from './index.js';
 
+export { Option } from '@commander-js/extra-typings';
+
 export class Help extends _Help {
 	chalk: ChalkInstance;
 	colorway: ChalkInstance;

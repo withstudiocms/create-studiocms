@@ -1,28 +1,9 @@
-interface CurrentTemplateRegistry {
-	[key: string]: {
-		label: string;
-		templates: Record<string, { label: string; hint?: string }>;
-	};
-}
-
-type CurrentRepository = `${string}/${string}`;
-type GigetRepoUrl = `${string}:${string}/${string}`;
-
-interface FilterRules {
-	isStudioCMSProject: string;
-	isWithStudioCMSRepo: string[];
-}
-
-export interface TemplateRegistry {
-	defaultTemplate: string;
-	gigetRepoUrl: GigetRepoUrl;
-	currentRepositoryUrl: string;
-	filterRules: FilterRules;
-	currentProjects: Array<{ value: string; label: string; hint?: string }>;
-	currentTemplates: {
-		[key: string]: Array<{ value: string; label: string; hint?: string }>;
-	};
-}
+import type {
+	CurrentRepository,
+	CurrentTemplateRegistry,
+	GigetRepoUrl,
+	TemplateRegistry,
+} from './templates.types.js';
 
 /**
  * The current repository platform for StudioCMS templates
