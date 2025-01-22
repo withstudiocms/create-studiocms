@@ -1,6 +1,7 @@
 import { stripVTControlCharacters } from 'node:util';
 import { beforeAll, beforeEach } from 'vitest';
-import { setStdout } from '../dist/index.js';
+// @ts-expect-error Testing purposes only
+import { setStdout } from '../dist/utils/messages.js';
 
 export function setup() {
 	const ctx: { messages: string[] } = { messages: [] };

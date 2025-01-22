@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { projectName } from '../dist/index.js';
+import { projectName } from '../dist/cmds/interactive/projectName.js';
 import { setup } from './utils.js';
 
 describe('project name', () => {

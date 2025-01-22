@@ -1,7 +1,7 @@
 import { rmSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { git } from '../dist/index.js';
+import { git } from '../dist/cmds/interactive/git.js';
 import { setup } from './utils.js';
 
 describe('git', () => {

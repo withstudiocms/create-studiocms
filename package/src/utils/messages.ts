@@ -61,7 +61,6 @@ let stdout = process.stdout;
 
 const stdin = process.stdin;
 
-/** @internal Used to mock `process.stdout.write` for testing purposes */
 export function setStdout(writable: typeof process.stdout) {
 	stdout = writable;
 }

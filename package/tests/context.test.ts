@@ -1,6 +1,6 @@
 import os from 'node:os';
 import { describe, expect, it } from 'vitest';
-import { getContext } from '../dist/index.js';
+import { getContext } from '../dist/cmds/interactive/context.js';
 
 describe('context', () => {
 	it('no arguments', async () => {
