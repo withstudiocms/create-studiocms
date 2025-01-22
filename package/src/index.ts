@@ -15,11 +15,7 @@ export async function main() {
 	logger.log('Starting StudioCMS CLI Utility Toolkit...');
 
 	// Initialize the CLI program
-	const program = new Command();
-
-	// Setup the main program
-	program
-		.name('create-studiocms')
+	const Program = new Command('create-studiocms')
 		.description('StudioCMS CLI Utility Toolkit.')
 		.version(pkgJson.version, '-V, --version', 'Output the current version of the CLI Toolkit.')
 		.addHelpText('beforeAll', CLITitle)
@@ -35,9 +31,7 @@ export async function main() {
 		.addOption(new Option('--no-color', 'Disable color output')) // implemented by chalk
 		.helpCommand('help [cmd]', 'Show help for command'); // Enable help command
 
-	// Interactive CLI command
-	program
-		.command('interactive', { isDefault: true })
+	const Interactive = new Command('interactive')
 		.description(
 			'Start the interactive CLI. Powered by Clack.cc.\n\nThis command will open an interactive CLI prompt to guide you through\nthe process of creating a new StudioCMS(or StudioCMS Ecosystem package)\nproject using one of the available templates.'
 		)
@@ -56,6 +50,8 @@ export async function main() {
 		.addOption(new Option('--debug', 'Enable debug mode.').hideHelp(true))
 		.action(interactiveCLI);
 
+	Program.addCommand(Interactive, { isDefault: true });
+
 	// Parse the command line arguments and run the program
-	await program.parseAsync();
+	await Program.parseAsync();
 }
