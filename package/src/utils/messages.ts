@@ -15,7 +15,7 @@ import {
 	StudioCMSColorwayBg,
 	StudioCMSColorwayInfo,
 	StudioCMSColorwayInfoBg,
-} from './utils.js';
+} from './index.js';
 
 export const action = (key: Key, isSelect: boolean) => {
 	if (key.meta && key.name !== 'escape') return;

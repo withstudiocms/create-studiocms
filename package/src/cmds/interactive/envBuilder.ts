@@ -3,7 +3,6 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import color from 'chalk';
-import { label } from '../messages.js';
 import {
 	StudioCMSColorwayError,
 	StudioCMSColorwayInfo,
@@ -13,7 +12,8 @@ import {
 	exists,
 	runInteractiveCommand,
 	runShellCommand,
-} from '../utils.js';
+} from '../../utils/index.js';
+import { label } from '../../utils/messages.js';
 import type { Context } from './context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 

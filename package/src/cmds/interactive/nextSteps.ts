@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { nextSteps } from '../messages.js';
+import { nextSteps } from '../../utils/messages.js';
 import type { Context } from './context.js';
 
 export async function next(

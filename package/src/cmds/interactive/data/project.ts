@@ -1,4 +1,4 @@
-import { random } from '../../messages.js';
+import { random } from '../../../utils/messages.js';
 
 export function generateProjectName() {
 	const adjective = random(adjectives);

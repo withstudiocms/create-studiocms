@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { template } from '../dist/index.js';
-import { templateRegistry } from '../src/templates.config.js';
+import { template, templateRegistry } from '../dist/index.js';
 import { setup } from './utils.js';
 
 describe('template', () => {

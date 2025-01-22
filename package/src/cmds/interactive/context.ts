@@ -1,9 +1,9 @@
 import os from 'node:os';
 import * as p from '@clack/prompts';
-import pkgJson from '../../package.json';
-import { cancelMessage, getName } from '../messages.js';
-import { type TemplateRegistry, templateRegistry } from '../templates.config.js';
-import { logger } from '../utils.js';
+import pkgJson from '../../../package.json';
+import { type TemplateRegistry, templateRegistry } from '../../templates.config.js';
+import { logger } from '../../utils/index.js';
+import { cancelMessage, getName } from '../../utils/messages.js';
 import getSeasonalMessages from './data/seasonal.js';
 
 interface InteractiveOptions {

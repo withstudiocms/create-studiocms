@@ -1,7 +1,7 @@
 import dns from 'node:dns/promises';
 import { verifyTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
-import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../utils.js';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../utils/index.js';
 import type { Context } from './context.js';
 import { getTemplateTarget } from './template.js';
 

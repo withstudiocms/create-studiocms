@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { downloadTemplate } from '@bluwy/giget-core';
 import color from 'chalk';
-import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../utils.js';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../utils/index.js';
 import type { Context } from './context.js';
 
 function templateTargetFilter(

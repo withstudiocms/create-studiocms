@@ -1,6 +1,6 @@
 import color from 'chalk';
-import { label, say } from '../messages.js';
-import { StudioCMSColorway, StudioCMSColorwayBg } from '../utils.js';
+import { StudioCMSColorway, StudioCMSColorwayBg } from '../../utils/index.js';
+import { label, say } from '../../utils/messages.js';
 import type { Context } from './context.js';
 
 export async function intro(
