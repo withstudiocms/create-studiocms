@@ -20,7 +20,7 @@ export async function intro(
 					StudioCMSColorway(`v${ctx.version}`),
 					ctx.username,
 				],
-				ctx.welcome || `Let's create something unforgettable!`,
+				ctx.welcome,
 			] as string[],
 			{ clear: true }
 		);

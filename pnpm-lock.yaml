@@ -53,21 +53,30 @@ importers:
       '@commander-js/extra-typings':
         specifier: ^13.0.0
         version: 13.0.0(commander@13.0.0)
+      ansi-escapes:
+        specifier: ^7.0.0
+        version: 7.0.0
       boxen:
         specifier: ^8.0.1
         version: 8.0.1
       chalk:
         specifier: ^5.4.1
         version: 5.4.1
+      cli-cursor:
+        specifier: ^5.0.0
+        version: 5.0.0
       commander:
         specifier: ^13.0.0
         version: 13.0.0
       figlet:
         specifier: ^1.8.0
         version: 1.8.0
-      log-update:
-        specifier: ^6.1.0
-        version: 6.1.0
+      is-unicode-supported:
+        specifier: ^2.1.0
+        version: 2.1.0
+      slice-ansi:
+        specifier: ^7.1.0
+        version: 7.1.0
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
@@ -1088,6 +1097,10 @@ packages:
     resolution: {integrity: sha512-2AT6j+gXe/1ueqbW6fLZJiIw3F8iXGJtt0yDrZaBhAZEG1raiTxKWU+IPqMCzQAXOUCKdA4UDMgacKH25XG2Cw==}
     engines: {node: '>=4'}
 
+  is-unicode-supported@2.1.0:
+    resolution: {integrity: sha512-mE00Gnza5EEB3Ds0HfMyllZzbBrmLOX3vfWoj9A9PEnTfratQ/BcaJOuMhnkhjXvb2+FkY3VuHqtAGpTPmglFQ==}
+    engines: {node: '>=18'}
+
   is-windows@1.0.2:
     resolution: {integrity: sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==}
     engines: {node: '>=0.10.0'}
@@ -1119,10 +1132,6 @@ packages:
 
   lodash.startcase@4.4.0:
     resolution: {integrity: sha512-+WKqsK294HMSc2jEbNgpHpd0JfIBhp7rEV4aqXWqFr6AlXov+SlcgB1Fv01y2kGe3Gc8nMW7VA0SrGuSkRfIEg==}
-
-  log-update@6.1.0:
-    resolution: {integrity: sha512-9ie8ItPR6tjY5uYJh8K/Zrv/RMZ5VOlOWvtZdEHYSTFKZfIBPQa9tOAEeAWhd+AnIneLJ22w5fjOYtoutpWq5w==}
-    engines: {node: '>=18'}
 
   loupe@3.1.2:
     resolution: {integrity: sha512-23I4pFZHmAemUnz8WZXbYRSKYj801VDaNv9ETuMh7IrMc7VuVVSo+Z9iLE3ni30+U48iDWfi30d3twAXBYmnCg==}
@@ -2545,6 +2554,8 @@ snapshots:
     dependencies:
       better-path-resolve: 1.0.0
 
+  is-unicode-supported@2.1.0: {}
+
   is-windows@1.0.2: {}
 
   isbinaryfile@5.0.4: {}
@@ -2573,14 +2584,6 @@ snapshots:
       p-locate: 4.1.0
 
   lodash.startcase@4.4.0: {}
-
-  log-update@6.1.0:
-    dependencies:
-      ansi-escapes: 7.0.0
-      cli-cursor: 5.0.0
-      slice-ansi: 7.1.0
-      strip-ansi: 7.1.0
-      wrap-ansi: 9.0.0
 
   loupe@3.1.2: {}
 

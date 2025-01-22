@@ -23,7 +23,7 @@ export async function next(
 
 	ctx.debug && ctx.logger.debug('Running next steps fn...');
 
-	await nextSteps({ projectDir, devCmd, outro: ctx.prompt.outro });
+	await nextSteps({ projectDir, devCmd, p: ctx.prompt });
 
 	ctx.debug && ctx.logger.debug('Next steps complete');
 }

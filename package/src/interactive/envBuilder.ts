@@ -1,8 +1,19 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import color from 'chalk';
-import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../utils.js';
+import { label } from '../messages.js';
+import {
+	StudioCMSColorwayError,
+	StudioCMSColorwayInfo,
+	StudioCMSColorwayWarnBg,
+	TursoColorway,
+	commandExists,
+	exists,
+	runInteractiveCommand,
+	runShellCommand,
+} from '../utils.js';
 import type { Context } from './context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 
@@ -55,6 +66,29 @@ export async function env(
 	let _env = ctx.yes;
 	let envFileContent: string;
 
+	const envExists = exists(path.join(ctx.cwd, '.env'));
+
+	ctx.debug && ctx.logger.debug(`Environment file exists: ${envExists}`);
+
+	if (envExists) {
+		ctx.prompt.log.warn(
+			`${label('Warning', StudioCMSColorwayWarnBg, color.black)} An environment file already exists. Would you like to overwrite it?`
+		);
+
+		const check = await ctx.prompt.confirm({
+			message: 'Confirm Overwrite',
+		});
+
+		if (typeof check === 'symbol') {
+			ctx.promptCancel(check);
+		} else {
+			ctx.debug && ctx.logger.debug(`Environment file overwrite selected: ${check}`);
+			if (!check) {
+				return;
+			}
+		}
+	}
+
 	if (_env) {
 		ctx.prompt.log.info(StudioCMSColorwayInfo('Setting up basic environment file'));
 	} else {
@@ -80,18 +114,203 @@ export async function env(
 		} else if (EnvPrompt === 'builder') {
 			let envBuilderOpts: EnvBuilderOptions = {};
 
+			const isWindows = os.platform() === 'win32';
+
+			if (isWindows) {
+				ctx.prompt.log.warn(
+					`${label('Warning', StudioCMSColorwayWarnBg, color.black)} Turso DB CLI is not supported on Windows outside of WSL.`
+				);
+			}
+
+			let tursoDB: symbol | 'yes' | 'no' = 'no';
+
+			if (!isWindows) {
+				tursoDB = await ctx.prompt.select({
+					message: 'Would you like us to setup a new Turso DB for you? (Runs `turso db create`)',
+					options: [
+						{ value: 'yes', label: 'Yes' },
+						{ value: 'no', label: 'No' },
+					],
+				});
+			}
+
+			if (typeof tursoDB === 'symbol') {
+				ctx.promptCancel(tursoDB);
+			} else {
+				ctx.debug && ctx.logger.debug(`AstroDB setup selected: ${tursoDB}`);
+
+				if (tursoDB === 'yes') {
+					if (!commandExists('turso')) {
+						ctx.prompt.log.error(StudioCMSColorwayError('Turso CLI is not installed.'));
+
+						const installTurso = await ctx.prompt.confirm({
+							message: 'Would you like to install Turso CLI now?',
+						});
+
+						if (typeof installTurso === 'symbol') {
+							ctx.promptCancel(installTurso);
+						} else {
+							if (installTurso) {
+								try {
+									await runInteractiveCommand('curl -sSfL https://get.tur.so/install.sh | bash');
+									console.log('Command completed successfully.');
+								} catch (error) {
+									console.error(`Failed to run Turso install: ${(error as Error).message}`);
+								}
+							} else {
+								ctx.prompt.log.warn(
+									`${label('Warning', StudioCMSColorwayWarnBg, color.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+								);
+							}
+						}
+					}
+
+					try {
+						const res = await runShellCommand('turso auth login --headless');
+
+						if (
+							!res.includes('Already signed in as') &&
+							!res.includes('Success! Existing JWT still valid')
+						) {
+							ctx.prompt.log.message(`Please sign in to Turso to continue.\n${res}`);
+
+							const loginToken = await ctx.prompt.text({
+								message: 'Enter the login token ( the code within the " " )',
+								placeholder: 'eyJhb...tnPnw',
+							});
+
+							if (typeof loginToken === 'symbol') {
+								ctx.promptCancel(loginToken);
+							} else {
+								const loginRes = await runShellCommand(`turso config set token "${loginToken}"`);
+
+								if (loginRes.includes('Token set succesfully.')) {
+									ctx.prompt.log.success('Successfully logged in to Turso.');
+								} else {
+									ctx.prompt.log.error(StudioCMSColorwayError('Unable to login to Turso.'));
+									process.exit(1);
+								}
+							}
+						}
+					} catch (error) {
+						if (error instanceof Error) {
+							ctx.prompt.log.error(StudioCMSColorwayError(`Error: ${error.message}`));
+							process.exit(1);
+						} else {
+							ctx.prompt.log.error(
+								StudioCMSColorwayError('Unknown Error: Unable to login to Turso.')
+							);
+							process.exit(1);
+						}
+					}
+
+					const customName = await ctx.prompt.confirm({
+						message: 'Would you like to provide a custom name for the database?',
+						initialValue: false,
+					});
+
+					if (typeof customName === 'symbol') {
+						ctx.promptCancel(customName);
+					} else {
+						const dbName = customName
+							? await ctx.prompt.text({
+									message: 'Enter a custom name for the database',
+									initialValue: 'your-database-name',
+								})
+							: undefined;
+
+						if (typeof dbName === 'symbol') {
+							ctx.promptCancel(dbName);
+						} else {
+							ctx.debug && ctx.logger.debug(`Custom database name: ${dbName}`);
+
+							const tursoSetup = ctx.prompt.spinner();
+							tursoSetup.start(
+								`${label('Turso', TursoColorway, color.black)} Setting up Turso DB...`
+							);
+							try {
+								tursoSetup.message(
+									`${label('Turso', TursoColorway, color.black)} Creating Database...`
+								);
+								const createRes = await runShellCommand(`turso db create ${dbName ? dbName : ''}`);
+
+								const dbNameMatch = createRes.match(/^Created database (\S+) at group/m);
+
+								const dbFinalName = dbNameMatch ? dbNameMatch[1] : undefined;
+
+								tursoSetup.message(
+									`${label('Turso', TursoColorway, color.black)} Retrieving database information...`
+								);
+								ctx.debug && ctx.logger.debug(`Database name: ${dbFinalName}`);
+
+								const showCMD = `turso db show ${dbFinalName}`;
+								const tokenCMD = `turso db tokens create ${dbFinalName}`;
+
+								const showRes = await runShellCommand(showCMD);
+
+								const urlMatch = showRes.match(/^URL:\s+(\S+)/m);
+
+								const dbURL = urlMatch ? urlMatch[1] : undefined;
+
+								ctx.debug && ctx.logger.debug(`Database URL: ${dbURL}`);
+
+								const tokenRes = await runShellCommand(tokenCMD);
+
+								const dbToken = tokenRes.trim();
+
+								ctx.debug && ctx.logger.debug(`Database Token: ${dbToken}`);
+
+								envBuilderOpts.astroDbRemoteUrl = dbURL;
+								envBuilderOpts.astroDbToken = dbToken;
+
+								tursoSetup.stop(
+									`${label('Turso', TursoColorway, color.black)} Database setup complete. New Database: ${dbFinalName}`
+								);
+								ctx.prompt.log.message('Database Token and Url saved to environment file.');
+							} catch (e) {
+								tursoSetup.stop();
+								if (e instanceof Error) {
+									ctx.prompt.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+									process.exit(1);
+								} else {
+									ctx.prompt.log.error(
+										StudioCMSColorwayError('Unknown Error: Unable to create database.')
+									);
+									process.exit(1);
+								}
+							}
+						}
+					}
+				} else {
+					ctx.prompt.log.warn(
+						`${label('Warning', StudioCMSColorwayWarnBg, color.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+					);
+					const envBuilderStep_AstroDB = await ctx.prompt.group(
+						{
+							astroDbRemoteUrl: () =>
+								ctx.prompt.text({
+									message: 'Remote URL for AstroDB',
+									initialValue: 'libsql://your-database.turso.io',
+								}),
+							astroDbToken: () =>
+								ctx.prompt.text({
+									message: 'AstroDB Token',
+									initialValue: 'your-astrodb-token',
+								}),
+						},
+						{
+							onCancel: () => ctx.promptOnCancel(),
+						}
+					);
+
+					ctx.debug && ctx.logger.debug(`AstroDB setup: ${envBuilderStep_AstroDB}`);
+
+					envBuilderOpts = { ...envBuilderStep_AstroDB };
+				}
+			}
+
 			const envBuilderStep1 = await ctx.prompt.group(
 				{
-					astroDbRemoteUrl: () =>
-						ctx.prompt.text({
-							message: 'Remote URL for AstroDB',
-							initialValue: 'libsql://your-database.turso.io',
-						}),
-					astroDbToken: () =>
-						ctx.prompt.text({
-							message: 'AstroDB Token',
-							initialValue: 'your-astrodb-token',
-						}),
 					encryptionKey: () =>
 						ctx.prompt.text({
 							message: 'StudioCMS Auth Encryption Key',

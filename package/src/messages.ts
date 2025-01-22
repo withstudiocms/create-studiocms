@@ -1,10 +1,15 @@
 import { exec } from 'node:child_process';
 import readline from 'node:readline';
 import type { Key } from 'node:readline';
-import type { outro as _outro } from '@clack/prompts';
+import type * as _prompts from '@clack/prompts';
+import ansiEscapes from 'ansi-escapes';
 import _boxen, { type Options as BoxenOptions } from 'boxen';
 import color from 'chalk';
-import { createLogUpdate } from 'log-update';
+import cliCursor from 'cli-cursor';
+import isUnicodeSupported from 'is-unicode-supported';
+import sliceAnsi from 'slice-ansi';
+import stripAnsi from 'strip-ansi';
+import wrapAnsi from 'wrap-ansi';
 import {
 	StudioCMSColorway,
 	StudioCMSColorwayBg,
@@ -61,12 +66,12 @@ export function setStdout(writable: typeof process.stdout) {
 	stdout = writable;
 }
 
-function boxen(
+export function boxen(
 	header?: string,
-	body?: { ln1?: string; ln2?: string; ln3?: string; ln4?: string },
-	footer?: string
+	body?: { ln0?: string; ln1?: string; ln2?: string; ln3?: string; ln4?: string; ln5?: string },
+	footer?: string,
+	boxenOptions: BoxenOptions = { padding: 0, borderStyle: 'none' }
 ) {
-	const baseBoxenOpts: BoxenOptions = { padding: 1, borderStyle: 'none' };
 	const prefix = stdout.columns < 80 ? ' ' : ' '.repeat(4);
 	const boxContent: string[] = [];
 
@@ -78,7 +83,8 @@ function boxen(
 			`${color.white.bold('█▄▄▄    ')}`,
 		].join('\n'),
 		{
-			...baseBoxenOpts,
+			padding: 1,
+			borderStyle: 'none',
 			backgroundColor: 'black',
 		}
 	).split('\n');
@@ -89,12 +95,12 @@ function boxen(
 
 	boxContent.push(
 		...[
-			logo[0],
+			`${logo[0]}${prefix}${body?.ln0 || ''}`,
 			`${logo[1]}${prefix}${body?.ln1 || ''}`,
 			`${logo[2]}${prefix}${body?.ln2 || ''}`,
 			`${logo[3]}${prefix}${body?.ln3 || ''}`,
 			`${logo[4]}${prefix}${body?.ln4 || ''}`,
-			logo[5],
+			`${logo[5]}${prefix}${body?.ln5 || ''}`,
 		]
 	);
 
@@ -102,13 +108,86 @@ function boxen(
 		boxContent.push(`\n${footer}`);
 	}
 
-	return _boxen(boxContent.join('\n'), baseBoxenOpts);
+	return _boxen(boxContent.join('\n'), boxenOptions);
+}
+
+const unicode = isUnicodeSupported();
+const s = (c: string, fallback: string) => (unicode ? c : fallback);
+const S_BAR = s('│', '|');
+
+export type LogMessageOptions = {
+	symbol?: string;
+};
+
+const defaultTerminalHeight = 24;
+const getWidth = ({ columns = 80 }) => columns;
+const fitToTerminalHeight = (stream: typeof stdout, text: string) => {
+	const terminalHeight = stream.rows ?? defaultTerminalHeight;
+	const lines = text.split('\n');
+	const toRemove = Math.max(0, lines.length - terminalHeight);
+	return toRemove
+		? sliceAnsi(text, stripAnsi(lines.slice(0, toRemove).join('\n')).length + 1)
+		: text;
+};
+
+export function createClackMessageUpdate(
+	stream = stdout,
+	{ showCursor = false, symbol = color.gray(S_BAR) } = {}
+) {
+	let previousLineCount = 0;
+	let previousWidth = getWidth(stream);
+	let previousOutput = '';
+
+	const reset = () => {
+		previousOutput = '';
+		previousWidth = getWidth(stream);
+		previousLineCount = 0;
+	};
+
+	const render = (arguments_: string) => {
+		if (!showCursor) {
+			cliCursor.hide();
+		}
+
+		const parts = [];
+
+		const [firstLine, ...lines] = arguments_.split('\n');
+		parts.push(`${symbol}  ${firstLine}`, ...lines.map((ln) => `${color.gray(S_BAR)}  ${ln}`));
+
+		let output = fitToTerminalHeight(stream, `${parts.join('\n')}\n`);
+		const width = getWidth(stream);
+
+		if (output === previousOutput && previousWidth === width) {
+			return;
+		}
+
+		previousOutput = output;
+		previousWidth = width;
+		output = wrapAnsi(output, width, { trim: false, hard: true, wordWrap: false });
+
+		stream.write(ansiEscapes.eraseLines(previousLineCount) + output);
+		previousLineCount = output.split('\n').length;
+	};
+
+	render.clear = () => {
+		stream.write(ansiEscapes.eraseLines(previousLineCount));
+		reset();
+	};
+
+	render.done = () => {
+		reset();
+		if (!showCursor) {
+			cliCursor.show();
+		}
+	};
+
+	return render;
 }
 
 export const say = async (msg: string | string[] = [], { clear = false } = {}) => {
 	const messages = Array.isArray(msg) ? msg : [msg];
 	const rl = readline.createInterface({ input: stdin, escapeCodeTimeout: 50 });
-	const logUpdate = createLogUpdate(stdout, { showCursor: false });
+	const logUpdate = createClackMessageUpdate(stdout, { showCursor: false });
 	readline.emitKeypressEvents(stdin, rl);
 	let i = 0;
 	let cancelled = false;
@@ -199,19 +278,24 @@ export const getName = () =>
 export const nextSteps = async ({
 	projectDir,
 	devCmd,
-	outro,
-}: { projectDir: string; devCmd: string; outro: typeof _outro }) => {
-	outro(
+	p,
+}: { projectDir: string; devCmd: string; p: typeof _prompts }) => {
+	p.log.success(
 		boxen(
 			color.bold(
 				`${label('Setup Complete!', StudioCMSColorwayInfoBg, color.bold)} Explore your new project! 🚀`
 			),
 			{
-				ln1: `Enter your project directory using ${StudioCMSColorwayInfo(`cd ${projectDir}`)}`,
-				ln2: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
-				ln4: `Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`,
+				ln0: `Ensure your ${color.cyanBright('.env')} file is configured correctly.`,
+				ln2: `Enter your project directory using ${StudioCMSColorwayInfo(`cd ${projectDir}`)}`,
+				ln3: `Run ${color.cyan('astro db push')} to sync your database schema.`,
+				ln4: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
 			}
 		)
+	);
+
+	p.outro(
+		`${label('Enjoy your new CMS!', StudioCMSColorwayBg, color.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
 	);
 };
 
