@@ -1,10 +1,12 @@
 import os from 'node:os';
 import * as p from '@clack/prompts';
-import pkgJson from '../../../package.json';
 import { type TemplateRegistry, templateRegistry } from '../../templates.config.js';
 import { logger } from '../../utils/index.js';
 import { cancelMessage, getName } from '../../utils/messages.js';
+import readJson from '../../utils/readJson.js';
 import getSeasonalMessages from './data/seasonal.js';
+
+const pkgJson = readJson<{ version: string }>(new URL('../../../package.json', import.meta.url));
 
 interface InteractiveOptions {
 	template?: string;

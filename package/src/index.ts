@@ -1,11 +1,13 @@
 import { Option } from '@commander-js/extra-typings';
 import chalk from 'chalk';
-import pkgJson from '../package.json';
 import { getTurso } from './cmds/getTurso.js';
 import { InteractiveCMD } from './cmds/interactive/index.js';
 import { Command } from './utils/commander.js';
 import { CLITitle, StudioCMSColorwayError, logger } from './utils/index.js';
 import { setStdout } from './utils/messages.js';
+import readJson from './utils/readJson.js';
+
+const pkgJson = readJson<{ version: string }>(new URL('../package.json', import.meta.url));
 
 export { setStdout };
 export * from './cmds/interactive/index.js';

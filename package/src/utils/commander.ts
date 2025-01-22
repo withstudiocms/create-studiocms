@@ -7,7 +7,7 @@ import {
 import { type ChalkInstance, chalkStderr as chalkStdErr, default as chalkStdOut } from 'chalk';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
-import { StudioCMSColorwayError, date, supportsColor } from '.';
+import { StudioCMSColorwayError, date, supportsColor } from './index.js';
 
 export class Help extends _Help {
 	chalk: ChalkInstance;

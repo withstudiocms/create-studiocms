@@ -19,7 +19,7 @@
     "create-studiocms": "./create-studiocms.mjs"
   },
   "scripts": {
-    "build": "run-scripts build \"src/index.ts\" --bundle"
+    "build": "run-scripts build \"src/**/*.ts\""
   },
   "files": [
     "create-studiocms.mjs",
