@@ -11,7 +11,7 @@ import readJson from './utils/readJson.js';
 
 const pkgJson = readJson<{ version: string }>(new URL('../package.json', import.meta.url));
 
-export const main = await new Command('create-studiocms')
+await new Command('create-studiocms')
 	.description('StudioCMS CLI Utility Toolkit.')
 	.version(pkgJson.version, '-V, --version', 'Output the current version of the CLI Toolkit.')
 	.addHelpText('beforeAll', CLITitle)
