@@ -66,6 +66,13 @@ Commands:
   * Indicates the default command that is run when calling this CLI.
 ```
 
+### Get Turso
+
+Downloads and installs the latest version of Turso using the script from
+Turso's [documentation](https://docs.turso.tech/cli/installation)
+
+Note: Windows requires the use of WSL as per Turso
+
 ### Interactive (Default command)
 
 ```log
