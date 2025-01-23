@@ -3,7 +3,7 @@ import type {
 	CurrentTemplateRegistry,
 	GigetRepoUrl,
 	TemplateRegistry,
-} from './templates.types.js';
+} from './cmds/interactive/templates.types.js';
 
 /**
  * The current repository platform for StudioCMS templates

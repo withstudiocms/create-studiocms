@@ -1,6 +1,4 @@
 import chalk from 'chalk';
-import { getTurso } from './cmds/getTurso.js';
-import { InteractiveCMD } from './cmds/interactive/index.js';
 import { Command } from './utils/commander.js';
 import {
 	CLITitle,
@@ -23,14 +21,20 @@ const main = await new Command('create-studiocms')
 	)
 	.showHelpAfterError('(add --help for additional information)')
 	.enablePositionalOptions(true)
+	.executableDir('dist/cmds')
 
 	// Global Options
 	.addOption(ChalkColorOption)
 	.addOption(ChalkColorOptionNo)
 
 	// Commands
-	.addCommand(InteractiveCMD, { isDefault: true })
-	.addCommand(getTurso)
+	.command('interactive', 'Start the interactive CLI.', {
+		isDefault: true,
+		executableFile: 'interactive.js',
+	})
+	.command('get-turso', 'Get the latest version of Turso.', {
+		executableFile: 'get-turso.js',
+	})
 
 	// Parse the command line arguments and run the program
 	.parseAsync();

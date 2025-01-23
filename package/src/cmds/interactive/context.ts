@@ -2,10 +2,10 @@ import os from 'node:os';
 import * as p from '@clack/prompts';
 import packageJson from 'package-json';
 import { templateRegistry } from '../../templates.config.js';
-import type { TemplateRegistry } from '../../templates.types.js';
 import { logger } from '../../utils/index.js';
 import { cancelMessage, getName } from '../../utils/messages.js';
 import getSeasonalMessages from './data/seasonal.js';
+import type { TemplateRegistry } from './templates.types.js';
 
 interface InteractiveOptions {
 	template?: string;

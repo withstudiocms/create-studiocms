@@ -1,9 +1,9 @@
 import { Command } from '../utils/commander.js';
 import { logger, runInteractiveCommand } from '../utils/index.js';
 
-export const getTurso = new Command('getTurso')
-	.description('Turso CLI Utilities')
-	.summary('Turso CLI Utilities')
+const program = new Command('getTurso')
+	.description('Turso CLI Installer')
+	.summary('Turso CLI Installer')
 	.action(async () => {
 		try {
 			logger.log('Starting Turso install...');
@@ -13,3 +13,5 @@ export const getTurso = new Command('getTurso')
 			logger.error(`Failed to run Turso install: ${(error as Error).message}`);
 		}
 	});
+
+await program.parseAsync();

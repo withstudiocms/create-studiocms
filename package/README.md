@@ -59,8 +59,9 @@ Options:
   --no-color     disable color output
 
 Commands:
+  get-turso      Get the latest version of Turso.
   help           Show help for command
-  interactive *  Start the interactive CLI.
+  interactive*   Start the interactive CLI.
 
   * Indicates the default command that is run when calling this CLI.
 ```
@@ -77,18 +78,18 @@ the process of creating a new StudioCMS(or StudioCMS Ecosystem package)
 project using one of the available templates.
 
 Options:
-  -t, --template [template]          The template to use.
-  -r, --template-ref [template-ref]  The template reference to use.
-  -p, --project-name [project-name]  The name of the project.
+  -t, --template <template>          The template to use.
+  -r, --template-ref <template-ref>  The template reference to use.
+  -p, --project-name <project-name>  The name of the project.
   -i, --install                      Install dependencies.
   -g, --git                          Initialize a git repository.
   -y, --yes                          Skip all prompts and use default values.
   -n, --no                           Skip all prompts and use default values.
   -q, --skip-banners                 Skip all banners and messages.
+  -d, --dry-run                      Do not perform any actions.
+  -h, --help                         display help for command
   --do-not-install                   Do not install dependencies.
   --do-not-init-git                  Do not initializing a git repository.
-  --dry-run                          Do not perform any actions.
-  -h, --help                         display help for command
 ```
 
 [templates]: https://github.com/withstudiocms/templates
