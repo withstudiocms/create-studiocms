@@ -11,7 +11,7 @@ import readJson from './utils/readJson.js';
 
 const pkgJson = readJson<{ version: string }>(new URL('../package.json', import.meta.url));
 
-const main = await new Command('create-studiocms')
+export const main = await new Command('create-studiocms')
 	.description('StudioCMS CLI Utility Toolkit.')
 	.version(pkgJson.version, '-V, --version', 'Output the current version of the CLI Toolkit.')
 	.addHelpText('beforeAll', CLITitle)
@@ -38,8 +38,3 @@ const main = await new Command('create-studiocms')
 
 	// Parse the command line arguments and run the program
 	.parseAsync();
-
-export { main };
-export { setStdout } from './utils/messages.js';
-export * from './cmds/interactive/index.js';
-export { templateRegistry } from './templates.config.js';

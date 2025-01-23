@@ -15,7 +15,7 @@ import {
 	verify,
 } from './interactive/index.js';
 
-const program = new Command('interactive')
+await new Command('interactive')
 	.description(
 		'Start the interactive CLI. Powered by Clack.cc.\n\nThis command will open an interactive CLI prompt to guide you through\nthe process of creating a new StudioCMS(or StudioCMS Ecosystem package)\nproject using one of the available templates.'
 	)
@@ -82,6 +82,5 @@ const program = new Command('interactive')
 		opts.debug && ctx.logger.debug('Interactive CLI completed, exiting...');
 
 		process.exit(0);
-	});
-
-await program.parseAsync();
+	})
+	.parseAsync();
