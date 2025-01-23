@@ -72,7 +72,6 @@ export function boxen(
 	boxenOptions: BoxenOptions = { padding: 0, borderStyle: 'none' }
 ) {
 	const prefix = stdout.columns < 80 ? ' ' : ' '.repeat(4);
-	const boxContent: string[] = [];
 
 	const logo = _boxen(
 		[
@@ -88,26 +87,20 @@ export function boxen(
 		}
 	).split('\n');
 
-	if (header) {
-		boxContent.push(`${header}\n`);
-	}
+	const boxContent = [
+		header ? `${header}\n` : null,
+		`${logo[0]}${prefix}${body?.ln0 || ''}`,
+		`${logo[1]}${prefix}${body?.ln1 || ''}`,
+		`${logo[2]}${prefix}${body?.ln2 || ''}`,
+		`${logo[3]}${prefix}${body?.ln3 || ''}`,
+		`${logo[4]}${prefix}${body?.ln4 || ''}`,
+		`${logo[5]}${prefix}${body?.ln5 || ''}`,
+		footer ? `\n${footer}` : null,
+	]
+		.filter((val) => typeof val === 'string')
+		.join('\n');
 
-	boxContent.push(
-		...[
-			`${logo[0]}${prefix}${body?.ln0 || ''}`,
-			`${logo[1]}${prefix}${body?.ln1 || ''}`,
-			`${logo[2]}${prefix}${body?.ln2 || ''}`,
-			`${logo[3]}${prefix}${body?.ln3 || ''}`,
-			`${logo[4]}${prefix}${body?.ln4 || ''}`,
-			`${logo[5]}${prefix}${body?.ln5 || ''}`,
-		]
-	);
-
-	if (footer) {
-		boxContent.push(`\n${footer}`);
-	}
-
-	return _boxen(boxContent.join('\n'), boxenOptions);
+	return _boxen(boxContent, boxenOptions);
 }
 
 const unicode = isUnicodeSupported();
