@@ -73,6 +73,15 @@ Turso's [documentation](https://docs.turso.tech/cli/installation)
 
 Note: Windows requires the use of WSL as per Turso
 
+```log
+Usage: getTurso [options]
+
+Turso CLI Installer
+
+Options:
+  -h, --help  display help for command
+```
+
 ### Interactive (Default command)
 
 ```log
