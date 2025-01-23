@@ -7,9 +7,12 @@ import {
 	StudioCMSColorwayError,
 	termPrefix,
 } from './utils/index.js';
+import pathUtil from './utils/pathUtil.js';
 import readJson from './utils/readJson.js';
 
 const pkgJson = readJson<{ version: string }>(new URL('../package.json', import.meta.url));
+
+const { getRelPath } = pathUtil(import.meta.url);
 
 await new Command('create-studiocms')
 	.description('StudioCMS CLI Utility Toolkit.')
@@ -21,7 +24,7 @@ await new Command('create-studiocms')
 	)
 	.showHelpAfterError('(add --help for additional information)')
 	.enablePositionalOptions(true)
-	.executableDir('dist/cmds')
+	.executableDir(getRelPath('cmds'))
 
 	// Global Options
 	.addOption(ChalkColorOption)
