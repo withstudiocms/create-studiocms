@@ -31,6 +31,7 @@ const dtsGen = {
 				console.log(dim(`[${date}] `) + green('√ Generated TypeScript declarations'));
 			} catch (error) {
 				console.error(dim(`[${date}] `) + red(error));
+				console.error(dim(`[${date}] `) + red(error.stdout.toString()));
 			}
 		});
 	},

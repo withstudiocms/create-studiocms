@@ -39,7 +39,8 @@
     "ansi-escapes": "^7.0.0",
     "cli-cursor": "^5.0.0",
     "is-unicode-supported": "^2.1.0",
-    "slice-ansi": "^7.1.0"
+    "slice-ansi": "^7.1.0",
+    "package-json": "^10.0.1"
   },
   "devDependencies": {
     "@types/figlet": "^1.7.0"

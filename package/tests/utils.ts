@@ -1,6 +1,5 @@
 import { stripVTControlCharacters } from 'node:util';
 import { beforeAll, beforeEach } from 'vitest';
-// @ts-expect-error Testing purposes only
 import { setStdout } from '../dist/utils/messages.js';
 
 export function setup() {

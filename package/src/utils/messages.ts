@@ -278,23 +278,30 @@ export const nextSteps = async ({
 	projectDir,
 	devCmd,
 	p,
-}: { projectDir: string; devCmd: string; p: typeof _prompts }) => {
+	isStudioCMSProject,
+}: { projectDir: string; devCmd: string; p: typeof _prompts; isStudioCMSProject: boolean }) => {
 	p.log.success(
 		boxen(
 			color.bold(
 				`${label('Setup Complete!', StudioCMSColorwayInfoBg, color.bold)} Explore your new project! 🚀`
 			),
 			{
-				ln0: `Ensure your ${color.cyanBright('.env')} file is configured correctly.`,
+				ln0: isStudioCMSProject
+					? `Ensure your ${color.cyanBright('.env')} file is configured correctly.`
+					: '',
 				ln2: `Enter your project directory using ${StudioCMSColorwayInfo(`cd ${projectDir}`)}`,
-				ln3: `Run ${color.cyan('astro db push')} to sync your database schema.`,
-				ln4: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
+				ln3: isStudioCMSProject
+					? `Run ${color.cyan('astro db push')} to sync your database schema.`
+					: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
+				ln4: isStudioCMSProject
+					? `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`
+					: '',
 			}
 		)
 	);
 
 	p.outro(
-		`${label('Enjoy your new CMS!', StudioCMSColorwayBg, color.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
+		`${label(isStudioCMSProject ? 'Enjoy your new CMS!' : 'Enjoy your new project!', StudioCMSColorwayBg, color.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
 	);
 };
 

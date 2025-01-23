@@ -1,13 +1,11 @@
 import os from 'node:os';
 import * as p from '@clack/prompts';
+import packageJson from 'package-json';
 import { templateRegistry } from '../../templates.config.js';
 import type { TemplateRegistry } from '../../templates.types.js';
 import { logger } from '../../utils/index.js';
 import { cancelMessage, getName } from '../../utils/messages.js';
-import readJson from '../../utils/readJson.js';
 import getSeasonalMessages from './data/seasonal.js';
-
-const pkgJson = readJson<{ version: string }>(new URL('../../../package.json', import.meta.url));
 
 interface InteractiveOptions {
 	template?: string;
@@ -59,6 +57,8 @@ export async function getContext(args: InteractiveOptions & { cwd?: string }): P
 	const packageManager = detectPackageManager() ?? 'npm';
 	const cwd = args.cwd ?? process.cwd();
 
+	const { version } = await packageJson('studiocms');
+
 	if (no) {
 		yes = false;
 		if (install === undefined) install = false;
@@ -84,7 +84,7 @@ export async function getContext(args: InteractiveOptions & { cwd?: string }): P
 		},
 		packageManager,
 		username: await getName(),
-		version: pkgJson.version,
+		version,
 		dryRun,
 		projectName,
 		template,

@@ -3,7 +3,10 @@ import { nextSteps } from '../../utils/messages.js';
 import type { Context } from './context.js';
 
 export async function next(
-	ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners' | 'debug' | 'logger' | 'prompt'>
+	ctx: Pick<
+		Context,
+		'cwd' | 'packageManager' | 'skipBanners' | 'debug' | 'logger' | 'prompt' | 'isStudioCMSProject'
+	>
 ) {
 	ctx.debug && ctx.logger.debug('Running next steps...');
 	const projectDir = path.relative(process.cwd(), ctx.cwd);
@@ -23,7 +26,12 @@ export async function next(
 
 	ctx.debug && ctx.logger.debug('Running next steps fn...');
 
-	await nextSteps({ projectDir, devCmd, p: ctx.prompt });
+	await nextSteps({
+		projectDir,
+		devCmd,
+		p: ctx.prompt,
+		isStudioCMSProject: ctx.isStudioCMSProject,
+	});
 
 	ctx.debug && ctx.logger.debug('Next steps complete');
 }
