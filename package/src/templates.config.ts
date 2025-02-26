@@ -57,7 +57,7 @@ const currentTemplateRegistry: CurrentTemplateRegistry = {
 			},
 			headless: {
 				label: 'StudioCMS project with no frontend',
-			}
+			},
 		},
 	},
 	// 'studiocms-ui': {
