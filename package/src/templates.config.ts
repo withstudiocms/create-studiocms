@@ -51,27 +51,27 @@ const currentTemplateRegistry: CurrentTemplateRegistry = {
 	studiocms: {
 		label: 'StudioCMS',
 		templates: {
-			basics: {
-				label: 'A basic, StudioCMS Project',
-				hint: 'recommended',
-			},
 			blog: {
-				label: 'StudioCMS project with the Blog Plugin',
-			},
-		},
-	},
-	'studiocms-ui': {
-		label: 'StudioCMS UI (@studiocms/ui)',
-		templates: {
-			basics: {
-				label: 'A basic, StudioCMS UI Project',
+				label: 'StudioCMS with a blog',
 				hint: 'recommended',
 			},
-			tailwind: {
-				label: 'StudioCMS UI project with Tailwind CSS',
-			},
+			headless: {
+				label: 'StudioCMS project with no frontend',
+			}
 		},
 	},
+	// 'studiocms-ui': {
+	// 	label: 'StudioCMS UI (@studiocms/ui)',
+	// 	templates: {
+	// 		basics: {
+	// 			label: 'A basic, StudioCMS UI Project',
+	// 			hint: 'recommended',
+	// 		},
+	// 		tailwind: {
+	// 			label: 'StudioCMS UI project with Tailwind CSS',
+	// 		},
+	// 	},
+	// },
 };
 
 /**
