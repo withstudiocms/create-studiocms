@@ -38,7 +38,7 @@ const currentRepositoryUrl: string = 'https://github.com/withstudiocms/templates
  *
  * @remarks This is the default template used when no template is selected
  */
-const defaultTemplate: string = 'studiocms/basics';
+const defaultTemplate: string = 'studiocms/blog';
 
 /**
  * The current template registry for StudioCMS projects
