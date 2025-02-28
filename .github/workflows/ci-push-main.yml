@@ -7,7 +7,12 @@ on:
       - main
 
 permissions:
+  issues: write
+  repository-projects: read
   contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
 
 jobs:
   format:
