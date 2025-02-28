@@ -5,9 +5,6 @@
 
 CLI Utility Toolkit used for setting up a new project using a StudioCMS Ecosystem packages, as well as other utilities.
 
-> [!WARNING]
-> This package has not yet been released.  The goal is to release this alongside the StudioCMS `v0.1.0-beta.8` release!
-
 ## Quickstart
 
 ### Use with NPM
