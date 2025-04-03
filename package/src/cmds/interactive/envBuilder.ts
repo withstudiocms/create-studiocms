@@ -182,6 +182,13 @@ export async function env(
 							if (typeof loginToken === 'symbol') {
 								ctx.promptCancel(loginToken);
 							} else {
+								ctx.debug && ctx.logger.debug(`Login token received: ${loginToken}`);
+
+								if (!loginToken) {
+									ctx.prompt.log.error(StudioCMSColorwayError('No token provided'));
+									process.exit(1);
+								}
+
 								const loginRes = await runShellCommand(`turso config set token "${loginToken}"`);
 
 								if (loginRes.includes('Token set succesfully.')) {
