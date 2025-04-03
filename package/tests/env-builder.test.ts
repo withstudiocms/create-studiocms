@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import * as utils from '../dist/utils/index.js';
+import { buildEnvFile } from '../dist/cmds/interactive/data/studiocmsenv.js';
 
 describe('Token Validation Fix', () => {
 	it('logs and validates tokens before using them', () => {
@@ -51,5 +52,73 @@ describe('Token Validation Fix', () => {
 				expect(isTokenValid, `Token validation check for ${description}`).toBe(true);
 			}
 		}
+	});
+});
+
+describe('Environment Builder Configuration', () => {
+	it('only includes selected OAuth providers in the env file', () => {
+		// Base configuration that all tests will use
+		const baseConfig = {
+			astroDbRemoteUrl: 'libsql://test-db.turso.io',
+			astroDbToken: 'test-token-123',
+			encryptionKey: 'test-encryption-key',
+		};
+
+		// Test with no OAuth providers selected
+		const envWithNoOAuth = buildEnvFile({
+			...baseConfig,
+			oAuthOptions: [],
+		});
+
+		// Verify none of the OAuth providers are included
+		expect(envWithNoOAuth).not.toContain('CMS_GITHUB_CLIENT_ID');
+		expect(envWithNoOAuth).not.toContain('CMS_DISCORD_CLIENT_ID');
+		expect(envWithNoOAuth).not.toContain('CMS_GOOGLE_CLIENT_ID');
+		expect(envWithNoOAuth).not.toContain('CMS_AUTH0_CLIENT_ID');
+
+		// Test with only GitHub selected
+		const githubOAuth = {
+			clientId: 'github-id',
+			clientSecret: 'github-secret',
+			redirectUri: 'http://localhost:4321',
+		};
+
+		const envWithGitHub = buildEnvFile({
+			...baseConfig,
+			oAuthOptions: ['github'],
+			githubOAuth,
+		});
+
+		// Verify only GitHub is included
+		expect(envWithGitHub).toContain('CMS_GITHUB_CLIENT_ID=github-id');
+		expect(envWithGitHub).not.toContain('CMS_DISCORD_CLIENT_ID');
+		expect(envWithGitHub).not.toContain('CMS_GOOGLE_CLIENT_ID');
+		expect(envWithGitHub).not.toContain('CMS_AUTH0_CLIENT_ID');
+
+		// Test with multiple providers selected
+		const discordOAuth = {
+			clientId: 'discord-id',
+			clientSecret: 'discord-secret',
+			redirectUri: 'http://localhost:4321',
+		};
+
+		const envWithMultiple = buildEnvFile({
+			...baseConfig,
+			oAuthOptions: ['github', 'discord'],
+			githubOAuth,
+			discordOAuth,
+		});
+
+		// Verify only selected providers are included
+		expect(envWithMultiple).toContain('CMS_GITHUB_CLIENT_ID=github-id');
+		expect(envWithMultiple).toContain('CMS_DISCORD_CLIENT_ID=discord-id');
+		expect(envWithMultiple).not.toContain('CMS_GOOGLE_CLIENT_ID');
+		expect(envWithMultiple).not.toContain('CMS_AUTH0_CLIENT_ID');
+
+		// Verify essential variables are always included
+		expect(envWithMultiple).toContain('ASTRO_DB_REMOTE_URL=libsql://test-db.turso.io');
+		expect(envWithMultiple).toContain('ASTRO_DB_APP_TOKEN=test-token-123');
+		expect(envWithMultiple).toContain('CMS_ENCRYPTION_KEY="test-encryption-key"');
+		expect(envWithMultiple).toContain('CMS_CLOUDINARY_CLOUDNAME="demo"');
 	});
 });
