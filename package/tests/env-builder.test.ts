@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import * as utils from '../dist/utils/index.js';
 import { buildEnvFile } from '../dist/cmds/interactive/data/studiocmsenv.js';
+import * as utils from '../dist/utils/index.js';
 
 describe('Token Validation Fix', () => {
 	it('logs and validates tokens before using them', () => {
