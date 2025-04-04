@@ -1,5 +1,13 @@
 # create-studiocms
 
+## 0.1.2
+
+### Patch Changes
+
+- [#10](https://github.com/withstudiocms/create-studiocms/pull/10) [`6aca9c4`](https://github.com/withstudiocms/create-studiocms/commit/6aca9c4abda663f05955671731e962ced8b18add) Thanks [@dreyfus92](https://github.com/dreyfus92)! - Fix CLI interactive environment builder with two important changes:
+  1. Fixed token validation in Turso authentication to properly handle empty or undefined tokens
+  2. Improved environment variable generation to only include OAuth providers actually selected by the user
+
 ## 0.1.1
 
 ### Patch Changes
