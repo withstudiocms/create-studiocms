@@ -38,8 +38,8 @@ export function buildEnvFile(envBuilderOpts: EnvBuilderOptions): string {
 	let envFileContent = `# StudioCMS Environment Variables
 
 # libSQL URL and Token for AstroDB
-ASTRO_DB_REMOTE_URL=${envBuilderOpts.astroDbRemoteUrl}
-ASTRO_DB_APP_TOKEN=${envBuilderOpts.astroDbToken}
+ASTRO_DB_REMOTE_URL=${envBuilderOpts.astroDbRemoteUrl || ''}
+ASTRO_DB_APP_TOKEN=${envBuilderOpts.astroDbToken || ''}
 
 # Auth encryption key
 CMS_ENCRYPTION_KEY="${envBuilderOpts.encryptionKey}" # openssl rand --base64 16
