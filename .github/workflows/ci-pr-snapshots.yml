@@ -17,7 +17,7 @@ jobs:
         uses: withstudiocms/automations/.github/actions/install@main
 
       - name: Run Prepublish
-        run: pnpm ci:prepublish
+        run: pnpm ci:build
   
       - name: Publish packages
         run: pnpm ci:snapshot
