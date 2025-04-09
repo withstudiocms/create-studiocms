@@ -1,5 +1,11 @@
 # create-studiocms
 
+## 0.1.3
+
+### Patch Changes
+
+- [#12](https://github.com/withstudiocms/create-studiocms/pull/12) [`2f8f5e2`](https://github.com/withstudiocms/create-studiocms/commit/2f8f5e2295ffe3f23785e4502de31f34eb46bec0) Thanks [@dreyfus92](https://github.com/dreyfus92)! - Fixes undefined Turso DB credentials in environment files and add validation
+
 ## 0.1.2
 
 ### Patch Changes
