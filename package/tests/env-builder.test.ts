@@ -121,4 +121,19 @@ describe('Environment Builder Configuration', () => {
 		expect(envWithMultiple).toContain('CMS_ENCRYPTION_KEY="test-encryption-key"');
 		expect(envWithMultiple).toContain('CMS_CLOUDINARY_CLOUDNAME="demo"');
 	});
+
+	it('handles undefined AstroDB values correctly', () => {
+		// Test with undefined AstroDB values
+		const envWithUndefinedValues = buildEnvFile({
+			encryptionKey: 'test-encryption-key',
+			oAuthOptions: [],
+			// Deliberately omit astroDbRemoteUrl and astroDbToken
+		});
+
+		// Verify the environment values are empty strings, not "undefined"
+		expect(envWithUndefinedValues).toContain('ASTRO_DB_REMOTE_URL=');
+		expect(envWithUndefinedValues).toContain('ASTRO_DB_APP_TOKEN=');
+		expect(envWithUndefinedValues).not.toContain('ASTRO_DB_REMOTE_URL=undefined');
+		expect(envWithUndefinedValues).not.toContain('ASTRO_DB_APP_TOKEN=undefined');
+	});
 });
