@@ -272,13 +272,15 @@ export async function env(
 									tursoSetup.stop(
 										`${label('Turso', TursoColorway, color.black)} Failed to retrieve a valid database URL.`
 									);
-									ctx.prompt.log.error(StudioCMSColorwayError(`Invalid database URL: ${dbURL || 'undefined'}`));
-									
+									ctx.prompt.log.error(
+										StudioCMSColorwayError(`Invalid database URL: ${dbURL || 'undefined'}`)
+									);
+
 									const manualURL = await ctx.prompt.text({
 										message: 'Enter your Turso database URL manually',
 										placeholder: 'libsql://your-database.turso.io',
 									});
-									
+
 									if (typeof manualURL === 'symbol') {
 										ctx.promptCancel(manualURL);
 									} else {
@@ -292,13 +294,17 @@ export async function env(
 									tursoSetup.stop(
 										`${label('Turso', TursoColorway, color.black)} Failed to retrieve a valid token.`
 									);
-									ctx.prompt.log.error(StudioCMSColorwayError(`Invalid database token: ${dbToken ? 'too short' : 'undefined'}`));
-									
+									ctx.prompt.log.error(
+										StudioCMSColorwayError(
+											`Invalid database token: ${dbToken ? 'too short' : 'undefined'}`
+										)
+									);
+
 									const manualToken = await ctx.prompt.text({
 										message: 'Enter your Turso database token manually',
 										placeholder: 'eyJh...Nzc2',
 									});
-									
+
 									if (typeof manualToken === 'symbol') {
 										ctx.promptCancel(manualToken);
 									} else {
@@ -313,28 +319,29 @@ export async function env(
 									tursoSetup.message(
 										`${label('Turso', TursoColorway, color.black)} Verifying database connection...`
 									);
-									
+
 									try {
 										// Test connection using curl (doesn't require additional dependencies)
 										const connectionTest = await runShellCommand(
 											`curl -s -o /dev/null -w "%{http_code}" ${envBuilderOpts.astroDbRemoteUrl}/health -H "Authorization: Bearer ${envBuilderOpts.astroDbToken}"`
 										);
-										
+
 										const statusCode = Number.parseInt(connectionTest.trim(), 10);
-										
+
 										if (statusCode >= 200 && statusCode < 300) {
-											ctx.debug && ctx.logger.debug(`Database connection successful: ${statusCode}`);
+											ctx.debug &&
+												ctx.logger.debug(`Database connection successful: ${statusCode}`);
 										} else {
 											ctx.debug && ctx.logger.debug(`Database connection failed: ${statusCode}`);
 											ctx.prompt.log.warn(
 												`${label('Warning', StudioCMSColorwayWarnBg, color.black)} Could not verify database connection. Status: ${statusCode}`
 											);
-											
+
 											const confirmContinue = await ctx.prompt.confirm({
 												message: 'Continue with these credentials anyway?',
 												initialValue: true,
 											});
-											
+
 											if (typeof confirmContinue === 'symbol') {
 												ctx.promptCancel(confirmContinue);
 											} else if (!confirmContinue) {
@@ -344,7 +351,9 @@ export async function env(
 														astroDbRemoteUrl: () =>
 															ctx.prompt.text({
 																message: 'Remote URL for AstroDB',
-																initialValue: envBuilderOpts.astroDbRemoteUrl || 'libsql://your-database.turso.io',
+																initialValue:
+																	envBuilderOpts.astroDbRemoteUrl ||
+																	'libsql://your-database.turso.io',
 															}),
 														astroDbToken: () =>
 															ctx.prompt.text({
@@ -356,13 +365,16 @@ export async function env(
 														onCancel: () => ctx.promptOnCancel(),
 													}
 												);
-												
+
 												envBuilderOpts.astroDbRemoteUrl = newCredentials.astroDbRemoteUrl || '';
 												envBuilderOpts.astroDbToken = newCredentials.astroDbToken || '';
 											}
 										}
 									} catch (error) {
-										ctx.debug && ctx.logger.debug(`Database connection test error: ${error instanceof Error ? error.message : 'unknown error'}`);
+										ctx.debug &&
+											ctx.logger.debug(
+												`Database connection test error: ${error instanceof Error ? error.message : 'unknown error'}`
+											);
 										ctx.prompt.log.warn(
 											`${label('Warning', StudioCMSColorwayWarnBg, color.black)} Could not verify database connection due to an error.`
 										);
@@ -414,59 +426,65 @@ export async function env(
 					// Validate the manually entered credentials
 					let dbUrl = envBuilderStep_AstroDB.astroDbRemoteUrl || '';
 					let dbToken = envBuilderStep_AstroDB.astroDbToken || '';
-					
+
 					// Check URL format
 					if (!dbUrl.startsWith('libsql://') && dbUrl !== '') {
 						ctx.prompt.log.warn(
 							`${label('Warning', StudioCMSColorwayWarnBg, color.black)} The database URL should start with 'libsql://'.`
 						);
-						
+
 						const fixUrl = await ctx.prompt.confirm({
 							message: 'Would you like to prepend "libsql://" to your URL?',
 							initialValue: true,
 						});
-						
+
 						if (typeof fixUrl === 'symbol') {
 							ctx.promptCancel(fixUrl);
 						} else if (fixUrl) {
 							dbUrl = `libsql://${dbUrl}`;
 						}
 					}
-					
+
 					// Verify the credentials with a connection test
 					if (dbUrl && dbToken && dbToken !== 'your-astrodb-token') {
 						const verifyConnection = await ctx.prompt.confirm({
 							message: 'Would you like to verify these credentials?',
 							initialValue: true,
 						});
-						
+
 						if (typeof verifyConnection === 'symbol') {
 							ctx.promptCancel(verifyConnection);
 						} else if (verifyConnection) {
 							const connectionTestSpinner = ctx.prompt.spinner();
-							connectionTestSpinner.start(`${label('Turso', TursoColorway, color.black)} Verifying database connection...`);
-							
+							connectionTestSpinner.start(
+								`${label('Turso', TursoColorway, color.black)} Verifying database connection...`
+							);
+
 							try {
 								// Test connection using curl (doesn't require additional dependencies)
 								const connectionTest = await runShellCommand(
 									`curl -s -o /dev/null -w "%{http_code}" ${dbUrl}/health -H "Authorization: Bearer ${dbToken}"`
 								);
-								
+
 								const statusCode = Number.parseInt(connectionTest.trim(), 10);
-								
+
 								if (statusCode >= 200 && statusCode < 300) {
-									connectionTestSpinner.stop(`${label('Turso', TursoColorway, color.black)} Connection successful!`);
+									connectionTestSpinner.stop(
+										`${label('Turso', TursoColorway, color.black)} Connection successful!`
+									);
 								} else {
-									connectionTestSpinner.stop(`${label('Turso', TursoColorway, color.black)} Connection failed (${statusCode}).`);
+									connectionTestSpinner.stop(
+										`${label('Turso', TursoColorway, color.black)} Connection failed (${statusCode}).`
+									);
 									ctx.prompt.log.warn(
 										`${label('Warning', StudioCMSColorwayWarnBg, color.black)} Could not verify database connection. Status: ${statusCode}`
 									);
-									
+
 									const retryCredentials = await ctx.prompt.confirm({
 										message: 'Would you like to enter different credentials?',
 										initialValue: true,
 									});
-									
+
 									if (typeof retryCredentials === 'symbol') {
 										ctx.promptCancel(retryCredentials);
 									} else if (retryCredentials) {
@@ -487,21 +505,26 @@ export async function env(
 												onCancel: () => ctx.promptOnCancel(),
 											}
 										);
-										
+
 										dbUrl = newCredentials.astroDbRemoteUrl || '';
 										dbToken = newCredentials.astroDbToken || '';
 									}
 								}
 							} catch (error) {
-								connectionTestSpinner.stop(`${label('Turso', TursoColorway, color.black)} Connection test failed.`);
-								ctx.debug && ctx.logger.debug(`Database connection test error: ${error instanceof Error ? error.message : 'unknown error'}`);
+								connectionTestSpinner.stop(
+									`${label('Turso', TursoColorway, color.black)} Connection test failed.`
+								);
+								ctx.debug &&
+									ctx.logger.debug(
+										`Database connection test error: ${error instanceof Error ? error.message : 'unknown error'}`
+									);
 								ctx.prompt.log.warn(
 									`${label('Warning', StudioCMSColorwayWarnBg, color.black)} Could not verify database connection due to an error.`
 								);
 							}
 						}
 					}
-					
+
 					// Save the validated credentials
 					envBuilderOpts.astroDbRemoteUrl = dbUrl;
 					envBuilderOpts.astroDbToken = dbToken;
@@ -539,14 +562,14 @@ export async function env(
 			// Preserve AstroDB URL and token while merging
 			const previousDbValues = {
 				astroDbRemoteUrl: envBuilderOpts.astroDbRemoteUrl,
-				astroDbToken: envBuilderOpts.astroDbToken
+				astroDbToken: envBuilderOpts.astroDbToken,
 			};
-			
-			envBuilderOpts = { 
+
+			envBuilderOpts = {
 				...envBuilderOpts,
 				...envBuilderStep1,
 				astroDbRemoteUrl: previousDbValues.astroDbRemoteUrl || '',
-				astroDbToken: previousDbValues.astroDbToken || ''
+				astroDbToken: previousDbValues.astroDbToken || '',
 			};
 
 			if (envBuilderStep1.oAuthOptions.includes('github')) {
