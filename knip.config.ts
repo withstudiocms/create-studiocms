@@ -2,7 +2,6 @@ import type { KnipConfig } from 'knip';
 
 const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
-	ignoreBinaries: ['ci:prepublish'],
 	workspaces: {
 		'.': {
 			ignoreDependencies: ['@changesets/config'],
@@ -18,10 +17,6 @@ const config: KnipConfig = {
 				'vitest.config.mts',
 				'biome.json',
 			],
-		},
-		scripts: {
-			entry: 'index.js',
-			project: '**/*.js',
 		},
 		'packages/*': {
 			ignoreDependencies: ['@clack/core'],
