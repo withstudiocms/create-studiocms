@@ -27,6 +27,7 @@
     "@changesets/config": "^3.1.1",
     "@types/node": "^22.10.5",
     "@vitest/ui": "3.0.1",
+    "@withstudiocms/buildkit": "^0.1.0-beta.1",
     "knip": "^5.46.0",
     "pkg-pr-new": "^0.0.42",
     "run-scripts": "workspace:*",
