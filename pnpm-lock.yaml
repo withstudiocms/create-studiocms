@@ -35,9 +35,6 @@ importers:
       pkg-pr-new:
         specifier: ^0.0.42
         version: 0.0.42
-      run-scripts:
-        specifier: workspace:*
-        version: link:scripts
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -96,18 +93,6 @@ importers:
       '@types/figlet':
         specifier: ^1.7.0
         version: 1.7.0
-
-  scripts:
-    dependencies:
-      esbuild:
-        specifier: ^0.25.0
-        version: 0.25.0
-      fast-glob:
-        specifier: ^3.3.2
-        version: 3.3.3
-      kleur:
-        specifier: ^4.1.5
-        version: 4.1.5
 
 packages:
 

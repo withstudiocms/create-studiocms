@@ -30,7 +30,6 @@
     "@withstudiocms/buildkit": "^0.1.0-beta.1",
     "knip": "^5.46.0",
     "pkg-pr-new": "^0.0.42",
-    "run-scripts": "workspace:*",
     "typescript": "^5.7.3",
     "vitest": "^3.0.1"
   }
