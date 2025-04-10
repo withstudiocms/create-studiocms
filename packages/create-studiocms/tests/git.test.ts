@@ -57,7 +57,7 @@ describe('git initialized', () => {
 	it('already initialized', async () => {
 		const context = {
 			git: true,
-			cwd: './package/tests/fixtures/not-empty',
+			cwd: './packages/create-studiocms/tests/fixtures/not-empty',
 			dryRun: false,
 			prompt: { ...fixture.prompt, confirm: async () => false },
 		};

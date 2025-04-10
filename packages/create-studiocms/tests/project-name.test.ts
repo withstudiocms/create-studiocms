@@ -40,24 +40,28 @@ describe('project name', () => {
 	it('empty', async () => {
 		const context = {
 			projectName: '',
-			cwd: './package/tests/fixtures/empty',
+			cwd: './packages/create-studiocms/tests/fixtures/empty',
 			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
-		expect(fixture.hasMessage('"./package/tests/fixtures/empty" is not empty!')).toBe(false);
+		expect(
+			fixture.hasMessage('"./packages/create-studiocms/tests/fixtures/empty" is not empty!')
+		).toBe(false);
 		expect(context.projectName).toBe('empty');
 	});
 
 	it('not empty', async () => {
 		const context = {
 			projectName: '',
-			cwd: './package/tests/fixtures/not-empty',
+			cwd: './packages/create-studiocms/tests/fixtures/not-empty',
 			prompt: { ...fixture.prompt, text: () => 'foobar' },
 		};
 		// @ts-expect-error Testing purposes only
 		await projectName(context);
-		expect(fixture.hasMessage('"./package/tests/fixtures/not-empty" is not empty!')).toBe(true);
+		expect(
+			fixture.hasMessage('"./packages/create-studiocms/tests/fixtures/not-empty" is not empty!')
+		).toBe(true);
 		expect(context.projectName).toBe('foobar');
 	});
 

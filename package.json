@@ -8,7 +8,7 @@
   "scripts": {
     "knip": "knip",
     "build": "pnpm --filter create-studiocms run build",
-    "test-run": "node ./package/create-studiocms.mjs",
+    "test-run": "node ./packages/create-studiocms/create-studiocms.mjs",
     "test": "vitest run --reporter=default --reporter=html",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -18,7 +18,7 @@
     "ci:install": "pnpm install --frozen-lockfile",
     "ci:version": "pnpm changeset version",
     "ci:publish": "pnpm changeset publish",
-    "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './package' --bin --packageManager=pnpm"
+    "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*' --bin --packageManager=pnpm"
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -27,9 +27,9 @@
     "@changesets/config": "^3.1.1",
     "@types/node": "^22.10.5",
     "@vitest/ui": "3.0.1",
+    "@withstudiocms/buildkit": "^0.1.0-beta.1",
     "knip": "^5.46.0",
     "pkg-pr-new": "^0.0.42",
-    "run-scripts": "workspace:*",
     "typescript": "^5.7.3",
     "vitest": "^3.0.1"
   }
