@@ -278,15 +278,6 @@ export const dt = new Intl.DateTimeFormat('en-us', {
 
 export const date = dt.format(new Date());
 
-export const ChalkColorOption = new Option(
-	'--color',
-	'Force color output'
-); /* implemented by chalk */
-export const ChalkColorOptionNo = new Option(
-	'--no-color',
-	'Disable color output'
-); /* implemented by chalk */
-
 export const CLITitle = supportsColor ? StudioCMSColorway.bold(`${ASCIIText}\n`) : `${ASCIIText}\n`;
 
 export const cancelMessage =

@@ -1,8 +1,17 @@
 import buffer from 'node:buffer';
-import { type SpawnOptions, exec as _exec, spawn, spawnSync } from 'node:child_process';
+import {
+	type ChildProcess,
+	type SpawnOptions,
+	type StdioOptions,
+	exec as _exec,
+	spawn,
+	spawnSync,
+} from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import type { Readable } from 'node:stream';
+import { text as textFromStream } from 'node:stream/consumers';
 import { fileURLToPath } from 'node:url';
 import type * as p from '@clack/prompts';
 import { NonZeroExitError, type Options, x } from 'tinyexec';
@@ -10,6 +19,50 @@ import { NonZeroExitError, type Options, x } from 'tinyexec';
 interface ExecError extends Error {
 	stderr?: string;
 	stdout?: string;
+}
+
+export interface ExecaOptions {
+	cwd?: string | URL;
+	stdio?: StdioOptions;
+	timeout?: number;
+}
+export interface Output {
+	stdout: string;
+	stderr: string;
+	exitCode: number;
+}
+const text = (stream: NodeJS.ReadableStream | Readable | null) =>
+	stream ? textFromStream(stream).then((t) => t.trimEnd()) : '';
+
+export async function shell(
+	command: string,
+	flags: string[],
+	opts: ExecaOptions = {}
+): Promise<Output> {
+	let child: ChildProcess;
+	let stdout = '';
+	let stderr = '';
+	try {
+		child = spawn(command, flags, {
+			cwd: opts.cwd,
+			shell: true,
+			stdio: opts.stdio,
+			timeout: opts.timeout,
+		});
+		const done = new Promise((resolve) => child.on('close', resolve));
+		[stdout, stderr] = await Promise.all([text(child.stdout), text(child.stderr)]);
+		await done;
+	} catch {
+		throw { stdout, stderr, exitCode: 1 };
+	}
+	const { exitCode } = child;
+	if (exitCode === null) {
+		throw new Error('Timeout');
+	}
+	if (exitCode !== 0) {
+		throw new Error(stderr);
+	}
+	return { stdout, stderr, exitCode };
 }
 
 /**

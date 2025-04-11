@@ -1,8 +1,8 @@
 import { tasks } from '@clack/prompts';
+import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
+import { Command, Option } from '@withstudiocms/cli-kit/commander';
+import { label } from '@withstudiocms/cli-kit/messages';
 import color from 'chalk';
-import { Command, Option } from '../utils/commander.js';
-import { StudioCMSColorwayBg } from '../utils/index.js';
-import { label } from '../utils/messages.js';
 import {
 	dependencies,
 	env,

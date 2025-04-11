@@ -1,5 +1,12 @@
 import path from 'node:path';
-import { nextSteps } from '../../utils/messages.js';
+import {
+	StudioCMSColorway,
+	StudioCMSColorwayBg,
+	StudioCMSColorwayInfo,
+	StudioCMSColorwayInfoBg,
+} from '@withstudiocms/cli-kit/colors';
+import { boxen, label } from '@withstudiocms/cli-kit/messages';
+import color from 'chalk';
 import type { Context } from './context.js';
 
 export async function next(
@@ -26,12 +33,29 @@ export async function next(
 
 	ctx.debug && ctx.logger.debug('Running next steps fn...');
 
-	await nextSteps({
-		projectDir,
-		devCmd,
-		p: ctx.prompt,
-		isStudioCMSProject: ctx.isStudioCMSProject,
-	});
+	ctx.prompt.log.success(
+		boxen(
+			color.bold(
+				`${label('Setup Complete!', StudioCMSColorwayInfoBg, color.bold)} Explore your new project! 🚀`
+			),
+			{
+				ln0: ctx.isStudioCMSProject
+					? `Ensure your ${color.cyanBright('.env')} file is configured correctly.`
+					: '',
+				ln2: `Enter your project directory using ${StudioCMSColorwayInfo(`cd ${projectDir}`)}`,
+				ln3: ctx.isStudioCMSProject
+					? `Run ${color.cyan('astro db push')} to sync your database schema.`
+					: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
+				ln4: ctx.isStudioCMSProject
+					? `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`
+					: '',
+			}
+		)
+	);
+
+	ctx.prompt.outro(
+		`${label(ctx.isStudioCMSProject ? 'Enjoy your new CMS!' : 'Enjoy your new project!', StudioCMSColorwayBg, color.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
+	);
 
 	ctx.debug && ctx.logger.debug('Next steps complete');
 }

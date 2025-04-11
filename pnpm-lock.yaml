@@ -53,9 +53,9 @@ importers:
       '@clack/prompts':
         specifier: 0.9.1
         version: 0.9.1
-      '@commander-js/extra-typings':
-        specifier: ^13.0.0
-        version: 13.0.0(commander@13.0.0)
+      '@withstudiocms/cli-kit':
+        specifier: workspace:*
+        version: link:../withstudiocms_cli-kit
       ansi-escapes:
         specifier: ^7.0.0
         version: 7.0.0

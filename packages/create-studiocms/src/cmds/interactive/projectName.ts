@@ -1,6 +1,6 @@
 import path from 'node:path';
+import { StudioCMSColorwayInfo, StudioCMSColorwayWarn } from '@withstudiocms/cli-kit/colors';
 import color from 'chalk';
-import { StudioCMSColorwayInfo, StudioCMSColorwayWarn } from '../../utils/index.js';
 import type { Context } from './context.js';
 import { generateProjectName } from './data/project.js';
 import { isEmpty, toValidName } from './shared.js';

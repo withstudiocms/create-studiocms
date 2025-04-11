@@ -1,9 +1,8 @@
 import os from 'node:os';
 import * as p from '@clack/prompts';
+import { type Logger, buildLogger, cancelMessage, getName } from '@withstudiocms/cli-kit';
 import packageJson from 'package-json';
 import { templateRegistry } from '../../templates.config.js';
-import { logger } from '../../utils/index.js';
-import { cancelMessage, getName } from '../../utils/messages.js';
 import getSeasonalMessages from './data/seasonal.js';
 import type { TemplateRegistry } from './templates.types.js';
 
@@ -35,7 +34,7 @@ export interface Context extends InteractiveOptions {
 	tasks: p.Task[];
 	isStudioCMSProject: boolean;
 	templateRegistry: TemplateRegistry;
-	logger: typeof logger;
+	logger: Logger;
 }
 
 export async function getContext(args: InteractiveOptions & { cwd?: string }): Promise<Context> {
@@ -70,6 +69,8 @@ export async function getContext(args: InteractiveOptions & { cwd?: string }): P
 		[yes, no, git, install].some((v) => v !== undefined);
 
 	const { messages } = getSeasonalMessages();
+
+	const logger = buildLogger(debug || false);
 
 	const context: Context = {
 		prompt: p,
