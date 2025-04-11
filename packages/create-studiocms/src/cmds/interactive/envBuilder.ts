@@ -2,18 +2,20 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import color from 'chalk';
 import {
 	StudioCMSColorwayError,
 	StudioCMSColorwayInfo,
 	StudioCMSColorwayWarnBg,
 	TursoColorway,
+} from '@withstudiocms/cli-kit/colors';
+import { label } from '@withstudiocms/cli-kit/messages';
+import {
 	commandExists,
 	exists,
 	runInteractiveCommand,
 	runShellCommand,
-} from '../../utils/index.js';
-import { label } from '../../utils/messages.js';
+} from '@withstudiocms/cli-kit/utils';
+import color from 'chalk';
 import type { Context } from './context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsenv.js';
 

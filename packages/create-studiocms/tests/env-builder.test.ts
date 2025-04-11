@@ -1,6 +1,6 @@
+import { StudioCMSColorwayError } from '@withstudiocms/cli-kit/colors';
 import { describe, expect, it, vi } from 'vitest';
 import { buildEnvFile } from '../dist/cmds/interactive/data/studiocmsenv.js';
-import * as utils from '../dist/utils/index.js';
 
 describe('Token Validation Fix', () => {
 	it('logs and validates tokens before using them', () => {
@@ -35,7 +35,7 @@ describe('Token Validation Fix', () => {
 			const isTokenValid = !!token;
 
 			if (!isTokenValid) {
-				ctx.prompt.log.error(utils.StudioCMSColorwayError('No token provided'));
+				ctx.prompt.log.error(StudioCMSColorwayError('No token provided'));
 				// In the real code this would exit, but we just test the condition
 			}
 

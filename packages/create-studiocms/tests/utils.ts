@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util';
+import { setStdout } from '@withstudiocms/cli-kit/messages';
 import { beforeAll, beforeEach } from 'vitest';
-import { setStdout } from '../dist/utils/messages.js';
 
 export function setup() {
 	const ctx: { messages: string[] } = { messages: [] };

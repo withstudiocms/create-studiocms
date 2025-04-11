@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
+import { shell } from '@withstudiocms/cli-kit/utils';
 import color from 'chalk';
-import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../utils/index.js';
-import { shell } from '../../utils/shell.js';
 import type { Context } from './context.js';
 
 export async function dependencies(

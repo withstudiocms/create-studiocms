@@ -104,6 +104,5 @@ export class Command extends _Command {
 	}
 }
 
-export type newInstanceCommand = InstanceType<typeof Command>;
-
 export type instanceCommand = InstanceType<typeof _Command>;
+export type newInstanceCommand = InstanceType<typeof Command>;

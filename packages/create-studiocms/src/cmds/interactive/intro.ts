@@ -1,6 +1,6 @@
+import { StudioCMSColorway, StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
+import { label, say } from '@withstudiocms/cli-kit/messages';
 import color from 'chalk';
-import { StudioCMSColorway, StudioCMSColorwayBg } from '../../utils/index.js';
-import { label, say } from '../../utils/messages.js';
 import type { Context } from './context.js';
 
 export async function intro(

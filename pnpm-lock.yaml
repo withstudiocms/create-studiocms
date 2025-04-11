@@ -53,6 +53,27 @@ importers:
       '@clack/prompts':
         specifier: 0.9.1
         version: 0.9.1
+      '@withstudiocms/cli-kit':
+        specifier: workspace:*
+        version: link:../withstudiocms_cli-kit
+      chalk:
+        specifier: ^5.4.1
+        version: 5.4.1
+      commander:
+        specifier: ^13.0.0
+        version: 13.0.0
+      package-json:
+        specifier: ^10.0.1
+        version: 10.0.1
+
+  packages/withstudiocms_cli-kit:
+    dependencies:
+      '@clack/core':
+        specifier: 0.4.1
+        version: 0.4.1
+      '@clack/prompts':
+        specifier: 0.9.1
+        version: 0.9.1
       '@commander-js/extra-typings':
         specifier: ^13.0.0
         version: 13.0.0(commander@13.0.0)
@@ -77,15 +98,15 @@ importers:
       is-unicode-supported:
         specifier: ^2.1.0
         version: 2.1.0
-      package-json:
-        specifier: ^10.0.1
-        version: 10.0.1
       slice-ansi:
         specifier: ^7.1.0
         version: 7.1.0
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
+      tinyexec:
+        specifier: ^1.0.1
+        version: 1.0.1
       wrap-ansi:
         specifier: ^9.0.0
         version: 9.0.0
@@ -1511,6 +1532,9 @@ packages:
 
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
+
+  tinyexec@1.0.1:
+    resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
 
   tinyglobby@0.2.10:
     resolution: {integrity: sha512-Zc+8eJlFMvgatPZTl6A9L/yht8QqdmUNtURHaKZLmKBE12hNPSrqNkUp2cs3M/UKmNVVAMFQYSjYIVHDjW5zew==}
@@ -3011,6 +3035,8 @@ snapshots:
   tinybench@2.9.0: {}
 
   tinyexec@0.3.2: {}
+
+  tinyexec@1.0.1: {}
 
   tinyglobby@0.2.10:
     dependencies:

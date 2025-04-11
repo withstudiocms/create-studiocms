@@ -1,13 +1,8 @@
+import { StudioCMSColorwayError } from '@withstudiocms/cli-kit/colors';
+import { Command, Option } from '@withstudiocms/cli-kit/commander';
+import { CLITitle, termPrefix } from '@withstudiocms/cli-kit/messages';
+import pathUtil from '@withstudiocms/cli-kit/utils';
 import chalk from 'chalk';
-import { Command } from './utils/commander.js';
-import {
-	CLITitle,
-	ChalkColorOption,
-	ChalkColorOptionNo,
-	StudioCMSColorwayError,
-	termPrefix,
-} from './utils/index.js';
-import pathUtil from './utils/pathUtil.js';
 import readJson from './utils/readJson.js';
 
 const pkgJson = readJson<{ version: string }>(new URL('../package.json', import.meta.url));
@@ -27,8 +22,8 @@ await new Command('create-studiocms')
 	.executableDir(getRelPath('cmds'))
 
 	// Global Options
-	.addOption(ChalkColorOption)
-	.addOption(ChalkColorOptionNo)
+	.addOption(new Option('--color', 'Force color output') /* implemented by chalk */)
+	.addOption(new Option('--no-color', 'Disable color output') /* implemented by chalk */)
 
 	// Commands
 	.command('interactive', 'Start the interactive CLI.', {

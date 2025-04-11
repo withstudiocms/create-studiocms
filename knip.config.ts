@@ -19,7 +19,7 @@ const config: KnipConfig = {
 			],
 		},
 		'packages/*': {
-			ignoreDependencies: ['@clack/core'],
+			ignoreDependencies: ['@clack/core', 'commander'],
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 		},

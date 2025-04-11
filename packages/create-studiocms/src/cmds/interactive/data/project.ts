@@ -1,4 +1,4 @@
-import { random } from '../../../utils/messages.js';
+import { random } from '@withstudiocms/cli-kit/messages';
 
 export function generateProjectName() {
 	const adjective = random(adjectives);

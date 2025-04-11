@@ -1,21 +1,19 @@
 import { exec } from 'node:child_process';
 import readline from 'node:readline';
 import type { Key } from 'node:readline';
-import type * as _prompts from '@clack/prompts';
+import type * as p from '@clack/prompts';
 import ansiEscapes from 'ansi-escapes';
 import _boxen, { type Options as BoxenOptions } from 'boxen';
 import color from 'chalk';
 import cliCursor from 'cli-cursor';
+import figlet from 'figlet';
 import isUnicodeSupported from 'is-unicode-supported';
 import sliceAnsi from 'slice-ansi';
 import stripAnsi from 'strip-ansi';
 import wrapAnsi from 'wrap-ansi';
-import {
-	StudioCMSColorway,
-	StudioCMSColorwayBg,
-	StudioCMSColorwayInfo,
-	StudioCMSColorwayInfoBg,
-} from './index.js';
+import { StudioCMSColorway, StudioCMSColorwayBg, supportsColor } from './colors.js';
+
+export { _boxen as boxenReal };
 
 export const action = (key: Key, isSelect: boolean) => {
 	if (key.meta && key.name !== 'escape') return;
@@ -267,36 +265,55 @@ export const getName = () =>
 		});
 	});
 
-export const nextSteps = async ({
-	projectDir,
-	devCmd,
-	p,
-	isStudioCMSProject,
-}: { projectDir: string; devCmd: string; p: typeof _prompts; isStudioCMSProject: boolean }) => {
-	p.log.success(
-		boxen(
-			color.bold(
-				`${label('Setup Complete!', StudioCMSColorwayInfoBg, color.bold)} Explore your new project! 🚀`
-			),
-			{
-				ln0: isStudioCMSProject
-					? `Ensure your ${color.cyanBright('.env')} file is configured correctly.`
-					: '',
-				ln2: `Enter your project directory using ${StudioCMSColorwayInfo(`cd ${projectDir}`)}`,
-				ln3: isStudioCMSProject
-					? `Run ${color.cyan('astro db push')} to sync your database schema.`
-					: `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`,
-				ln4: isStudioCMSProject
-					? `Run ${color.cyan(devCmd)} to start the dev server. ${color.cyanBright('CTRL+C')} to stop.`
-					: '',
-			}
-		)
-	);
+export const send = (message: string) => process.stdout.write(`${message}\n`);
 
-	p.outro(
-		`${label(isStudioCMSProject ? 'Enjoy your new CMS!' : 'Enjoy your new project!', StudioCMSColorwayBg, color.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
-	);
-};
+export const termPrefix = process.stdout.columns < 80 ? ' ' : ' '.repeat(2);
+
+export const ASCIIText = figlet.textSync('StudioCMS');
+
+export const dt = new Intl.DateTimeFormat('en-us', {
+	hour: '2-digit',
+	minute: '2-digit',
+});
+
+export const date = dt.format(new Date());
+
+export const CLITitle = supportsColor ? StudioCMSColorway.bold(`${ASCIIText}\n`) : `${ASCIIText}\n`;
 
 export const cancelMessage =
 	"Operation cancelled, exiting... If you're stuck, join us at https://chat.studiocms.dev";
+
+export function cancelled(message: string, tip?: string) {
+	const badge = color.bgYellow(color.black(' cancelled '));
+	const headline = color.yellow(message);
+	const footer = tip ? `\n  ▶ ${tip}` : undefined;
+	return ['', `${badge} ${headline}`, footer]
+		.filter((v) => v !== undefined)
+		.map((msg) => `  ${msg}`)
+		.join('\n');
+}
+
+export function success(message: string, tip?: string) {
+	const badge = color.bgGreen(color.black(' success '));
+	const headline = color.green(message);
+	const footer = tip ? `\n  ▶ ${tip}` : undefined;
+	return ['', `${badge} ${headline}`, footer]
+		.filter((v) => v !== undefined)
+		.map((msg) => `  ${msg}`)
+		.join('\n');
+}
+
+export type ClackPromptsImported = typeof p;
+
+export async function askToContinue(p: ClackPromptsImported): Promise<boolean> {
+	const response = await p.confirm({
+		message: 'Continue?',
+		initialValue: true,
+	});
+
+	if (p.isCancel(response)) {
+		return false;
+	}
+
+	return response;
+}
