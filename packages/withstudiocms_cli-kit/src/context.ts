@@ -56,9 +56,10 @@ export async function getBaseContext(args: InteractiveOptions): Promise<Context>
 			process.exit(code);
 		},
 		pCancel(val: symbol) {
-			p.isCancel(val);
-			p.cancel(cancelMessage);
-			process.exit(0);
+			if (p.isCancel(val)) {
+				p.cancel(cancelMessage);
+				process.exit(0);
+			}
 		},
 		pOnCancel() {
 			p.cancel(cancelMessage);
