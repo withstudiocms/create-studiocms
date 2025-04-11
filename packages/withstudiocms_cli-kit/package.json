@@ -1,29 +1,51 @@
 {
-	"name": "create-studiocms",
-	"version": "0.1.3",
+	"name": "@withstudiocms/cli-kit",
+	"version": "0.0.1",
 	"type": "module",
 	"author": "withstudiocms",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/withstudiocms/cli-utilities.git",
-		"directory": "packages/create-studiocms"
+		"directory": "packages/withstudiocms_cli-kit"
 	},
 	"bugs": "https://github.com/withstudiocms/cli-utilities/issues",
 	"homepage": "https://studiocms.dev",
 	"exports": {
-		".": "./create-studiocms.mjs"
-	},
-	"main": "./create-studiocms.mjs",
-	"bin": {
-		"create-studiocms": "./create-studiocms.mjs"
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./colors": {
+			"types": "./dist/colors.d.ts",
+			"default": "./dist/colors.js"
+		},
+		"./commander": {
+			"types": "./dist/commander.d.ts",
+			"default": "./dist/commander.js"
+		},
+		"./context": {
+			"types": "./dist/context.d.ts",
+			"default": "./dist/context.js"
+		},
+		"./logger": {
+			"types": "./dist/logger.d.ts",
+			"default": "./dist/logger.js"
+		},
+		"./messages": {
+			"types": "./dist/messages.d.ts",
+			"default": "./dist/messages.js"
+		},
+		"./utils": {
+			"types": "./dist/utils.d.ts",
+			"default": "./dist/utils.js"
+		}
 	},
 	"scripts": {
 		"build": "buildkit build \"src/**/*.ts\""
 	},
-	"files": ["create-studiocms.mjs", "dist"],
+	"files": ["dist"],
 	"dependencies": {
-		"@bluwy/giget-core": "^0.1.2",
 		"@clack/core": "0.4.1",
 		"@clack/prompts": "0.9.1",
 		"@commander-js/extra-typings": "^13.0.0",
@@ -37,7 +59,7 @@
 		"cli-cursor": "^5.0.0",
 		"is-unicode-supported": "^2.1.0",
 		"slice-ansi": "^7.1.0",
-		"package-json": "^10.0.1"
+		"tinyexec": "^1.0.1"
 	},
 	"devDependencies": {
 		"@types/figlet": "^1.7.0"
