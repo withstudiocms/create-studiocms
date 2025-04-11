@@ -176,7 +176,7 @@ export function runInteractiveCommand(
 // 	}
 // })();
 
-export default function pathUtil(importMetaUrl: string) {
+export function pathUtil(importMetaUrl: string) {
 	const filename = fileURLToPath(importMetaUrl);
 	const dirname = path.dirname(filename);
 

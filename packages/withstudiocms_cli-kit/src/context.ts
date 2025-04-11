@@ -67,12 +67,6 @@ export async function getBaseContext(args: InteractiveOptions): Promise<Context>
 	};
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export const random = (...arr: any[]) => {
-	const flattenedArray = arr.flat(1);
-	return flattenedArray[Math.floor(flattenedArray.length * Math.random())];
-};
-
 export function detectPackageManager() {
 	if (!process.env.npm_config_user_agent) return;
 	const specifier = process.env.npm_config_user_agent.split(' ')[0];
