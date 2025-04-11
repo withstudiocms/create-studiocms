@@ -56,43 +56,15 @@ importers:
       '@withstudiocms/cli-kit':
         specifier: workspace:*
         version: link:../withstudiocms_cli-kit
-      ansi-escapes:
-        specifier: ^7.0.0
-        version: 7.0.0
-      boxen:
-        specifier: ^8.0.1
-        version: 8.0.1
       chalk:
         specifier: ^5.4.1
         version: 5.4.1
-      cli-cursor:
-        specifier: ^5.0.0
-        version: 5.0.0
       commander:
         specifier: ^13.0.0
         version: 13.0.0
-      figlet:
-        specifier: ^1.8.0
-        version: 1.8.0
-      is-unicode-supported:
-        specifier: ^2.1.0
-        version: 2.1.0
       package-json:
         specifier: ^10.0.1
         version: 10.0.1
-      slice-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
-      strip-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
-      wrap-ansi:
-        specifier: ^9.0.0
-        version: 9.0.0
-    devDependencies:
-      '@types/figlet':
-        specifier: ^1.7.0
-        version: 1.7.0
 
   packages/withstudiocms_cli-kit:
     dependencies:
